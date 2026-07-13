@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tomi Zárate — Diseñador Gráfico</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦅</text></svg>">
+  <!-- Favicon TZ -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='12' fill='%23FFC5D3'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='900' font-family='Arial' text-anchor='middle' fill='%23000'%3ETZ%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -55,20 +56,20 @@
       <div class="showreel__video reveal">
         <div class="showreel__placeholder">
           <p>🎬 Tu showreel aquí</p>
-          <span>MP4 — recomendado 16:9</span>
+          <span>MP4 — recomendado 16:9 · sin audio</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ========== WORK (SOCIAL MEDIA) ========== -->
+  <!-- ========== WORK ========== -->
   <section class="section" id="work">
     <div class="section__header reveal">
       <h2 class="section__title">Trabajo</h2>
-      <p class="section__desc">Cada proyecto es una historia. Seleccioné los que mejor cuentan la mía.</p>
+      <p class="section__desc">Seleccioné los proyectos que mejor cuentan mi historia. <br class="hide-mobile">Hacé click en cada uno para verlo completo.</p>
     </div>
 
-    <!-- Category: Social Media -->
+    <!-- Category: Redes Sociales -->
     <div class="category" id="social">
       <div class="category__divider reveal">
         <span class="category__tag">01</span>
@@ -76,7 +77,11 @@
         <div class="category__line"></div>
       </div>
       <div class="grid grid--3">
-        <a href="#" class="project-card reveal">
+        <div class="project-card reveal"
+             data-title="Cliente A"
+             data-category="Social Media · 2026"
+             data-description="Feed de Instagram completo para Cliente A. Identidad visual, plantillas, y contenido orgánico. 12 piezas diseñadas con consistencia de marca."
+             data-behance="https://www.behance.net/rhodeslover">
           <div class="project-card__media">
             <div class="project-card__video-bg">
               <p class="project-card__placeholder">🎬 Logo animado<br>Cliente A</p>
@@ -89,8 +94,13 @@
             <h4>Cliente A</h4>
             <span class="project-card__tag">Social Media · 2026</span>
           </div>
-        </a>
-        <a href="#" class="project-card reveal">
+        </div>
+
+        <div class="project-card reveal"
+             data-title="Cliente B"
+             data-category="Social Media · 2026"
+             data-description="Estrategia de contenido para Cliente B. Combinación de posteos estáticos y animados con identidad fresca y juvenil."
+             data-behance="https://www.behance.net/rhodeslover">
           <div class="project-card__media">
             <div class="project-card__video-bg">
               <p class="project-card__placeholder">🎬 Logo animado<br>Cliente B</p>
@@ -103,8 +113,13 @@
             <h4>Cliente B</h4>
             <span class="project-card__tag">Social Media · 2026</span>
           </div>
-        </a>
-        <a href="#" class="project-card reveal">
+        </div>
+
+        <div class="project-card reveal"
+             data-title="Cliente C"
+             data-category="Social Media · 2026"
+             data-description="Campaña estacional para Cliente C. Diseño de piezas para redes con foco en conversión y estética de marca."
+             data-behance="https://www.behance.net/rhodeslover">
           <div class="project-card__media">
             <div class="project-card__video-bg">
               <p class="project-card__placeholder">🎬 Logo animado<br>Cliente C</p>
@@ -117,7 +132,7 @@
             <h4>Cliente C</h4>
             <span class="project-card__tag">Social Media · 2026</span>
           </div>
-        </a>
+        </div>
       </div>
     </div>
 
@@ -129,7 +144,11 @@
         <div class="category__line"></div>
       </div>
       <div class="grid grid--2">
-        <a href="#" class="project-card project-card--large reveal">
+        <div class="project-card project-card--large reveal"
+             data-title="Marca X"
+             data-category="Branding · 2025"
+             data-description="Identidad visual completa para Marca X. Logotipo, paleta cromática, tipografía, papelería y aplicaciones."
+             data-behance="https://www.behance.net/rhodeslover">
           <div class="project-card__media">
             <div class="project-card__video-bg">
               <p class="project-card__placeholder">🎬 Identidad visual</p>
@@ -142,8 +161,13 @@
             <h4>Marca X</h4>
             <span class="project-card__tag">Branding · 2025</span>
           </div>
-        </a>
-        <a href="#" class="project-card project-card--large reveal">
+        </div>
+
+        <div class="project-card project-card--large reveal"
+             data-title="Marca Y"
+             data-category="Branding · 2025"
+             data-description="Rebranding completo para Marca Y. Actualización de identidad con enfoque en digital y redes."
+             data-behance="https://www.behance.net/rhodeslover">
           <div class="project-card__media">
             <div class="project-card__video-bg">
               <p class="project-card__placeholder">🎬 Identidad visual</p>
@@ -156,58 +180,77 @@
             <h4>Marca Y</h4>
             <span class="project-card__tag">Branding · 2025</span>
           </div>
-        </a>
+        </div>
       </div>
     </div>
 
-    <!-- Category: Posters -->
-    <div class="category" id="posters">
+    <!-- Category: Proyectos -->
+    <div class="category" id="proyectos">
       <div class="category__divider reveal">
         <span class="category__tag">03</span>
-        <h3 class="category__title">Posters</h3>
+        <h3 class="category__title">Proyectos</h3>
         <div class="category__line"></div>
       </div>
       <div class="grid grid--3">
-        <a href="#" class="project-card reveal">
+        <div class="project-card reveal"
+             data-title="Proyecto 1"
+             data-category="Proyecto · 2025"
+             data-description="Proyecto editorial completo. Diagramación, selección tipográfica y tratamiento de imágenes para publicación impresa.">
           <div class="project-card__media" style="aspect-ratio: 2/3;">
             <div class="project-card__video-bg">
-              <p class="project-card__placeholder">Póster 1</p>
+              <p class="project-card__placeholder">Proyecto 1</p>
             </div>
             <div class="project-card__overlay">
               <span>Ver →</span>
             </div>
           </div>
           <div class="project-card__info">
-            <span class="project-card__tag">Poster · 2025</span>
+            <span class="project-card__tag">Proyecto · 2025</span>
           </div>
-        </a>
-        <a href="#" class="project-card reveal">
+        </div>
+
+        <div class="project-card reveal"
+             data-title="Proyecto 2"
+             data-category="Proyecto · 2025"
+             data-description="Dirección de arte para campaña. Conceptualización, moodboards y ejecución visual integral."
+             data-behance="https://www.behance.net/rhodeslover">
           <div class="project-card__media" style="aspect-ratio: 2/3;">
             <div class="project-card__video-bg">
-              <p class="project-card__placeholder">Póster 2</p>
+              <p class="project-card__placeholder">Proyecto 2</p>
             </div>
             <div class="project-card__overlay">
               <span>Ver →</span>
             </div>
           </div>
           <div class="project-card__info">
-            <span class="project-card__tag">Poster · 2025</span>
+            <span class="project-card__tag">Proyecto · 2025</span>
           </div>
-        </a>
-        <a href="#" class="project-card reveal">
+        </div>
+
+        <div class="project-card reveal"
+             data-title="Proyecto 3"
+             data-category="Proyecto · 2025"
+             data-description="Diseño de packaging para línea de productos. Exploración de formas, materiales y aplicación de marca.">
           <div class="project-card__media" style="aspect-ratio: 2/3;">
             <div class="project-card__video-bg">
-              <p class="project-card__placeholder">Póster 3</p>
+              <p class="project-card__placeholder">Proyecto 3</p>
             </div>
             <div class="project-card__overlay">
               <span>Ver →</span>
             </div>
           </div>
           <div class="project-card__info">
-            <span class="project-card__tag">Poster · 2025</span>
+            <span class="project-card__tag">Proyecto · 2025</span>
           </div>
-        </a>
+        </div>
       </div>
+    </div>
+
+    <!-- Ver todos -->
+    <div class="section__footer reveal">
+      <a href="proyectos.html" class="btn btn--primary btn--large">
+        Ver todos los trabajos →
+      </a>
     </div>
   </section>
 
@@ -238,6 +281,10 @@
             <span class="about__label">Toolkit</span>
             <span class="about__value">Ps · Ai · Id · Ae · Pr · Figma</span>
           </div>
+          <div class="about__item">
+            <span class="about__label">CV</span>
+            <a href="#" class="about__value about__link">Descargar PDF →</a>
+          </div>
         </div>
       </div>
       <div class="about__image reveal">
@@ -255,8 +302,8 @@
       <p class="contact__text reveal">Disponible para proyectos freelance, colaboraciones o una charla.</p>
       <a href="mailto:tomi@email.com" class="contact__btn reveal">tomi@email.com →</a>
       <div class="contact__socials reveal">
-        <a href="#" target="_blank">Behance</a>
-        <a href="#" target="_blank">LinkedIn</a>
+        <a href="https://www.behance.net/rhodeslover" target="_blank">Behance</a>
+        <a href="https://www.linkedin.com/in/tomás-zárate-a2104b37a/" target="_blank">LinkedIn</a>
         <a href="#" target="_blank">Instagram</a>
       </div>
     </div>
@@ -264,8 +311,29 @@
 
   <!-- ========== FOOTER ========== -->
   <footer class="footer">
-    <p>© 2026 Tomi Zárate — Diseñado con paciencia y pastel pink.</p>
+    <p>© 2026 Tomi Zárate — Diseñado con 🦅 Heru · Julio 2026</p>
   </footer>
+
+  <!-- ========== MODAL ========== -->
+  <div class="modal" id="projectModal">
+    <div class="modal__backdrop" id="modalBackdrop"></div>
+    <div class="modal__container">
+      <div class="modal__header">
+        <h3 class="modal__title" id="modalTitle">Proyecto</h3>
+        <span class="modal__category" id="modalCategory">Categoría</span>
+        <button class="modal__close" id="modalClose">✕</button>
+      </div>
+      <div class="modal__body">
+        <div class="modal__gallery" id="modalGallery">
+          <!-- Gallery images go here -->
+        </div>
+        <div class="modal__info">
+          <p class="modal__description" id="modalDescription">Descripción del proyecto</p>
+          <div class="modal__actions" id="modalActions"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="js/main.js"></script>
 </body>
