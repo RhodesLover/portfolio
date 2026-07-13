@@ -4,8 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tomi Zárate — Diseñador Gráfico</title>
-  <!-- Favicon TZ -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='12' fill='%23FFC5D3'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='900' font-family='Arial' text-anchor='middle' fill='%23000'%3ETZ%3C/text%3E%3C/svg%3E">
+  <!-- Playfair Display + DM Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -33,12 +36,12 @@
   <section class="hero" id="hero">
     <div class="hero__bg"></div>
     <div class="hero__content">
-      <h1 class="hero__title reveal">
+      <h1 class="hero__title">
         <span class="hero__line"><span class="hero__word">Tomás</span></span>
         <span class="hero__line"><span class="hero__word">Zárate</span></span>
       </h1>
-      <p class="hero__sub reveal">Diseñador Gráfico · Branding · Social Media</p>
-      <div class="hero__cta reveal">
+      <p class="hero__sub">Diseñador Gráfico · Branding · Social Media</p>
+      <div class="hero__cta">
         <a href="#work" class="btn btn--primary">Ver trabajo</a>
         <a href="#contact" class="btn btn--outline">Contacto</a>
       </div>
@@ -52,11 +55,11 @@
   <!-- ========== SHOWREEL ========== -->
   <section class="showreel" id="showreel">
     <div class="showreel__inner">
-      <h2 class="section-label reveal">Showreel</h2>
-      <div class="showreel__video reveal">
+      <div class="showreel__video">
         <div class="showreel__placeholder">
-          <p>🎬 Tu showreel aquí</p>
-          <span>MP4 — recomendado 16:9 · sin audio</span>
+          <div class="showreel__icon">▶</div>
+          <p>Showreel</p>
+          <span>MP4 — 16:9 · sin audio</span>
         </div>
       </div>
     </div>
@@ -64,27 +67,30 @@
 
   <!-- ========== WORK ========== -->
   <section class="section" id="work">
-    <div class="section__header reveal">
+    <div class="section__header">
+      <span class="section__overline">Selección</span>
       <h2 class="section__title">Trabajo</h2>
-      <p class="section__desc">Seleccioné los proyectos que mejor cuentan mi historia. <br class="hide-mobile">Hacé click en cada uno para verlo completo.</p>
+      <p class="section__desc">Una mirada a los proyectos que definen mi enfoque.</p>
     </div>
 
     <!-- Category: Redes Sociales -->
     <div class="category" id="social">
-      <div class="category__divider reveal">
+      <div class="category__divider">
         <span class="category__tag">01</span>
-        <h3 class="category__title">Redes Sociales</h3>
+        <h3 class="category__title">Redes</h3>
         <div class="category__line"></div>
+        <span class="category__qty">3 proyectos</span>
       </div>
-      <div class="grid grid--3">
-        <div class="project-card reveal"
+      <div class="grid grid--social">
+        <div class="project-card project-card--hero"
              data-title="Cliente A"
              data-category="Social Media · 2026"
-             data-description="Feed de Instagram completo para Cliente A. Identidad visual, plantillas, y contenido orgánico. 12 piezas diseñadas con consistencia de marca."
+             data-description="Feed de Instagram completo para Cliente A. Identidad visual, plantillas y contenido orgánico. 12 piezas diseñadas con consistencia de marca."
              data-behance="https://www.behance.net/rhodeslover">
           <div class="project-card__media">
             <div class="project-card__video-bg">
-              <p class="project-card__placeholder">🎬 Logo animado<br>Cliente A</p>
+              <p class="project-card__placeholder">🎬 <br>Cliente A</p>
+              <span class="project-card__badge">Destacado</span>
             </div>
             <div class="project-card__overlay">
               <span>Ver proyecto →</span>
@@ -96,17 +102,17 @@
           </div>
         </div>
 
-        <div class="project-card reveal"
+        <div class="project-card"
              data-title="Cliente B"
              data-category="Social Media · 2026"
-             data-description="Estrategia de contenido para Cliente B. Combinación de posteos estáticos y animados con identidad fresca y juvenil."
+             data-description="Estrategia de contenido para Cliente B. Posteos estáticos y animados con identidad fresca."
              data-behance="https://www.behance.net/rhodeslover">
           <div class="project-card__media">
             <div class="project-card__video-bg">
-              <p class="project-card__placeholder">🎬 Logo animado<br>Cliente B</p>
+              <p class="project-card__placeholder">🎬<br>Cliente B</p>
             </div>
             <div class="project-card__overlay">
-              <span>Ver proyecto →</span>
+              <span>Ver →</span>
             </div>
           </div>
           <div class="project-card__info">
@@ -115,17 +121,17 @@
           </div>
         </div>
 
-        <div class="project-card reveal"
+        <div class="project-card"
              data-title="Cliente C"
              data-category="Social Media · 2026"
-             data-description="Campaña estacional para Cliente C. Diseño de piezas para redes con foco en conversión y estética de marca."
+             data-description="Campaña estacional para Cliente C con foco en conversión y estética de marca."
              data-behance="https://www.behance.net/rhodeslover">
           <div class="project-card__media">
             <div class="project-card__video-bg">
-              <p class="project-card__placeholder">🎬 Logo animado<br>Cliente C</p>
+              <p class="project-card__placeholder">🎬<br>Cliente C</p>
             </div>
             <div class="project-card__overlay">
-              <span>Ver proyecto →</span>
+              <span>Ver →</span>
             </div>
           </div>
           <div class="project-card__info">
@@ -138,20 +144,21 @@
 
     <!-- Category: Branding -->
     <div class="category" id="branding">
-      <div class="category__divider reveal">
+      <div class="category__divider">
         <span class="category__tag">02</span>
         <h3 class="category__title">Branding</h3>
         <div class="category__line"></div>
+        <span class="category__qty">2 proyectos</span>
       </div>
-      <div class="grid grid--2">
-        <div class="project-card project-card--large reveal"
+      <div class="grid grid--branding">
+        <div class="project-card"
              data-title="Marca X"
              data-category="Branding · 2025"
-             data-description="Identidad visual completa para Marca X. Logotipo, paleta cromática, tipografía, papelería y aplicaciones."
+             data-description="Identidad visual completa: logotipo, paleta cromática, tipografía, papelería y aplicaciones."
              data-behance="https://www.behance.net/rhodeslover">
           <div class="project-card__media">
             <div class="project-card__video-bg">
-              <p class="project-card__placeholder">🎬 Identidad visual</p>
+              <p class="project-card__placeholder">🎬 Marca X</p>
             </div>
             <div class="project-card__overlay">
               <span>Ver proyecto →</span>
@@ -163,14 +170,14 @@
           </div>
         </div>
 
-        <div class="project-card project-card--large reveal"
+        <div class="project-card"
              data-title="Marca Y"
              data-category="Branding · 2025"
-             data-description="Rebranding completo para Marca Y. Actualización de identidad con enfoque en digital y redes."
+             data-description="Rebranding con enfoque digital. Actualización de identidad para redes y plataformas."
              data-behance="https://www.behance.net/rhodeslover">
           <div class="project-card__media">
             <div class="project-card__video-bg">
-              <p class="project-card__placeholder">🎬 Identidad visual</p>
+              <p class="project-card__placeholder">🎬 Marca Y</p>
             </div>
             <div class="project-card__overlay">
               <span>Ver proyecto →</span>
@@ -186,17 +193,18 @@
 
     <!-- Category: Proyectos -->
     <div class="category" id="proyectos">
-      <div class="category__divider reveal">
+      <div class="category__divider">
         <span class="category__tag">03</span>
         <h3 class="category__title">Proyectos</h3>
         <div class="category__line"></div>
+        <span class="category__qty">3 proyectos</span>
       </div>
-      <div class="grid grid--3">
-        <div class="project-card reveal"
+      <div class="grid grid--proyectos">
+        <div class="project-card project-card--tall"
              data-title="Proyecto 1"
              data-category="Proyecto · 2025"
              data-description="Proyecto editorial completo. Diagramación, selección tipográfica y tratamiento de imágenes para publicación impresa.">
-          <div class="project-card__media" style="aspect-ratio: 2/3;">
+          <div class="project-card__media">
             <div class="project-card__video-bg">
               <p class="project-card__placeholder">Proyecto 1</p>
             </div>
@@ -209,12 +217,12 @@
           </div>
         </div>
 
-        <div class="project-card reveal"
+        <div class="project-card"
              data-title="Proyecto 2"
              data-category="Proyecto · 2025"
-             data-description="Dirección de arte para campaña. Conceptualización, moodboards y ejecución visual integral."
+             data-description="Dirección de arte para campaña. Moodboards y ejecución visual integral."
              data-behance="https://www.behance.net/rhodeslover">
-          <div class="project-card__media" style="aspect-ratio: 2/3;">
+          <div class="project-card__media">
             <div class="project-card__video-bg">
               <p class="project-card__placeholder">Proyecto 2</p>
             </div>
@@ -227,11 +235,12 @@
           </div>
         </div>
 
-        <div class="project-card reveal"
+        <div class="project-card"
              data-title="Proyecto 3"
              data-category="Proyecto · 2025"
-             data-description="Diseño de packaging para línea de productos. Exploración de formas, materiales y aplicación de marca.">
-          <div class="project-card__media" style="aspect-ratio: 2/3;">
+             data-description="Diseño de packaging para línea de productos. Exploración de formas y materiales."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
             <div class="project-card__video-bg">
               <p class="project-card__placeholder">Proyecto 3</p>
             </div>
@@ -247,7 +256,7 @@
     </div>
 
     <!-- Ver todos -->
-    <div class="section__footer reveal">
+    <div class="section__footer">
       <a href="proyectos.html" class="btn btn--primary btn--large">
         Ver todos los trabajos →
       </a>
@@ -257,16 +266,14 @@
   <!-- ========== ABOUT ========== -->
   <section class="about" id="about">
     <div class="about__inner">
-      <div class="about__text reveal">
-        <h2 class="section-label">Sobre mí</h2>
+      <div class="about__text">
+        <span class="section__overline">Acerca de</span>
+        <h2 class="about__title">Sobre mí</h2>
         <p class="about__bio">
-          Diseñador gráfico recibido en <strong>Escuela Da Vinci</strong>. Actualmente en una agencia de marketing, 
-          donde transformo ideas en imágenes que conectan. Me mueve el branding, el diseño editorial y 
-          contar historias visuales que no pasan desapercibidas.
+          Diseñador gráfico recibido en <strong>Escuela Da Vinci</strong>. Actualmente transformando ideas en imágenes que conectan en una agencia de marketing.
         </p>
         <p class="about__bio">
-          Creo en el diseño como herramienta de transformación — y en los portfolios que 
-          <span class="highlight">se animan a ser distintos</span>.
+          Me mueve el branding, el diseño editorial y contar historias visuales que <span class="highlight">no pasan desapercibidas</span>.
         </p>
         <div class="about__meta">
           <div class="about__item">
@@ -275,7 +282,7 @@
           </div>
           <div class="about__item">
             <span class="about__label">Idiomas</span>
-            <span class="about__value">Español · Inglés</span>
+            <span class="about__value">Español · English</span>
           </div>
           <div class="about__item">
             <span class="about__label">Toolkit</span>
@@ -287,10 +294,11 @@
           </div>
         </div>
       </div>
-      <div class="about__image reveal">
+      <div class="about__image">
         <div class="about__photo-placeholder">
-          <span>📸 Tu foto</span>
+          <span>📸</span>
         </div>
+        <div class="about__decor"></div>
       </div>
     </div>
   </section>
@@ -298,10 +306,11 @@
   <!-- ========== CONTACT ========== -->
   <section class="contact" id="contact">
     <div class="contact__inner">
-      <h2 class="contact__title reveal">¿Trabajamos<br>juntos?</h2>
-      <p class="contact__text reveal">Disponible para proyectos freelance, colaboraciones o una charla.</p>
-      <a href="mailto:tomi@email.com" class="contact__btn reveal">tomi@email.com →</a>
-      <div class="contact__socials reveal">
+      <span class="section__overline">Contacto</span>
+      <h2 class="contact__title">¿Trabajamos<br>juntos?</h2>
+      <p class="contact__text">Abierto a proyectos freelance, colaboraciones o una charla.</p>
+      <a href="mailto:tomi@email.com" class="contact__btn">tomi@email.com →</a>
+      <div class="contact__socials">
         <a href="https://www.behance.net/rhodeslover" target="_blank">Behance</a>
         <a href="https://www.linkedin.com/in/tomás-zárate-a2104b37a/" target="_blank">LinkedIn</a>
         <a href="#" target="_blank">Instagram</a>
@@ -324,9 +333,7 @@
         <button class="modal__close" id="modalClose">✕</button>
       </div>
       <div class="modal__body">
-        <div class="modal__gallery" id="modalGallery">
-          <!-- Gallery images go here -->
-        </div>
+        <div class="modal__gallery" id="modalGallery"></div>
         <div class="modal__info">
           <p class="modal__description" id="modalDescription">Descripción del proyecto</p>
           <div class="modal__actions" id="modalActions"></div>
