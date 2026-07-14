@@ -86,7 +86,20 @@ ul { list-style: none; }
   margin-bottom: 0.75rem;
 }
 
-/* ---------- SCROLL REVEAL ---------- */
+/* ---------- ANIMATED TITLES (scroll reveal) ---------- */
+.anim-title {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.anim-title.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- SCROLL REVEAL (general) ---------- */
 .reveal {
   opacity: 0;
   transform: translateY(40px);
@@ -328,40 +341,6 @@ ul { list-style: none; }
   font-size: 0.85rem;
 }
 
-.hero__scroll {
-  position: absolute;
-  bottom: 2.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.6rem;
-  opacity: 0;
-  animation: fadeIn 1s ease 1.3s forwards;
-}
-
-.hero__scroll span {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.6rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  color: rgba(245,245,245,0.35);
-}
-
-.hero__scroll-line {
-  width: 1px;
-  height: 40px;
-  background: linear-gradient(to bottom, #FFC5D3, transparent);
-  animation: scrollPulse 2s ease-in-out infinite;
-}
-
-@keyframes scrollPulse {
-  0%, 100% { opacity: 0.3; transform: scaleY(0.5); }
-  50% { opacity: 1; transform: scaleY(1); }
-}
-
 /* ---------- SHOWREEL ---------- */
 .showreel {
   padding: 4rem 2rem 6rem;
@@ -524,19 +503,28 @@ ul { list-style: none; }
   grid-template-columns: 1fr 1fr;
 }
 
-/* Proyectos: 3 col with tall first */
+/* Proyectos: 5 items */
 .grid--proyectos {
   grid-template-columns: 1.3fr 1fr 1fr;
 }
 
-/* Posters: dynamic */
-.grid--posters {
-  grid-template-columns: 1.3fr 1fr 1fr;
+.grid--proyectos .project-card:nth-child(4) {
+  grid-column: 1;
 }
 
-/* Ilustraciones: dynamic */
+.grid--proyectos .project-card:nth-child(5) {
+  grid-column: 2 / -1;
+  aspect-ratio: auto;
+}
+
+/* Posters: equal tall */
+.grid--posters {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+/* Ilustraciones: equal tall */
 .grid--ilustraciones {
-  grid-template-columns: 1fr 1fr 1.3fr;
+  grid-template-columns: 1fr 1fr 1fr;
 }
 
 .project-card--hero .project-card__media {
