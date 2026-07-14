@@ -12,11 +12,9 @@
 </head>
 <body>
 
-  <!-- ========== CURSOR ========== -->
   <div class="cursor-dot" id="cursorDot"></div>
   <div class="cursor-ring" id="cursorRing"></div>
 
-  <!-- ========== NAV ========== -->
   <nav class="nav" id="nav">
     <div class="nav__inner">
       <a href="#hero" class="nav__logo">TZ</a>
@@ -72,7 +70,7 @@
       <p class="section__desc">Una mirada a los proyectos que definen mi enfoque.</p>
     </div>
 
-    <!-- ===== REDES SOCIALES ===== -->
+    <!-- ===== REDES ===== -->
     <div class="category" id="social">
       <div class="category__divider">
         <span class="category__tag">01</span>
@@ -82,14 +80,15 @@
       </div>
       <div class="grid grid--social">
 
-        <!-- EPIC -->
         <div class="project-card project-card--hero"
              data-title="Epic"
              data-category="Social Media · 2026"
-             data-description="Feed de Instagram completo para Epic. Identidad visual, plantillas animadas y contenido orgánico con consistencia de marca."
+             data-description="Feed de Instagram completo para Epic. Identidad visual, plantillas animadas y contenido orgánico."
              data-behance="https://www.behance.net/rhodeslover">
           <div class="project-card__media">
-            <video class="project-card__media-el" src="assets/videos/redes/epic.mp4" muted loop playsinline poster="assets/images/redes/epic-poster.jpg"></video>
+            <div class="project-card__media-bg" style="background:#1a1a2e;">
+              <video class="project-card__video" src="assets/videos/redes/epic.mp4" muted loop playsinline></video>
+            </div>
             <span class="project-card__badge">Animado</span>
             <div class="project-card__overlay">
               <span>Ver proyecto →</span>
@@ -101,14 +100,15 @@
           </div>
         </div>
 
-        <!-- 26SHOP -->
         <div class="project-card"
              data-title="26Shop"
              data-category="Social Media · 2026"
              data-description="Estrategia de contenido para 26Shop. Posteos estáticos con identidad fresca y juvenil."
              data-behance="https://www.behance.net/rhodeslover">
           <div class="project-card__media">
-            <img class="project-card__media-el" src="assets/images/redes/26shop.jpg" alt="26Shop">
+            <div class="project-card__media-bg" style="background:#f5f0eb;">
+              <img class="project-card__img" src="assets/images/redes/26shop.jpg" alt="26Shop" loading="lazy">
+            </div>
             <div class="project-card__overlay">
               <span>Ver →</span>
             </div>
@@ -119,14 +119,15 @@
           </div>
         </div>
 
-        <!-- DISTRAVEL -->
         <div class="project-card"
              data-title="Distravel"
              data-category="Social Media · 2026"
              data-description="Campaña estacional para Distravel. Piezas animadas para redes con foco en destinos y conversión."
              data-behance="https://www.behance.net/rhodeslover">
           <div class="project-card__media">
-            <video class="project-card__media-el" src="assets/videos/redes/distravel.mp4" muted loop playsinline poster="assets/images/redes/distravel-poster.jpg"></video>
+            <div class="project-card__media-bg" style="background:#0d2137;">
+              <video class="project-card__video" src="assets/videos/redes/distravel.mp4" muted loop playsinline></video>
+            </div>
             <span class="project-card__badge">Animado</span>
             <div class="project-card__overlay">
               <span>Ver →</span>
@@ -150,14 +151,15 @@
         <span class="category__qty">3 proyectos</span>
       </div>
       <div class="grid grid--branding">
-
         <div class="project-card"
              data-title="Naturaleza Humana"
              data-category="Branding · 2024"
-             data-description="Identidad visual para Naturaleza Humana. Logotipo, paleta cromática y aplicaciones de marca con enfoque orgánico."
+             data-description="Identidad visual para Naturaleza Humana. Logotipo, paleta cromática y aplicaciones de marca."
              data-behance="https://www.behance.net/rhodeslover">
           <div class="project-card__media">
-            <img class="project-card__media-el" src="assets/images/branding/naturaleza-humana.jpg" alt="Naturaleza Humana">
+            <div class="project-card__media-bg" style="background:#2a3a2a;">
+              <img class="project-card__img" src="assets/images/branding/naturaleza-humana.jpg" alt="Naturaleza Humana" loading="lazy">
+            </div>
             <div class="project-card__overlay">
               <span>Ver proyecto →</span>
             </div>
@@ -174,7 +176,9 @@
              data-description="Diseño de etiquetas y packaging para Fernet Cordobita. Identidad con carácter regional."
              data-behance="https://www.behance.net/rhodeslover">
           <div class="project-card__media">
-            <img class="project-card__media-el" src="assets/images/branding/fernet-cordobita.jpg" alt="Fernet Cordobita">
+            <div class="project-card__media-bg" style="background:#1a0a0a;">
+              <img class="project-card__img" src="assets/images/branding/fernet-cordobita.jpg" alt="Fernet Cordobita" loading="lazy">
+            </div>
             <div class="project-card__overlay">
               <span>Ver proyecto →</span>
             </div>
@@ -191,7 +195,9 @@
              data-description="Identidad de marca para Mercado Montañés. Branding completo con enfoque en producto regional."
              data-behance="https://www.behance.net/rhodeslover">
           <div class="project-card__media">
-            <img class="project-card__media-el" src="assets/images/branding/mercado-montanes.jpg" alt="Mercado Montañés">
+            <div class="project-card__media-bg" style="background:#1a1a0a;">
+              <img class="project-card__img" src="assets/images/branding/mercado-montanes.jpg" alt="Mercado Montañés" loading="lazy">
+            </div>
             <div class="project-card__overlay">
               <span>Ver proyecto →</span>
             </div>
@@ -201,27 +207,92 @@
             <span class="project-card__tag">Branding · 2026</span>
           </div>
         </div>
+      </div>
+    </div>
 
+    <!-- ===== POSTERS ===== -->
+    <div class="category" id="posters">
+      <div class="category__divider">
+        <span class="category__tag">03</span>
+        <h3 class="category__title">Posters</h3>
+        <div class="category__line"></div>
+        <span class="category__qty">3 proyectos</span>
+      </div>
+      <div class="grid grid--posters">
+        <div class="project-card project-card--tall"
+             data-title="Kill Bill"
+             data-category="Poster · 2023"
+             data-description="Poster conceptual de Kill Bill. Tipografía audaz y composición cinematográfica.">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#0a0a0a;">
+              <img class="project-card__img" src="assets/images/proyectos/kill-bill.jpg" alt="Kill Bill" loading="lazy">
+            </div>
+            <div class="project-card__overlay">
+              <span>Ver →</span>
+            </div>
+          </div>
+          <div class="project-card__info">
+            <h4>Kill Bill</h4>
+            <span class="project-card__tag">Poster · 2023</span>
+          </div>
+        </div>
+
+        <div class="project-card"
+             data-title="ONEIRIC DREAMS"
+             data-category="Poster · 2024"
+             data-description="Póster experimental ONEIRIC DREAMS. Exploración de texturas digitales y composición onírica.">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#0a0a1a;">
+              <img class="project-card__img" src="assets/images/proyectos/oneiric.jpg" alt="ONEIRIC DREAMS" loading="lazy">
+            </div>
+            <div class="project-card__overlay">
+              <span>Ver →</span>
+            </div>
+          </div>
+          <div class="project-card__info">
+            <h4>ONEIRIC DREAMS</h4>
+            <span class="project-card__tag">Poster · 2024</span>
+          </div>
+        </div>
+
+        <div class="project-card"
+             data-title="Wonder Afiche"
+             data-category="Poster · 2025"
+             data-description="Afiche promocional de Wonder. Dirección de arte e identidad visual del proyecto.">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#1a0a2a;">
+              <img class="project-card__img" src="assets/images/proyectos/wonder-afiche.jpg" alt="Wonder Afiche" loading="lazy">
+            </div>
+            <div class="project-card__overlay">
+              <span>Ver →</span>
+            </div>
+          </div>
+          <div class="project-card__info">
+            <h4>Wonder</h4>
+            <span class="project-card__tag">Poster · 2025</span>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- ===== PROYECTOS ===== -->
     <div class="category" id="proyectos">
       <div class="category__divider">
-        <span class="category__tag">03</span>
+        <span class="category__tag">04</span>
         <h3 class="category__title">Proyectos</h3>
         <div class="category__line"></div>
         <span class="category__qty">3 proyectos</span>
       </div>
       <div class="grid grid--proyectos">
-
         <div class="project-card project-card--tall"
              data-title="Del Bardo al Arte"
              data-category="Premios Diente · 2025"
-             data-description="Pieza gráfica para los Premios Diente 2025. Comunicación visual para el evento de la Escuela Da Vinci."
+             data-description="Pieza gráfica para los Premios Diente 2025 de la Escuela Da Vinci."
              data-behance="https://www.behance.net/gallery/232628389/Del-Bardo-al-Arte-Premios-Diente-2025">
           <div class="project-card__media">
-            <img class="project-card__media-el" src="assets/images/proyectos/bardo-arte.gif" alt="Del Bardo al Arte">
+            <div class="project-card__media-bg" style="background:#0a0a0a;">
+              <img class="project-card__img" src="assets/images/proyectos/bardo-arte.gif" alt="Del Bardo al Arte" loading="lazy">
+            </div>
             <div class="project-card__overlay">
               <span>Ver →</span>
             </div>
@@ -235,10 +306,12 @@
         <div class="project-card"
              data-title="Wonder"
              data-category="Proyecto · 2025"
-             data-description="Proyecto conceptual Wonder. Exploración visual y dirección de arte con identidad onírica."
+             data-description="Proyecto conceptual Wonder. Exploración visual y dirección de arte onírica."
              data-behance="https://www.behance.net/gallery/233220773/WONDER">
           <div class="project-card__media">
-            <img class="project-card__media-el" src="assets/images/proyectos/wonder.gif" alt="Wonder">
+            <div class="project-card__media-bg" style="background:#0a0015;">
+              <img class="project-card__img" src="assets/images/proyectos/wonder.gif" alt="Wonder" loading="lazy">
+            </div>
             <div class="project-card__overlay">
               <span>Ver →</span>
             </div>
@@ -250,11 +323,13 @@
 
         <div class="project-card"
              data-title="Kentucky Vegano"
-             data-category="Campaña Publicitaria · 2024"
-             data-description="Campaña publicitaria integral para Kentucky Vegano. Estrategia, piezas gráficas y comunicación."
+             data-category="Campaña · 2024"
+             data-description="Campaña publicitaria integral para Kentucky Vegano. Estrategia y piezas gráficas."
              data-behance="https://www.behance.net/gallery/205030765/Kentucky-Vegano-Campana-Publicitaria-Integral">
           <div class="project-card__media">
-            <img class="project-card__media-el" src="assets/images/proyectos/kentucky.jpg" alt="Kentucky Vegano">
+            <div class="project-card__media-bg" style="background:#1a0a00;">
+              <img class="project-card__img" src="assets/images/proyectos/kentucky.jpg" alt="Kentucky Vegano" loading="lazy">
+            </div>
             <div class="project-card__overlay">
               <span>Ver →</span>
             </div>
@@ -263,11 +338,74 @@
             <span class="project-card__tag">Campaña · 2024</span>
           </div>
         </div>
-
       </div>
     </div>
 
-    <!-- Ver todos -->
+    <!-- ===== ILUSTRACIONES ===== -->
+    <div class="category" id="ilustraciones">
+      <div class="category__divider">
+        <span class="category__tag">05</span>
+        <h3 class="category__title">Ilustraciones</h3>
+        <div class="category__line"></div>
+        <span class="category__qty">3 proyectos</span>
+      </div>
+      <div class="grid grid--ilustraciones">
+        <div class="project-card project-card--tall"
+             data-title="Gallo Celestial"
+             data-category="Ilustración · 2022"
+             data-description="Ilustración digital Gallo Celestial. Composición con simbología y color.">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#0a0015;">
+              <img class="project-card__img" src="assets/Portfolio/Proyectos/Ilustraciones/2022/Gallo Celestial/GALLO CELESTIAL 1_Mesa de trabajo 1.jpg" alt="Gallo Celestial" loading="lazy">
+            </div>
+            <div class="project-card__overlay">
+              <span>Ver →</span>
+            </div>
+          </div>
+          <div class="project-card__info">
+            <h4>Gallo Celestial</h4>
+            <span class="project-card__tag">Ilustración · 2022</span>
+          </div>
+        </div>
+
+        <div class="project-card"
+             data-title="Kalisi"
+             data-category="Ilustración · 2025"
+             data-description="Ilustración digital Kalisi. Estilo personal con paleta pastel.">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#1a0a1a;">
+              <img class="project-card__img" src="assets/Portfolio/Proyectos/Ilustraciones/2025/Kalisi ♡/Calisi ilustración-01.jpg" alt="Kalisi" loading="lazy">
+            </div>
+            <div class="project-card__overlay">
+              <span>Ver →</span>
+            </div>
+          </div>
+          <div class="project-card__info">
+            <h4>Kalisi</h4>
+            <span class="project-card__tag">Ilustración · 2025</span>
+          </div>
+        </div>
+
+        <div class="project-card"
+             data-title="Library"
+             data-category="Ilustración · 2024"
+             data-description="Ilustración Library. Homenaje al mundo bibliófilo.">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#0a0a1a;">
+              <img class="project-card__img" src="assets/Portfolio/Proyectos/Ilustraciones/2024/Library/Library poster_Mesa de trabajo 1.jpg" alt="Library" loading="lazy">
+            </div>
+            <div class="project-card__overlay">
+              <span>Ver →</span>
+            </div>
+          </div>
+          <div class="project-card__info">
+            <h4>Library</h4>
+            <span class="project-card__tag">Ilustración · 2024</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="section__footer">
       <a href="proyectos.html" class="btn btn--primary btn--large">
         Ver todos los trabajos →
@@ -330,12 +468,10 @@
     </div>
   </section>
 
-  <!-- ========== FOOTER ========== -->
   <footer class="footer">
     <p>© 2026 Tomi Zárate</p>
   </footer>
 
-  <!-- ========== MODAL ========== -->
   <div class="modal" id="projectModal">
     <div class="modal__backdrop" id="modalBackdrop"></div>
     <div class="modal__container">
@@ -347,7 +483,7 @@
       <div class="modal__body">
         <div class="modal__gallery" id="modalGallery"></div>
         <div class="modal__info">
-          <p class="modal__description" id="modalDescription">Descripción del proyecto</p>
+          <p class="modal__description" id="modalDescription">Descripción</p>
           <div class="modal__actions" id="modalActions"></div>
         </div>
       </div>

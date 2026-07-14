@@ -529,6 +529,16 @@ ul { list-style: none; }
   grid-template-columns: 1.3fr 1fr 1fr;
 }
 
+/* Posters: dynamic */
+.grid--posters {
+  grid-template-columns: 1.3fr 1fr 1fr;
+}
+
+/* Ilustraciones: dynamic */
+.grid--ilustraciones {
+  grid-template-columns: 1fr 1fr 1.3fr;
+}
+
 .project-card--hero .project-card__media {
   aspect-ratio: 16/10;
 }
@@ -582,26 +592,25 @@ ul { list-style: none; }
   box-shadow: 0 20px 60px rgba(255,197,211,0.08);
 }
 
-.project-card__video-bg {
+.project-card__video-bg,
+.project-card__media-bg {
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   position: relative;
-  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   overflow: hidden;
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.project-card__media-el {
+.project-card__img,
+.project-card__video {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  position: absolute;
-  inset: 0;
+  display: block;
 }
 
-.project-card:hover .project-card__video-bg {
+.project-card:hover .project-card__video-bg,
+.project-card:hover .project-card__media-bg {
   transform: scale(1.06);
 }
 
@@ -1153,9 +1162,15 @@ ul { list-style: none; }
 @media (max-width: 1024px) {
   .grid--social { grid-template-columns: 1fr 1fr; }
   .grid--social .project-card:first-child { grid-column: 1 / -1; }
-  .grid--proyectos { grid-template-columns: 1fr 1fr; }
-  .grid--proyectos .project-card--tall { grid-column: 1 / -1; }
-  .grid--proyectos .project-card--tall .project-card__media { aspect-ratio: 16/9; }
+  .grid--proyectos,
+  .grid--posters,
+  .grid--ilustraciones { grid-template-columns: 1fr 1fr; }
+  .grid--proyectos .project-card--tall,
+  .grid--posters .project-card--tall,
+  .grid--ilustraciones .project-card--tall { grid-column: 1 / -1; }
+  .grid--proyectos .project-card--tall .project-card__media,
+  .grid--posters .project-card--tall .project-card__media,
+  .grid--ilustraciones .project-card--tall .project-card__media { aspect-ratio: 16/9; }
   .about__inner { grid-template-columns: 1fr; gap: 3rem; }
   .about__image { order: -1; max-width: 400px; margin: 0 auto; }
   .project-full-card { grid-template-columns: 1fr; }
@@ -1182,6 +1197,8 @@ ul { list-style: none; }
 
   .grid--social,
   .grid--proyectos,
+  .grid--posters,
+  .grid--ilustraciones,
   .grid--branding { grid-template-columns: 1fr; }
 
   .hero__title { font-size: clamp(2.5rem, 15vw, 5rem); }
