@@ -156,33 +156,66 @@ document.addEventListener('DOMContentLoaded', () => {
   if (modal) {
     const backdrop = document.getElementById('modalBackdrop');
     const closeBtn = document.getElementById('modalClose');
-    const titleEl = document.getElementById('modalTitle');
-    const catEl = document.getElementById('modalCategory');
-    const descEl = document.getElementById('modalDescription');
-    const gallery = document.getElementById('modalGallery');
-    const actions = document.getElementById('modalActions');
+    const modalLightbox = document.getElementById('modalLightbox');
+    const modalProject = document.getElementById('modalProject');
+    
+    // Lightbox elements
+    const lightboxImg = document.getElementById('modalLightboxImg');
+    const lightboxTitle = document.getElementById('modalLightboxTitle');
+    
+    // Project elements
+    const projImg = document.getElementById('modalProjectImg');
+    const projTitle = document.getElementById('modalProjectTitle');
+    const projCat = document.getElementById('modalProjectCat');
+    const projDesc = document.getElementById('modalProjectDesc');
+    const projActions = document.getElementById('modalProjectActions');
 
     function openModal(card) {
-      titleEl.textContent = card.dataset.title || 'Proyecto';
-      catEl.textContent = card.dataset.category || '';
-      descEl.textContent = card.dataset.description || '';
-
-      gallery.innerHTML = '';
-      for (let i = 0; i < 3; i++) {
-        const item = document.createElement('div');
-        item.className = 'modal__gallery-item';
-        item.textContent = i === 0 ? '📸 Imagen principal' : `📸 Imagen ${i + 1}`;
-        gallery.appendChild(item);
+      const title = card.dataset.title || 'Proyecto';
+      const category = card.dataset.category || '';
+      const description = card.dataset.description || '';
+      const behance = card.dataset.behance || '';
+      const modalType = card.dataset.modal || 'project'; // 'lightbox' or 'project'
+      
+      // Get the image source from the card
+      const imgEl = card.querySelector('.project-card__img, .project-card__video');
+      let imgSrc = '';
+      if (imgEl) {
+        imgSrc = imgEl.src || '';
+        // If it's a video, use a poster or first frame
+        if (imgEl.tagName === 'VIDEO') {
+          // For videos, try to get poster or just use a placeholder
+          imgSrc = imgEl.poster || '';
+        }
       }
+      
+      // Remove previous mode classes
+      modal.classList.remove('modal--lightbox', 'modal--project');
 
-      actions.innerHTML = '';
-      if (card.dataset.behance) {
-        const btn = document.createElement('a');
-        btn.href = card.dataset.behance;
-        btn.target = '_blank';
-        btn.className = 'modal__behance-btn';
-        btn.textContent = 'Ver completo en Behance →';
-        actions.appendChild(btn);
+      if (modalType === 'lightbox') {
+        // LIGHTBOX mode: image + title + X
+        modal.classList.add('modal--lightbox');
+        lightboxImg.src = imgSrc || '';
+        lightboxImg.alt = title;
+        lightboxTitle.textContent = title;
+      } else {
+        // PROJECT mode: image left + description right + Behance
+        modal.classList.add('modal--project');
+        projImg.src = imgSrc || '';
+        projImg.alt = title;
+        projTitle.textContent = title;
+        projCat.textContent = category;
+        projDesc.textContent = description;
+        
+        projActions.innerHTML = '';
+        if (behance) {
+          const btn = document.createElement('a');
+          btn.href = behance;
+          btn.target = '_blank';
+          btn.className = 'modal__behance-btn';
+          btn.textContent = 'Ver más →';
+          projActions.appendChild(btn);
+        }
       }
 
       modal.classList.add('modal--open');
@@ -190,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function closeModal() {
-      modal.classList.remove('modal--open');
+      modal.classList.remove('modal--open', 'modal--lightbox', 'modal--project');
       document.body.style.overflow = '';
     }
 
