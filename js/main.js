@@ -120,6 +120,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  /* ---------- VIDEO HOVER PLAY ---------- */
+  document.querySelectorAll('.project-card video').forEach(video => {
+    const card = video.closest('.project-card');
+    if (!card) return;
+    card.addEventListener('mouseenter', () => {
+      video.currentTime = 0;
+      video.play().catch(() => {});
+    });
+    card.addEventListener('mouseleave', () => {
+      video.pause();
+      video.currentTime = 0;
+    });
+  });
+
   /* ============================================================
      MODAL SYSTEM
      ============================================================ */
