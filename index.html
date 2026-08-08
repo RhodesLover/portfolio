@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=2">
 </head>
 <body>
 
@@ -82,7 +82,7 @@
              data-behance="https://www.behance.net/rhodeslover">
           <div class="project-card__media">
             <div class="project-card__media-bg" style="background:#1a1a2e;">
-              <video class="project-card__video" src="assets/videos/redes/epic.mp4" muted loop playsinline></video>
+              <video class="project-card__video" src="assets/videos/redes/epic.mp4" poster="assets/images/redes/epic-poster.jpg" muted loop playsinline></video>
             </div>
             <span class="project-card__badge">Animado</span>
             <div class="project-card__overlay">
@@ -119,7 +119,7 @@
              data-behance="https://www.behance.net/rhodeslover">
           <div class="project-card__media">
             <div class="project-card__media-bg" style="background:#0d2137;">
-              <video class="project-card__video" src="assets/videos/redes/distravel.mp4" muted loop playsinline></video>
+              <video class="project-card__video" src="assets/videos/redes/distravel.mp4" poster="assets/images/redes/distravel-poster.jpg" muted loop playsinline></video>
             </div>
             <span class="project-card__badge">Animado</span>
             <div class="project-card__overlay">
@@ -493,6 +493,7 @@
       <div class="modal__project" id="modalProject">
         <div class="modal__project-left">
           <img class="modal__project-img" id="modalProjectImg" src="" alt="">
+          <video class="modal__project-video" id="modalProjectVideo" muted loop playsinline></video>
         </div>
         <div class="modal__project-right">
           <h3 class="modal__project-title" id="modalProjectTitle"></h3>
@@ -504,6 +505,6 @@
     </div>
   </div>
 
-  <script src="js/main.js"></script>
+  <script src="js/main.js?v=2"></script>
 </body>
 </html>

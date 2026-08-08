@@ -165,6 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Project elements
     const projImg = document.getElementById('modalProjectImg');
+    const projVideo = document.getElementById('modalProjectVideo');
     const projTitle = document.getElementById('modalProjectTitle');
     const projCat = document.getElementById('modalProjectCat');
     const projDesc = document.getElementById('modalProjectDesc');
@@ -177,35 +178,57 @@ document.addEventListener('DOMContentLoaded', () => {
       const behance = card.dataset.behance || '';
       const modalType = card.dataset.modal || 'project'; // 'lightbox' or 'project'
       
-      // Get the image source from the card
+      // Get the media source from the card (image or video)
       const imgEl = card.querySelector('.project-card__img, .project-card__video');
-      let imgSrc = '';
+      let mediaSrc = '';
+      let isVideo = false;
       if (imgEl) {
-        imgSrc = imgEl.src || '';
-        // If it's a video, use a poster or first frame
+        mediaSrc = imgEl.src || '';
         if (imgEl.tagName === 'VIDEO') {
-          // For videos, try to get poster or just use a placeholder
-          imgSrc = imgEl.poster || '';
+          isVideo = true;
+          // Play the actual video in the modal; poster only as fallback
+          mediaSrc = mediaSrc || imgEl.poster || '';
         }
       }
       
-      // Remove previous mode classes
+      // Reset previous modal state
       modal.classList.remove('modal--lightbox', 'modal--project');
+      projVideo.pause();
+      projVideo.removeAttribute('src');
+      projVideo.load();
+      projImg.removeAttribute('src');
+
+      // Control de visibilidad inline (inmune a CSS cacheado viejo)
+      modalProject.style.display = 'none';
+      modalLightbox.style.display = 'none';
 
       if (modalType === 'lightbox') {
         // LIGHTBOX mode: image + title + X
         modal.classList.add('modal--lightbox');
-        lightboxImg.src = imgSrc || '';
+        modalLightbox.style.display = 'flex';
+        lightboxImg.src = mediaSrc || '';
         lightboxImg.alt = title;
         lightboxTitle.textContent = title;
       } else {
-        // PROJECT mode: image left + description right + Behance
+        // PROJECT mode: media left + description right + Behance
         modal.classList.add('modal--project');
-        projImg.src = imgSrc || '';
-        projImg.alt = title;
+        modalProject.style.display = 'grid';
         projTitle.textContent = title;
         projCat.textContent = category;
         projDesc.textContent = description;
+        
+        if (isVideo && mediaSrc) {
+          // Show video (or poster image) in the media panel
+          projImg.style.display = 'none';
+          projVideo.style.display = 'block';
+          projVideo.src = mediaSrc;
+          projVideo.play().catch(() => {});
+        } else {
+          projVideo.style.display = 'none';
+          projImg.style.display = 'block';
+          projImg.src = mediaSrc || '';
+          projImg.alt = title;
+        }
         
         projActions.innerHTML = '';
         if (behance) {
@@ -225,6 +248,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function closeModal() {
       modal.classList.remove('modal--open', 'modal--lightbox', 'modal--project');
       document.body.style.overflow = '';
+      projVideo.pause();
+      projVideo.removeAttribute('src');
+      projVideo.load();
+      projImg.removeAttribute('src');
+      lightboxImg.removeAttribute('src');
+      modalProject.style.display = '';
+      modalLightbox.style.display = '';
     }
 
     closeBtn.addEventListener('click', closeModal);
