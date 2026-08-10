@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body>
+<script>
+const c = document.createElement('canvas');
+c.width = 1080;
+c.height = 1350;
+document.body.prepend(c);
+const ctx = c.getContext('2d');
+
+// White bg
+ctx.fillStyle = '#fff';
+ctx.fillRect(0, 0, 1080, 1350);
+
+// Black brush stroke - dog face in one fluid motion
+ctx.strokeStyle = '#000';
+ctx.lineCap = 'round';
+ctx.lineJoin = 'round';
+
+// Stroke with varying thickness like a real brush
+function brushStroke(points, startWidth, endWidth) {
+  for (let i = 0; i < points.length - 1; i++) {
+    const t = i / (points.length - 1);
+    ctx.lineWidth = startWidth + (endWidth - startWidth) * t;
+    ctx.beginPath();
+    ctx.moveTo(points[i][0], points[i][1]);
+    ctx.lineTo(points[i+1][0], points[i+1][1]);
+    ctx.stroke();
+  }
+}
+
+// Dog face as one continuous stroke sketch
+const head = [
+  [380, 350], [300, 380], [250, 450], [240, 550], [270, 650],
+  [330, 730], [420, 780], [540, 790], [660, 780], [750, 730],
+  [810, 650], [830, 550], [810, 440], [760, 360], [680, 330]
+];
+brushStroke(head, 7, 5);
+
+// Left ear - single stroke
+const earL = [
+  [380, 370], [320, 300], [240, 310], [200, 380], [190, 450],
+  [210, 500], [250, 470], [310, 400], [380, 370]
+];
+brushStroke(earL, 5, 3);
+
+// Right ear
+const earR = [
+  [700, 370], [760, 300], [840, 310], [880, 380], [890, 450],
+  [870, 500], [830, 470], [770, 400], [700, 370]
+];
+brushStroke(earR, 5, 3);
+
+// Eyes - two dots
+ctx.fillStyle = '#000';
+ctx.beginPath();
+ctx.arc(460, 530, 20, 0, Math.PI*2);
+ctx.fill();
+ctx.beginPath();
+ctx.arc(620, 530, 20, 0, Math.PI*2);
+ctx.fill();
+
+// Eye shines
+ctx.fillStyle = '#fff';
+ctx.beginPath();
+ctx.arc(466, 522, 7, 0, Math.PI*2);
+ctx.fill();
+ctx.beginPath();
+ctx.arc(626, 522, 7, 0, Math.PI*2);
+ctx.fill();
+
+// Nose
+ctx.fillStyle = '#000';
+ctx.beginPath();
+ctx.ellipse(540, 620, 22, 16, 0, 0, Math.PI*2);
+ctx.fill();
+
+// Smile
+ctx.strokeStyle = '#000';
+ctx.lineWidth = 5;
+ctx.beginPath();
+ctx.moveTo(440, 675);
+ctx.quadraticCurveTo(540, 740, 660, 670);
+ctx.stroke();
+
+// Tongue
+ctx.fillStyle = '#000';
+ctx.beginPath();
+ctx.moveTo(520, 710);
+ctx.quadraticCurveTo(530, 750, 560, 740);
+ctx.quadraticCurveTo(580, 730, 570, 705);
+ctx.fill();
+
+// Save as data URL
+document.querySelector('a').href = c.toDataURL('image/png').replace('image/png', 'image/octet-stream');
+</script>
+<a download="perro-brush.png">Download PNG</a>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1528" width="1080" height="1528">
+  <defs>
+    <!-- Grain texture -->
+    <filter id="grain" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" result="noise"/>
+      <feColorMatrix type="saturate" values="0" in="noise" result="gray"/>
+      <feComponentTransfer in="gray" result="boost">
+        <feFuncA type="linear" slope="0.08"/>
+      </feComponentTransfer>
+      <feBlend in="SourceGraphic" in2="boost" mode="multiply"/>
+    </filter>
+
+    <!-- Paper texture -->
+    <filter id="paper">
+      <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="4" result="n"/>
+      <feColorMatrix type="saturate" values="0" in="n"/>
+      <feBlend in="SourceGraphic" in2="n" mode="overlay"/>
+    </filter>
+
+    <!-- Glow -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8"/>
+      <feComposite in="SourceGraphic" in2="glow" operator="over"/>
+    </filter>
+
+    <!-- Vignette -->
+    <radialGradient id="vignette" cx="50%" cy="50%" r="75%">
+      <stop offset="40%" stop-color="transparent"/>
+      <stop offset="85%" stop-color="rgba(0,0,0,0.4)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0.7)"/>
+    </radialGradient>
+
+    <!-- Blue accent glow (similar to RGB(62,171,216)) -->
+    <radialGradient id="blueGlow" cx="50%" cy="55%" r="40%">
+      <stop offset="0%" stop-color="rgba(62,171,216,0.06)"/>
+      <stop offset="60%" stop-color="rgba(62,170,215,0.02)"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+
+    <!-- Logo gradient - bright white/light gray like the original -->
+    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f0f2f5"/>
+      <stop offset="50%" stop-color="#e8eaf0"/>
+      <stop offset="100%" stop-color="#c8d0d8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fondo base oscuro -->
+  <rect width="1080" height="1528" fill="#06090b"/>
+  <rect width="1080" height="1528" fill="#0a0f12" filter="url(#grain)"/>
+
+  <!-- Blue glow central -->
+  <rect width="1080" height="1528" fill="url(#blueGlow)"/>
+
+  <!-- Vertical dark gradient (simulating Luminosity blend) -->
+  <rect x="0" y="0" width="1080" height="1528" fill="url(#vignette)"/>
+
+  <!-- ===== LOGO ZONE (y=1049-2549 in original, ~323-785 in our scale) ===== -->
+  
+  <!-- Background glow behind logo -->
+  <ellipse cx="540" cy="550" rx="420" ry="200" fill="rgba(200,215,230,0.03)"/>
+  
+  <!-- Main NOGAL wordmark, matching the bright logo area detected at y=1379-2009 -->
+  <text x="540" y="560" text-anchor="middle" font-family="'Times New Roman', 'Georgia', serif" 
+        font-size="160" font-weight="900" letter-spacing="25" fill="url(#logoGrad)">
+    NOGAL
+  </text>
+
+  <!-- Subtle outline for dimensionality -->
+  <text x="540" y="560" text-anchor="middle" font-family="'Times New Roman', 'Georgia', serif" 
+        font-size="160" font-weight="900" letter-spacing="25" 
+        fill="none" stroke="rgba(200,215,230,0.15)" stroke-width="0.5">
+    NOGAL
+  </text>
+
+  <!-- Blue accent line (the RGB(62,171,216) accent detected at y=2459) -->
+  <line x1="340" y1="620" x2="740" y2="620" stroke="rgba(62,171,216,0.3)" stroke-width="1"/>
+  
+  <!-- Subtitle below logo -->
+  <text x="540" y="650" text-anchor="middle" font-family="'Helvetica Neue', 'Arial', sans-serif" 
+        font-size="10" font-weight="400" letter-spacing="12" fill="rgba(180,195,210,0.2)">
+    IDENTIDAD · PACKAGING · BRANDING
+  </text>
+
+  <!-- ===== SECONDARY TEXT AREA ~y=750-850 ===== -->
+  
+  <!-- Decorative vertical line left -->
+  <line x1="180" y1="780" x2="180" y2="850" stroke="rgba(180,195,210,0.08)" stroke-width="0.5"/>
+  
+  <text x="200" y="800" font-family="'Helvetica Neue', 'Arial', sans-serif" 
+        font-size="9" font-weight="300" letter-spacing="4" fill="rgba(180,195,210,0.18)">
+    DISEÑO GRÁFICO
+  </text>
+  <text x="200" y="820" font-family="'Helvetica Neue', 'Arial', sans-serif" 
+        font-size="7" font-weight="300" letter-spacing="2" fill="rgba(180,195,210,0.1)">
+    Serie limitada · Edición especial
+  </text>
+
+  <!-- Decorative vertical line right -->
+  <line x1="900" y1="780" x2="900" y2="850" stroke="rgba(180,195,210,0.08)" stroke-width="0.5"/>
+  
+  <text x="880" y="800" text-anchor="end" font-family="'Helvetica Neue', 'Arial', sans-serif" 
+        font-size="9" font-weight="300" letter-spacing="4" fill="rgba(180,195,210,0.18)">
+    2026
+  </text>
+  <text x="880" y="820" text-anchor="end" font-family="'Helvetica Neue', 'Arial', sans-serif" 
+        font-size="7" font-weight="300" letter-spacing="2" fill="rgba(180,195,210,0.1)">
+    Colección
+  </text>
+
+  <!-- ===== BOTTOM INFO ZONE (y=4450-4961 in original, ~1370-1528 in scale) ===== -->
+  
+  <!-- Separator line -->
+  <line x1="200" y1="1380" x2="880" y2="1380" stroke="rgba(180,195,210,0.06)" stroke-width="0.5"/>
+
+  <text x="200" y="1420" font-family="'Helvetica Neue', 'Arial', sans-serif" 
+        font-size="7" font-weight="300" letter-spacing="3" fill="rgba(180,195,210,0.12)">
+    NOGAL · DISEÑO Y DIRECCIÓN DE ARTE
+  </text>
+  <text x="200" y="1440" font-family="'Helvetica Neue', 'Arial', sans-serif" 
+        font-size="6" font-weight="300" letter-spacing="2" fill="rgba(180,195,210,0.08)">
+    Todos los derechos reservados
+  </text>
+
+  <text x="880" y="1420" text-anchor="end" font-family="'Helvetica Neue', 'Arial', sans-serif" 
+        font-size="7" font-weight="300" letter-spacing="3" fill="rgba(180,195,210,0.12)">
+    TOMÁS ZÁRATE
+  </text>
+
+  <!-- ===== TEXTURE OVERLAYS (simulando los blend modes) ===== -->
+
+  <!-- Darken overlay (simulando Pantalla rota + B&W Multiply) -->
+  <rect x="0" y="0" width="1080" height="1528" fill="rgba(0,0,0,0.12)" filter="url(#paper)"/>
+  
+  <!-- Additional grain layer -->
+  <rect x="0" y="0" width="1080" height="1528" fill="rgba(0,0,0,0.06)" filter="url(#grain)"/>
+
+  <!-- Top fade to black (simulando viñeta superior) -->
+  <rect x="0" y="0" width="1080" height="300" fill="url(#vignette)" opacity="0.5"/>
+  
+</svg>

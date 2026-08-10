@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350" width="1080" height="1350">
+  <rect width="1080" height="1350" fill="#ffffff"/>
+  
+  <defs>
+    <filter id="brush">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+
+  <!-- Perro entero como TRAZO CONTINUO ÚNICO - una sola línea que nunca se levanta -->
+  <path d="
+    M 400 300 
+    C 300 280, 200 350, 220 500
+    C 240 650, 300 780, 400 820
+    C 500 860, 600 840, 680 780
+    C 780 700, 840 580, 820 420
+    C 800 280, 700 240, 600 280
+    C 520 320, 460 340, 460 340
+    
+    M 370 460 
+    C 360 450, 430 460, 460 470
+    C 470 475, 468 490, 450 495
+    C 430 500, 400 490, 370 460
+    
+    M 610 460
+    C 620 450, 550 460, 520 470
+    C 510 475, 512 490, 530 495
+    C 550 500, 580 490, 610 460
+    
+    M 500 560
+    C 500 555, 510 550, 520 550
+    C 530 550, 540 555, 540 560
+    C 540 570, 510 570, 500 560
+    
+    M 420 640
+    C 480 720, 580 720, 640 630
+    C 650 620, 660 610, 670 600
+    
+    M 270 420
+    C 260 380, 250 340, 270 320
+    C 290 300, 320 310, 330 340
+    
+    M 750 420
+    C 760 380, 770 340, 750 320
+    C 730 300, 700 310, 690 340
+  " 
+  fill="none" stroke="#000" stroke-width="5" filter="url(#brush)" stroke-linecap="round"/>
+</svg>
