@@ -7,14 +7,18 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---------- CURSOR ---------- */
   const dot = document.getElementById('cursorDot');
   const ring = document.getElementById('cursorRing');
+  const trail = document.getElementById('lightTrail');
 
   if (dot && ring) {
-    let mx = 0, my = 0, rx = 0, ry = 0;
+    let mx = 0, my = 0, rx = 0, ry = 0, tx = 0, ty = 0;
 
     document.addEventListener('mousemove', (e) => {
       mx = e.clientX; my = e.clientY;
       dot.style.left = mx + 'px';
       dot.style.top = my + 'px';
+      if (!document.body.classList.contains('trail-active')) {
+        document.body.classList.add('trail-active');
+      }
     });
 
     function animRing() {
@@ -22,6 +26,14 @@ document.addEventListener('DOMContentLoaded', () => {
       ry += (my - ry) * 0.12;
       ring.style.left = rx + 'px';
       ring.style.top = ry + 'px';
+
+      // Light trail: lerp más lento → estela de luz que sigue al cursor
+      if (trail) {
+        tx += (mx - tx) * 0.06;
+        ty += (my - ty) * 0.06;
+        trail.style.left = tx + 'px';
+        trail.style.top = ty + 'px';
+      }
       requestAnimationFrame(animRing);
     }
     animRing();
@@ -32,12 +44,14 @@ document.addEventListener('DOMContentLoaded', () => {
         ring.style.width = '60px'; ring.style.height = '60px';
         ring.style.borderColor = 'rgba(255, 197, 211, 0.6)';
         ring.style.backgroundColor = 'rgba(255, 197, 211, 0.05)';
+        if (trail) trail.classList.add('light-trail--hot');
       });
       el.addEventListener('mouseleave', () => {
         dot.style.width = '8px'; dot.style.height = '8px';
         ring.style.width = '40px'; ring.style.height = '40px';
         ring.style.borderColor = 'rgba(255, 197, 211, 0.4)';
         ring.style.backgroundColor = 'transparent';
+        if (trail) trail.classList.remove('light-trail--hot');
       });
     });
   }
@@ -180,12 +194,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const allCards = Array.from(document.querySelectorAll('.project-card'));
     let currentIndex = -1;
 
-    function getMediaSrc(card) {
+    function getMediaSrc(card, forThumb = false) {
       const imgEl = card.querySelector('.project-card__img, .project-card__video');
       if (!imgEl) return { src: '', isVideo: false };
       const src = imgEl.src || '';
       if (imgEl.tagName === 'VIDEO') {
-        return { src: src || imgEl.poster || '', isVideo: true };
+        // Para thumbnails siempre usar el poster (un <img> no renderiza un .mp4)
+        const thumb = forThumb ? (imgEl.poster || '') : (src || imgEl.poster || '');
+        return { src: thumb, isVideo: true };
       }
       return { src, isVideo: false };
     }
@@ -197,13 +213,22 @@ document.addEventListener('DOMContentLoaded', () => {
       const shuffled = [...others].sort(() => Math.random() - 0.5).slice(0, 4);
       relatedGrid.innerHTML = '';
       shuffled.forEach(card => {
-        const media = getMediaSrc(card);
+        const media = getMediaSrc(card, true);
         const item = document.createElement('div');
         item.className = 'modal__related-card';
         const img = document.createElement('img');
         img.src = media.src || '';
         img.alt = card.dataset.title || '';
         img.loading = 'lazy';
+        // Si no hay poster para un video, mostrar un placeholder con la inicial
+        if (!media.src && media.isVideo) {
+          img.style.display = 'none';
+          item.style.background = 'rgba(255,197,211,0.06)';
+          const ph = document.createElement('span');
+          ph.className = 'modal__related-card__ph';
+          ph.textContent = '▶';
+          item.appendChild(ph);
+        }
         item.appendChild(img);
         const label = document.createElement('span');
         label.className = 'modal__related-card__label';
