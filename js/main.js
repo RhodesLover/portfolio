@@ -413,13 +413,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
       modal.classList.add('modal--open');
       document.body.classList.add('modal-open');
+      // Bloqueo de scroll robusto: html + body + guardar posición para restaurarla
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
     }
 
     function closeModal() {
       modal.classList.remove('modal--open', 'modal--lightbox', 'modal--project');
       document.body.classList.remove('modal-open');
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
       projVideo.pause();
       projVideo.removeAttribute('src');
       projVideo.load();

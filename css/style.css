@@ -989,7 +989,8 @@ ul { list-style: none; }
   display: none;
   position: fixed;
   inset: 0;
-  z-index: 2000;
+  /* Por encima de TODO (estela 9996, cursor 9998/9999, nav 1000) */
+  z-index: 10000;
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
@@ -999,10 +1000,21 @@ ul { list-style: none; }
 .modal--open { display: flex; }
 
 .modal__backdrop {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.88);
-  backdrop-filter: blur(6px);
+  background: rgba(0,0,0,0.92);
+  backdrop-filter: blur(8px);
+}
+
+/* Con el modal abierto: la estela de luz no debe interferir con el visor */
+body.modal-open #trailCanvas {
+  display: none;
+}
+
+/* El cursor queda visible por encima del modal */
+body.modal-open .cursor-dot,
+body.modal-open .cursor-ring {
+  z-index: 10001;
 }
 
 .modal__container {
