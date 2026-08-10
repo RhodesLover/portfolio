@@ -253,10 +253,18 @@ ul { list-style: none; }
   font-family: 'Playfair Display', serif;
   font-size: clamp(3.5rem, 12vw, 10rem);
   font-weight: 900;
-  line-height: 0.85;
+  line-height: 1.08;
   letter-spacing: -0.04em;
   text-transform: uppercase;
   margin-bottom: 1.5rem;
+  transition: letter-spacing 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Animación al hover: el título se expande levemente y el degradado cobra vida */
+.hero__title:hover {
+  letter-spacing: -0.02em;
+  transform: scale(1.015);
 }
 
 .hero__line {
@@ -927,6 +935,7 @@ ul { list-style: none; }
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
+  overflow-y: auto;
 }
 
 .modal--open { display: flex; }
@@ -946,13 +955,15 @@ ul { list-style: none; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 1.5rem;
   margin: auto;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255,197,211,0.3) transparent;
+  /* Sin overflow propio ni justify-content center:
+     el modal scrollea completo, la cruz queda siempre visible */
+}
+
+.modal__lightbox,
+.modal__project {
+  margin: auto;
 }
 
 /* ---------- NAV ARROWS ---------- */
@@ -979,6 +990,11 @@ ul { list-style: none; }
 
 .modal__nav--prev { left: 0.75rem; }
 .modal__nav--next { right: 0.75rem; }
+
+/* En lightbox (posters/ilustraciones): sin flechas, solo la imagen + cruz */
+.modal--lightbox .modal__nav {
+  display: none;
+}
 
 .modal__nav:hover {
   color: #fff;
@@ -1178,7 +1194,7 @@ ul { list-style: none; }
 
 .modal__lightbox-img-wrap {
   max-width: 100%;
-  max-height: 62vh;
+  max-height: 78vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1186,7 +1202,7 @@ ul { list-style: none; }
 
 .modal__lightbox-img {
   max-width: 100%;
-  max-height: 62vh;
+  max-height: 78vh;
   object-fit: contain;
   border-radius: 4px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.5);

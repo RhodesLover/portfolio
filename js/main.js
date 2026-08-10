@@ -57,10 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
     sizeTrail();
     window.addEventListener('resize', sizeTrail);
 
-    // Fade rápido: la estela se apaga casi al instante (sin dejar 'rallado')
+    // Fade muy rápido: la estela se apaga en ~2 frames (sin dejar rastro visible)
     function fadeTrail() {
       ctx.globalCompositeOperation = 'destination-out';
-      ctx.fillStyle = 'rgba(0,0,0,0.32)';
+      ctx.fillStyle = 'rgba(0,0,0,0.5)';
       ctx.fillRect(0, 0, trailCanvas.width, trailCanvas.height);
       ctx.globalCompositeOperation = 'source-over';
       requestAnimationFrame(fadeTrail);
