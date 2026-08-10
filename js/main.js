@@ -57,10 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
     sizeTrail();
     window.addEventListener('resize', sizeTrail);
 
-    // Fade progresivo: la estela se desvanece como en larga exposición
+    // Fade rápido: la estela se apaga casi al instante (sin dejar 'rallado')
     function fadeTrail() {
       ctx.globalCompositeOperation = 'destination-out';
-      ctx.fillStyle = 'rgba(0,0,0,0.09)';
+      ctx.fillStyle = 'rgba(0,0,0,0.32)';
       ctx.fillRect(0, 0, trailCanvas.width, trailCanvas.height);
       ctx.globalCompositeOperation = 'source-over';
       requestAnimationFrame(fadeTrail);
@@ -73,18 +73,22 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.globalCompositeOperation = 'source-over';
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
-        // Estela principal (más visible sobre interactivos)
-        ctx.strokeStyle = hot ? 'rgba(255,197,211,0.35)' : 'rgba(255,197,211,0.16)';
-        ctx.lineWidth = hot ? 3 : 1.6;
+        // Glow neón compartido (intensidad + halo)
+        ctx.shadowColor = hot ? 'rgba(255,197,211,0.9)' : 'rgba(255,197,211,0.65)';
+        ctx.shadowBlur = hot ? 22 : 14;
+        // Estela principal (intensa, se apaga rápido)
+        ctx.strokeStyle = hot ? 'rgba(255,210,220,0.85)' : 'rgba(255,197,211,0.55)';
+        ctx.lineWidth = hot ? 3.2 : 2;
         ctx.beginPath();
         ctx.moveTo(prevX, prevY);
         ctx.lineTo(x, y);
         ctx.stroke();
-        // Núcleo brillante (la "luz" más reciente)
-        ctx.fillStyle = hot ? 'rgba(255,220,228,0.55)' : 'rgba(255,197,211,0.35)';
+        // Núcleo brillante (la "luz" más reciente) — neón
+        ctx.fillStyle = hot ? 'rgba(255,235,240,1)' : 'rgba(255,220,228,0.9)';
         ctx.beginPath();
-        ctx.arc(x, y, hot ? 2.4 : 1.4, 0, Math.PI * 2);
+        ctx.arc(x, y, hot ? 3 : 2.2, 0, Math.PI * 2);
         ctx.fill();
+        ctx.shadowBlur = 0;
       }
       prevX = x; prevY = y; hasPrev = true;
     });
