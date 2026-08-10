@@ -171,6 +171,57 @@ document.addEventListener('DOMContentLoaded', () => {
     const projDesc = document.getElementById('modalProjectDesc');
     const projActions = document.getElementById('modalProjectActions');
 
+    // Nav elements
+    const navPrev = document.getElementById('modalPrev');
+    const navNext = document.getElementById('modalNext');
+    const relatedGrid = document.getElementById('modalRelatedGrid');
+
+    // Estado de navegación: todas las cards + índice actual
+    const allCards = Array.from(document.querySelectorAll('.project-card'));
+    let currentIndex = -1;
+
+    function getMediaSrc(card) {
+      const imgEl = card.querySelector('.project-card__img, .project-card__video');
+      if (!imgEl) return { src: '', isVideo: false };
+      const src = imgEl.src || '';
+      if (imgEl.tagName === 'VIDEO') {
+        return { src: src || imgEl.poster || '', isVideo: true };
+      }
+      return { src, isVideo: false };
+    }
+
+    function renderRelated(currentCard) {
+      if (!relatedGrid) return;
+      const others = allCards.filter(c => c !== currentCard);
+      // Mezclar y tomar hasta 4
+      const shuffled = [...others].sort(() => Math.random() - 0.5).slice(0, 4);
+      relatedGrid.innerHTML = '';
+      shuffled.forEach(card => {
+        const media = getMediaSrc(card);
+        const item = document.createElement('div');
+        item.className = 'modal__related-card';
+        const img = document.createElement('img');
+        img.src = media.src || '';
+        img.alt = card.dataset.title || '';
+        img.loading = 'lazy';
+        item.appendChild(img);
+        const label = document.createElement('span');
+        label.className = 'modal__related-card__label';
+        label.textContent = card.dataset.title || '';
+        item.appendChild(label);
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openModal(card);
+        });
+        relatedGrid.appendChild(item);
+      });
+    }
+
+    function updateNav() {
+      if (navPrev) navPrev.disabled = currentIndex <= 0;
+      if (navNext) navNext.disabled = currentIndex >= allCards.length - 1;
+    }
+
     function openModal(card) {
       const title = card.dataset.title || 'Proyecto';
       const category = card.dataset.category || '';
@@ -178,18 +229,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const behance = card.dataset.behance || '';
       const modalType = card.dataset.modal || 'project'; // 'lightbox' or 'project'
       
+      currentIndex = allCards.indexOf(card);
+      updateNav();
+      renderRelated(card);
+
       // Get the media source from the card (image or video)
-      const imgEl = card.querySelector('.project-card__img, .project-card__video');
-      let mediaSrc = '';
-      let isVideo = false;
-      if (imgEl) {
-        mediaSrc = imgEl.src || '';
-        if (imgEl.tagName === 'VIDEO') {
-          isVideo = true;
-          // Play the actual video in the modal; poster only as fallback
-          mediaSrc = mediaSrc || imgEl.poster || '';
-        }
-      }
+      const { src: mediaSrc, isVideo } = getMediaSrc(card);
       
       // Reset previous modal state
       modal.classList.remove('modal--lightbox', 'modal--project');
@@ -260,8 +305,21 @@ document.addEventListener('DOMContentLoaded', () => {
     closeBtn.addEventListener('click', closeModal);
     backdrop.addEventListener('click', closeModal);
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && modal.classList.contains('modal--open')) closeModal();
+      if (!modal.classList.contains('modal--open')) return;
+      if (e.key === 'Escape') { closeModal(); return; }
+      if (e.key === 'ArrowLeft') { navigate(-1); }
+      if (e.key === 'ArrowRight') { navigate(1); }
     });
+
+    function navigate(dir) {
+      if (currentIndex < 0) return;
+      const next = currentIndex + dir;
+      if (next < 0 || next >= allCards.length) return;
+      openModal(allCards[next]);
+    }
+
+    if (navPrev) navPrev.addEventListener('click', () => navigate(-1));
+    if (navNext) navNext.addEventListener('click', () => navigate(1));
 
     document.querySelectorAll('.project-card').forEach(card => {
       card.addEventListener('click', function(e) {
