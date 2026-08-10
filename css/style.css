@@ -1095,33 +1095,49 @@ ul { list-style: none; }
   color: rgba(255,197,211,0.5);
 }
 
-/* ---------- LIGHT TRAIL ---------- */
-.light-trail {
+/* ---------- PHOTO TRAIL (larga exposición) ---------- */
+#trailCanvas {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
   pointer-events: none;
-  z-index: 9997;
-  background: radial-gradient(circle, rgba(255,197,211,0.14) 0%, rgba(255,197,211,0.05) 40%, transparent 70%);
-  filter: blur(12px);
-  transform: translate(-50%, -50%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
+  z-index: 9996;
+  opacity: 0.9;
+}
+
+/* ---------- TITLE UNDERLINE ANIMADA ---------- */
+.anim-underline {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.anim-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -0.35em;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #FFC5D3, #FFA5B3);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform;
 }
 
-body.trail-active .light-trail {
-  opacity: 1;
+/* Al entrar: se subraya de principio a fin (izq → der) */
+.anim-underline.is-underlined::after {
+  transform: scaleX(1);
+  transform-origin: left center;
 }
 
-/* Trail intensifies near interactive elements */
-.light-trail--hot {
-  width: 240px;
-  height: 240px;
-  background: radial-gradient(circle, rgba(255,197,211,0.22) 0%, rgba(255,197,211,0.08) 40%, transparent 70%);
+/* Al salir: la línea se 'cierra' (der → izq) */
+.anim-underline.is-closing::after {
+  transform: scaleX(0);
+  transform-origin: right center;
 }
 
 .modal__close {
@@ -1501,7 +1517,7 @@ body.trail-active .light-trail {
   .modal__nav { width: 36px; height: 36px; font-size: 0.95rem; }
 }
 
-/* Touch devices: ocultar cursor personalizado y light trail */
+/* Touch devices: ocultar cursor personalizado y estela */
 @media (hover: none) and (pointer: coarse) {
-  .light-trail { display: none; }
+  #trailCanvas { display: none; }
 }

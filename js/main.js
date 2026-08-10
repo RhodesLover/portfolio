@@ -7,18 +7,14 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---------- CURSOR ---------- */
   const dot = document.getElementById('cursorDot');
   const ring = document.getElementById('cursorRing');
-  const trail = document.getElementById('lightTrail');
 
   if (dot && ring) {
-    let mx = 0, my = 0, rx = 0, ry = 0, tx = 0, ty = 0;
+    let mx = 0, my = 0, rx = 0, ry = 0;
 
     document.addEventListener('mousemove', (e) => {
       mx = e.clientX; my = e.clientY;
       dot.style.left = mx + 'px';
       dot.style.top = my + 'px';
-      if (!document.body.classList.contains('trail-active')) {
-        document.body.classList.add('trail-active');
-      }
     });
 
     function animRing() {
@@ -26,14 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
       ry += (my - ry) * 0.12;
       ring.style.left = rx + 'px';
       ring.style.top = ry + 'px';
-
-      // Light trail: lerp más lento → estela de luz que sigue al cursor
-      if (trail) {
-        tx += (mx - tx) * 0.06;
-        ty += (my - ty) * 0.06;
-        trail.style.left = tx + 'px';
-        trail.style.top = ty + 'px';
-      }
       requestAnimationFrame(animRing);
     }
     animRing();
@@ -44,17 +32,85 @@ document.addEventListener('DOMContentLoaded', () => {
         ring.style.width = '60px'; ring.style.height = '60px';
         ring.style.borderColor = 'rgba(255, 197, 211, 0.6)';
         ring.style.backgroundColor = 'rgba(255, 197, 211, 0.05)';
-        if (trail) trail.classList.add('light-trail--hot');
       });
       el.addEventListener('mouseleave', () => {
         dot.style.width = '8px'; dot.style.height = '8px';
         ring.style.width = '40px'; ring.style.height = '40px';
         ring.style.borderColor = 'rgba(255, 197, 211, 0.4)';
         ring.style.backgroundColor = 'transparent';
-        if (trail) trail.classList.remove('light-trail--hot');
       });
     });
   }
+
+  /* ---------- PHOTO TRAIL (larga exposición) ---------- */
+  const trailCanvas = document.getElementById('trailCanvas');
+  if (trailCanvas && window.CanvasRenderingContext2D) {
+    const ctx = trailCanvas.getContext('2d');
+    let prevX = 0, prevY = 0, hasPrev = false;
+    let hot = false;
+
+    function sizeTrail() {
+      trailCanvas.width = window.innerWidth;
+      trailCanvas.height = window.innerHeight;
+      ctx.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
+    }
+    sizeTrail();
+    window.addEventListener('resize', sizeTrail);
+
+    // Fade progresivo: la estela se desvanece como en larga exposición
+    function fadeTrail() {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = 'rgba(0,0,0,0.09)';
+      ctx.fillRect(0, 0, trailCanvas.width, trailCanvas.height);
+      ctx.globalCompositeOperation = 'source-over';
+      requestAnimationFrame(fadeTrail);
+    }
+    fadeTrail();
+
+    document.addEventListener('mousemove', (e) => {
+      const x = e.clientX, y = e.clientY;
+      if (hasPrev) {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        // Estela principal (más visible sobre interactivos)
+        ctx.strokeStyle = hot ? 'rgba(255,197,211,0.35)' : 'rgba(255,197,211,0.16)';
+        ctx.lineWidth = hot ? 3 : 1.6;
+        ctx.beginPath();
+        ctx.moveTo(prevX, prevY);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        // Núcleo brillante (la "luz" más reciente)
+        ctx.fillStyle = hot ? 'rgba(255,220,228,0.55)' : 'rgba(255,197,211,0.35)';
+        ctx.beginPath();
+        ctx.arc(x, y, hot ? 2.4 : 1.4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      prevX = x; prevY = y; hasPrev = true;
+    });
+
+    document.querySelectorAll('a, button, .project-card, .btn').forEach(el => {
+      el.addEventListener('mouseenter', () => { hot = true; });
+      el.addEventListener('mouseleave', () => { hot = false; });
+    });
+  }
+
+  /* ---------- TITLE UNDERLINE ANIMADA ---------- */
+  // Los títulos se subrayan de izq → der al entrar y la línea se 'cierra' (der → izq) al salir
+  document.querySelectorAll('.anim-underline').forEach(el => {
+    let closingTimer = null;
+    el.addEventListener('mouseenter', () => {
+      clearTimeout(closingTimer);
+      el.classList.remove('is-closing');
+      el.classList.add('is-underlined');
+    });
+    el.addEventListener('mouseleave', () => {
+      el.classList.remove('is-underlined');
+      el.classList.add('is-closing');
+      // Al terminar la transición de cierre, limpiar la clase
+      closingTimer = setTimeout(() => el.classList.remove('is-closing'), 550);
+    });
+  });
 
   /* ---------- SCROLL REVEAL (sections) ---------- */
   const revealObserver = new IntersectionObserver((entries) => {
