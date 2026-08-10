@@ -99,6 +99,17 @@ ul { list-style: none; }
   transform: translateY(0);
 }
 
+/* ---------- TILT 3D en project cards ---------- */
+.project-card--tilt {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.project-card--tilt .project-card__media,
+.project-card--tilt .project-card__info {
+  transform: translateZ(22px);
+}
+
 /* ---------- SCROLL REVEAL (general) ---------- */
 .reveal {
   opacity: 0;
@@ -359,6 +370,53 @@ ul { list-style: none; }
 .btn--large {
   padding: 1.2rem 3rem;
   font-size: 0.85rem;
+}
+
+/* ---------- MARQUEE ---------- */
+.marquee {
+  width: 100%;
+  overflow: hidden;
+  padding: 1.2rem 0;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  user-select: none;
+}
+
+.marquee__track {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  width: max-content;
+  animation: marqueeScroll 30s linear infinite;
+  white-space: nowrap;
+}
+
+.marquee__item {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+  font-weight: 400;
+  font-style: italic;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.02em;
+  transition: color 0.3s;
+}
+
+.marquee__item:hover { color: #FFC5D3; }
+
+.marquee__dot {
+  color: #FFC5D3;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Pausa al hover para que se pueda leer */
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
 }
 
 /* ---------- SHOWREEL ---------- */
@@ -966,6 +1024,13 @@ ul { list-style: none; }
   margin: auto;
 }
 
+/* Cuando el modal está abierto: ocultar la nav del header (evita doble navegación) */
+body.modal-open .nav {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
 /* ---------- NAV ARROWS ---------- */
 .modal__nav {
   position: absolute;
@@ -990,11 +1055,6 @@ ul { list-style: none; }
 
 .modal__nav--prev { left: 0.75rem; }
 .modal__nav--next { right: 0.75rem; }
-
-/* En lightbox (posters/ilustraciones): sin flechas, solo la imagen + cruz */
-.modal--lightbox .modal__nav {
-  display: none;
-}
 
 .modal__nav:hover {
   color: #fff;
@@ -1305,6 +1365,31 @@ ul { list-style: none; }
 
 .modal__project-actions {
   margin-top: 0.5rem;
+}
+
+.modal__project-story {
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.modal__story-item { display: flex; flex-direction: column; gap: 0.15rem; }
+
+.modal__story-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  color: #FFC5D3;
+  opacity: 0.8;
+}
+
+.modal__story-text {
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.6);
 }
 
 .modal__behance-btn {

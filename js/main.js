@@ -99,6 +99,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  /* ---------- TILT 3D ---------- */
+  // Las cards se inclinan sutilmente siguiendo el mouse (perspectiva suave)
+  const tiltCards = document.querySelectorAll('.project-card--tilt');
+  if (tiltCards.length && window.matchMedia('(hover: hover)').matches) {
+    tiltCards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - 0.5;   // -0.5..0.5
+        const py = (e.clientY - r.top) / r.height - 0.5;
+        const rx = -py * 7;   // grados
+        const ry = px * 7;
+        card.style.transform = `perspective(700px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
+    });
+  }
+
   /* ---------- TITLE UNDERLINE ANIMADA ---------- */
   // Los títulos se subrayan de izq → der al entrar y la línea se 'cierra' (der → izq) al salir
   document.querySelectorAll('.anim-underline').forEach(el => {
@@ -243,6 +262,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const projTitle = document.getElementById('modalProjectTitle');
     const projCat = document.getElementById('modalProjectCat');
     const projDesc = document.getElementById('modalProjectDesc');
+    const projStory = document.getElementById('modalProjectStory');
+    const projChallenge = document.getElementById('modalProjectChallenge');
+    const projDecision = document.getElementById('modalProjectDecision');
     const projActions = document.getElementById('modalProjectActions');
 
     // Nav elements
@@ -268,7 +290,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderRelated(currentCard) {
       if (!relatedGrid) return;
-      const others = allCards.filter(c => c !== currentCard);
+      // Excluir el actual + proyectos de la MISMA categoría (no mezclar posters con proyectos)
+      const currentCat = (currentCard.dataset.category || '').split('·')[0].trim();
+      const others = allCards.filter(c => {
+        if (c === currentCard) return false;
+        const cat = (c.dataset.category || '').split('·')[0].trim();
+        return cat !== currentCat;
+      });
       // Mezclar y tomar hasta 4
       const shuffled = [...others].sort(() => Math.random() - 0.5).slice(0, 4);
       relatedGrid.innerHTML = '';
@@ -323,6 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // Reset previous modal state
       modal.classList.remove('modal--lightbox', 'modal--project');
+      projStory.hidden = true;
       projVideo.pause();
       projVideo.removeAttribute('src');
       projVideo.load();
@@ -346,6 +375,17 @@ document.addEventListener('DOMContentLoaded', () => {
         projTitle.textContent = title;
         projCat.textContent = category;
         projDesc.textContent = description;
+
+        // Desafío → Decisión (si la card los define)
+        const challenge = card.dataset.challenge || '';
+        const decision = card.dataset.decision || '';
+        if (challenge || decision) {
+          projStory.hidden = false;
+          projChallenge.textContent = challenge;
+          projDecision.textContent = decision;
+        } else {
+          projStory.hidden = true;
+        }
         
         if (isVideo && mediaSrc) {
           // Show video (or poster image) in the media panel
@@ -372,11 +412,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       modal.classList.add('modal--open');
+      document.body.classList.add('modal-open');
       document.body.style.overflow = 'hidden';
     }
 
     function closeModal() {
       modal.classList.remove('modal--open', 'modal--lightbox', 'modal--project');
+      document.body.classList.remove('modal-open');
       document.body.style.overflow = '';
       projVideo.pause();
       projVideo.removeAttribute('src');

@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=7">
+  <link rel="stylesheet" href="css/style.css?v=8">
 </head>
 <body>
 
@@ -46,6 +46,22 @@
     </div>
   </section>
 
+  <!-- ========== MARQUEE ========== -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <span class="marquee__item">Branding</span><span class="marquee__dot">✳</span>
+      <span class="marquee__item">Social Media</span><span class="marquee__dot">✳</span>
+      <span class="marquee__item">Editorial</span><span class="marquee__dot">✳</span>
+      <span class="marquee__item">Identidad</span><span class="marquee__dot">✳</span>
+      <span class="marquee__item">Packaging</span><span class="marquee__dot">✳</span>
+      <span class="marquee__item">Branding</span><span class="marquee__dot">✳</span>
+      <span class="marquee__item">Social Media</span><span class="marquee__dot">✳</span>
+      <span class="marquee__item">Editorial</span><span class="marquee__dot">✳</span>
+      <span class="marquee__item">Identidad</span><span class="marquee__dot">✳</span>
+      <span class="marquee__item">Packaging</span><span class="marquee__dot">✳</span>
+    </div>
+  </div>
+
   <!-- ========== SHOWREEL ========== -->
   <section class="showreel" id="showreel">
     <div class="showreel__inner">
@@ -76,10 +92,12 @@
         <span class="category__qty">3 proyectos</span>
       </div>
       <div class="grid grid--social">
-        <div class="project-card project-card--hero"
+        <div class="project-card project-card--hero project-card--tilt"
              data-title="Epic"
              data-category="Social Media · 2026"
              data-description="Feed de Instagram completo para Epic. Identidad visual, plantillas animadas y contenido orgánico."
+             data-challenge="Hacer que una marca de bar de especialidad se sienta premium y consistente en un feed saturado."
+             data-decision="Sistema de plantillas animadas con paleta fría y tipografía display: mismo lenguaje, piezas distintas cada semana."
              data-behance="https://www.behance.net/rhodeslover">
           <div class="project-card__media">
             <div class="project-card__media-bg" style="background:#1a1a2e;">
@@ -95,7 +113,7 @@
             <span class="project-card__tag">Social Media · 2026</span>
           </div>
         </div>
-        <div class="project-card"
+        <div class="project-card project-card--tilt"
              data-title="26Shop"
              data-category="Social Media · 2026"
              data-description="Estrategia de contenido para 26Shop. Posteos estáticos con identidad fresca."
@@ -113,7 +131,7 @@
             <span class="project-card__tag">Social Media · 2026</span>
           </div>
         </div>
-        <div class="project-card"
+        <div class="project-card project-card--tilt"
              data-title="Distravel"
              data-category="Social Media · 2026"
              data-description="Campaña estacional para Distravel. Piezas animadas con foco en destinos."
@@ -144,10 +162,12 @@
         <span class="category__qty">3 proyectos</span>
       </div>
       <div class="grid grid--branding">
-        <div class="project-card"
+        <div class="project-card project-card--tilt"
              data-title="Naturaleza Humana"
              data-category="Branding · 2024"
              data-description="Identidad visual completa con enfoque orgánico. Paleta cromática y aplicaciones."
+             data-challenge="Comunicar calma y origen natural en un rubro donde todo se ve igual de 'artesanal'."
+             data-decision="Paleta terrosa, tipografía serif y texturas orgánicas: identidad que se siente hecha a mano, no manufacturada."
              data-behance="https://www.behance.net/rhodeslover">
           <div class="project-card__media">
             <div class="project-card__media-bg" style="background:#2a3a2a;">
@@ -160,7 +180,7 @@
             <span class="project-card__tag">Branding · 2024</span>
           </div>
         </div>
-        <div class="project-card"
+        <div class="project-card project-card--tilt"
              data-title="Fernet Cordobita"
              data-category="Branding · 2025"
              data-description="Etiquetas y packaging con identidad regional."
@@ -176,7 +196,7 @@
             <span class="project-card__tag">Branding · 2025</span>
           </div>
         </div>
-        <div class="project-card"
+        <div class="project-card project-card--tilt"
              data-title="Mercado Montañés"
              data-category="Branding · 2026"
              data-description="Identidad de marca con enfoque en producto regional."
@@ -204,7 +224,7 @@
         <span class="category__qty">3 proyectos</span>
       </div>
       <div class="grid grid--posters">
-        <div class="project-card project-card--tall"
+        <div class="project-card project-card--tall project-card--tilt"
              data-modal="lightbox"
              data-title="Fantasma - Gustavo Cerati"
              data-category="Poster · 2026"
@@ -221,7 +241,7 @@
             <span class="project-card__tag">Gustavo Cerati · 2026</span>
           </div>
         </div>
-        <div class="project-card project-card--tall"
+        <div class="project-card project-card--tall project-card--tilt"
              data-modal="lightbox"
              data-title="Fly me to the Moon"
              data-category="Poster · 2024"
@@ -238,7 +258,7 @@
             <span class="project-card__tag">Poster · 2024</span>
           </div>
         </div>
-        <div class="project-card project-card--tall"
+        <div class="project-card project-card--tall project-card--tilt"
              data-modal="lightbox"
              data-title="Arte Único Branca 2023"
              data-category="Poster · 2023"
@@ -267,7 +287,7 @@
         <span class="category__qty">5 proyectos</span>
       </div>
       <div class="grid grid--proyectos">
-        <div class="project-card project-card--tall"
+        <div class="project-card project-card--tall project-card--tilt"
              data-title="Del Bardo al Arte"
              data-category="Premios Diente · 2025"
              data-description="Pieza gráfica para los Premios Diente 2025 de la Escuela Da Vinci."
@@ -283,7 +303,7 @@
             <span class="project-card__tag">Premios Diente · 2025</span>
           </div>
         </div>
-        <div class="project-card"
+        <div class="project-card project-card--tilt"
              data-title="Wonder"
              data-category="Proyecto · 2025"
              data-description="Proyecto conceptual con identidad visual onírica."
@@ -298,7 +318,7 @@
             <span class="project-card__tag">Proyecto · 2025</span>
           </div>
         </div>
-        <div class="project-card"
+        <div class="project-card project-card--tilt"
              data-title="Kentucky Vegano"
              data-category="Campaña · 2024"
              data-description="Campaña publicitaria integral para Kentucky Vegano."
@@ -313,7 +333,7 @@
             <span class="project-card__tag">Campaña · 2024</span>
           </div>
         </div>
-        <div class="project-card"
+        <div class="project-card project-card--tilt"
              data-title="Nogal Poster"
              data-category="Poster · 2024"
              data-description="Póster con textura y composición natural."
@@ -329,7 +349,7 @@
             <span class="project-card__tag">Poster · 2024</span>
           </div>
         </div>
-        <div class="project-card"
+        <div class="project-card project-card--tilt"
              data-title="Desembarco"
              data-category="Proyecto · 2024"
              data-description="Portada editorial para Desembarco. Diagramación y tratamiento de imagen.">
@@ -356,7 +376,7 @@
         <span class="category__qty">3 proyectos</span>
       </div>
       <div class="grid grid--ilustraciones">
-        <div class="project-card project-card--tall"
+        <div class="project-card project-card--tall project-card--tilt"
              data-modal="lightbox"
              data-title="Polar Bear"
              data-category="Ilustración · 2025"
@@ -373,7 +393,7 @@
             <span class="project-card__tag">Ilustración · 2025</span>
           </div>
         </div>
-        <div class="project-card project-card--tall"
+        <div class="project-card project-card--tall project-card--tilt"
              data-modal="lightbox"
              data-title="Kalisi"
              data-category="Ilustración · 2025"
@@ -390,7 +410,7 @@
             <span class="project-card__tag">Ilustración · 2025</span>
           </div>
         </div>
-        <div class="project-card project-card--tall"
+        <div class="project-card project-card--tall project-card--tilt"
              data-modal="lightbox"
              data-title="Ilustración Bowie"
              data-category="Ilustración · 2022"
@@ -501,6 +521,16 @@
           <h3 class="modal__project-title" id="modalProjectTitle"></h3>
           <span class="modal__project-cat" id="modalProjectCat"></span>
           <p class="modal__project-desc" id="modalProjectDesc"></p>
+          <div class="modal__project-story" id="modalProjectStory" hidden>
+            <div class="modal__story-item">
+              <span class="modal__story-label">Desafío</span>
+              <p class="modal__story-text" id="modalProjectChallenge"></p>
+            </div>
+            <div class="modal__story-item">
+              <span class="modal__story-label">Decisión</span>
+              <p class="modal__story-text" id="modalProjectDecision"></p>
+            </div>
+          </div>
           <div class="modal__project-actions" id="modalProjectActions"></div>
         </div>
       </div>
@@ -513,6 +543,6 @@
     <button class="modal__nav modal__nav--next" id="modalNext" aria-label="Siguiente">→</button>
   </div>
 
-  <script src="js/main.js?v=7"></script>
+  <script src="js/main.js?v=8"></script>
 </body>
 </html>
