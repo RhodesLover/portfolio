@@ -2353,7 +2353,7 @@ body.pg-viewer-open .nav { opacity: 0; pointer-events: none; }
   height: 100vh;
   z-index: 1;
   pointer-events: none;
-  mix-blend-mode: screen;
+  /* additive (lighter) applied inside canvas; page bg is black so no blend needed */
 }
 /* keep content above particles */
 .nav, .hero, .marquee, .section, .work-orbit, .about, .contact, .ed-work {
