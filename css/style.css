@@ -2360,7 +2360,4 @@ body.pg-viewer-open .nav { opacity: 0; pointer-events: none; }
   position: relative;
   z-index: 2;
 }
-@media (prefers-reduced-motion: reduce) {
-  #particlesCanvas { opacity: 0.6; }
-}
 

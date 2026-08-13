@@ -16,7 +16,9 @@
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // NOTE: intentionally ignore prefers-reduced-motion for the fireflies.
+  // The user asked for ambient motion even with Windows "animations off";
+  // fireflies are decorative and non-essential, so we keep them animated.
   const isCoarse = window.matchMedia('(hover: none), (pointer: coarse)').matches;
 
   let W = 0;
@@ -207,28 +209,13 @@
 
   resize();
 
-  if (reduceMotion) {
-    ctx.globalCompositeOperation = 'lighter';
-    for (let i = 0; i < flies.length; i++) {
-      const f = flies[i];
-      const g = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.glowR);
-      const c = f.color;
-      g.addColorStop(0, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + f.baseA.toFixed(3) + ')');
-      g.addColorStop(1, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',0)');
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.arc(f.x, f.y, f.glowR, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.globalCompositeOperation = 'source-over';
-  } else {
-    window.addEventListener('mousemove', onMove, { passive: true });
-    window.addEventListener('mouseleave', onLeave);
-    window.addEventListener('touchmove', onTouch, { passive: true });
-    window.addEventListener('touchend', onTouchEnd);
-    document.addEventListener('visibilitychange', onVisibility);
-    raf = requestAnimationFrame(step);
-  }
+  // always animate the fireflies (regardless of OS reduced-motion)
+  window.addEventListener('mousemove', onMove, { passive: true });
+  window.addEventListener('mouseleave', onLeave);
+  window.addEventListener('touchmove', onTouch, { passive: true });
+  window.addEventListener('touchend', onTouchEnd);
+  document.addEventListener('visibilitychange', onVisibility);
+  raf = requestAnimationFrame(step);
 
   window.addEventListener('resize', resize);
 
