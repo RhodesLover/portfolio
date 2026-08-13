@@ -3,13 +3,6 @@
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Locomotive-style reveals + hero ready fallback
-  document.body.classList.add('home-ready');
-  document.querySelectorAll('.loco-reveal, .loco-line').forEach((el, i) => {
-    if (el.closest('.work-orbit')) return; // orbit.js owns these
-    const delay = 40 + i * 60;
-    setTimeout(() => el.classList.add('is-in'), delay);
-  });
 
   /* ---------- CURSOR ---------- */
   const dot = document.getElementById('cursorDot');
@@ -296,9 +289,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentIndex = -1;
 
     function getMediaSrc(card, forThumb = false) {
-      const imgEl = card.querySelector('.project-card__img, .project-card__video, .spiral__media');
+      const imgEl = card.querySelector('.project-card__img, .project-card__video');
       if (!imgEl) return { src: '', isVideo: false };
-      const src = imgEl.currentSrc || imgEl.src || imgEl.getAttribute('src') || '';
+      const src = imgEl.src || '';
       if (imgEl.tagName === 'VIDEO') {
         // Para thumbnails siempre usar el poster (un <img> no renderiza un .mp4)
         const thumb = forThumb ? (imgEl.poster || '') : (src || imgEl.poster || '');
@@ -486,18 +479,18 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Hover glow (legacy grid media; spiral uses frame glow via CSS)
+    // Hover glow
     document.querySelectorAll('.project-card').forEach(card => {
-      const media = card.querySelector('.project-card__media, .spiral__frame');
+      const media = card.querySelector('.project-card__media');
       if (!media) return;
       card.addEventListener('mouseenter', () => {
         media.style.boxShadow = '0 20px 60px rgba(255,197,211,0.08)';
       });
       card.addEventListener('mouseleave', () => {
-        media.style.boxShadow = '';
+        media.style.boxShadow = 'none';
       });
     });
   }
 
-  console.log('🐦 Portfolio ready — orbit home.');
+  console.log('🐦 Portfolio ready.');
 });

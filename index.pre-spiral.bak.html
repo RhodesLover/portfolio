@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tomi Zárate — Diseñador Gráfico</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='12' fill='%23FFC5D3'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='900' font-family='Arial' text-anchor='middle' fill='%23000'%3ETZ%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=13">
+</head>
+<body>
+
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+  <canvas id="trailCanvas"></canvas>
+
+  <nav class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="#hero" class="nav__logo">TZ</a>
+      <ul class="nav__links">
+        <li><a href="#work" class="nav__link">Trabajo</a></li>
+        <li><a href="#about" class="nav__link">Sobre mí</a></li>
+        <li><a href="#contact" class="nav__link">Contacto</a></li>
+      </ul>
+      <button class="nav__toggle" id="navToggle" aria-label="Menú">
+        <span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero" id="hero">
+    <div class="hero__bg"></div>
+    <div class="hero__content">
+      <h1 class="hero__title">
+        <span class="hero__line"><span class="hero__word">Tomás</span></span>
+        <span class="hero__line"><span class="hero__word">Zárate</span></span>
+      </h1>
+      <p class="hero__sub">Diseñador Gráfico · Branding · Social Media</p>
+      <div class="hero__cta">
+        <a href="#work" class="btn btn--primary">Ver trabajo</a>
+        <a href="#contact" class="btn btn--outline">Contacto</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MARQUEE ========== -->
+  <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span class="marquee__item">Branding</span><span class="marquee__dot">✳</span>
+        <span class="marquee__item">Social Media</span><span class="marquee__dot">✳</span>
+        <span class="marquee__item">Editorial</span><span class="marquee__dot">✳</span>
+        <span class="marquee__item">Identidad</span><span class="marquee__dot">✳</span>
+        <span class="marquee__item">Branding</span><span class="marquee__dot">✳</span>
+        <span class="marquee__item">Social Media</span><span class="marquee__dot">✳</span>
+        <span class="marquee__item">Editorial</span><span class="marquee__dot">✳</span>
+        <span class="marquee__item">Identidad</span><span class="marquee__dot">✳</span>
+      </div>
+    </div>
+
+  <!-- ========== SHOWREEL ========== -->
+  <section class="showreel" id="showreel">
+    <div class="showreel__inner">
+      <div class="showreel__video">
+        <div class="showreel__placeholder">
+          <div class="showreel__icon">▶</div>
+          <p>Showreel</p>
+          <span>Subí tu reel acá · MP4 · 16:9</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== WORK ========== -->
+  <section class="section" id="work">
+    <div class="section__header anim-title">
+      <span class="section__overline">Selección</span>
+      <h2 class="section__title">Trabajo</h2>
+      <p class="section__desc">Una mirada a los proyectos que definen mi enfoque.</p>
+    </div>
+
+    <!-- ===== REDES ===== -->
+    <div class="category" id="social">
+      <div class="category__divider anim-title">
+        <span class="category__tag">01</span>
+        <h3 class="category__title anim-underline">Redes</h3>
+        <div class="category__line"></div>
+        <span class="category__qty">3 proyectos</span>
+      </div>
+      <div class="grid grid--social">
+        <div class="project-card project-card--hero project-card--tilt"
+             data-title="Epic"
+             data-category="Social Media · 2026"
+             data-description="Feed de Instagram completo para Epic. Identidad visual, plantillas animadas y contenido orgánico."
+             data-challenge="Hacer que una marca de bar de especialidad se sienta premium y consistente en un feed saturado."
+             data-decision="Sistema de plantillas animadas con paleta fría y tipografía display: mismo lenguaje, piezas distintas cada semana."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#1a1a2e;">
+              <video class="project-card__video" src="assets/videos/redes/epic.mp4" poster="assets/images/redes/epic-poster.jpg" muted loop playsinline></video>
+            </div>
+            <span class="project-card__badge">Animado</span>
+            <div class="project-card__overlay">
+              <span>Ver proyecto →</span>
+            </div>
+          </div>
+          <div class="project-card__info">
+            <h4>Epic</h4>
+            <span class="project-card__tag">Social Media · 2026</span>
+          </div>
+        </div>
+        <div class="project-card project-card--tilt"
+             data-title="26Shop"
+             data-category="Social Media · 2026"
+             data-description="Estrategia de contenido para 26Shop. Posteos estáticos con identidad fresca."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#f5f0eb;">
+              <img class="project-card__img" src="assets/images/redes/26shop.jpg" alt="26Shop" loading="lazy">
+            </div>
+            <div class="project-card__overlay">
+              <span>Ver →</span>
+            </div>
+          </div>
+          <div class="project-card__info">
+            <h4>26Shop</h4>
+            <span class="project-card__tag">Social Media · 2026</span>
+          </div>
+        </div>
+        <div class="project-card project-card--tilt"
+             data-title="Distravel"
+             data-category="Social Media · 2026"
+             data-description="Campaña estacional para Distravel. Piezas animadas con foco en destinos."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#0d2137;">
+              <video class="project-card__video" src="assets/videos/redes/distravel.mp4" poster="assets/images/redes/distravel-poster.jpg" muted loop playsinline></video>
+            </div>
+            <span class="project-card__badge">Animado</span>
+            <div class="project-card__overlay">
+              <span>Ver →</span>
+            </div>
+          </div>
+          <div class="project-card__info">
+            <h4>Distravel</h4>
+            <span class="project-card__tag">Social Media · 2026</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== BRANDING ===== -->
+    <div class="category" id="branding">
+      <div class="category__divider anim-title">
+        <span class="category__tag">02</span>
+        <h3 class="category__title anim-underline">Branding</h3>
+        <div class="category__line"></div>
+        <span class="category__qty">3 proyectos</span>
+      </div>
+      <div class="grid grid--branding">
+        <div class="project-card project-card--tilt"
+             data-title="Naturaleza Humana"
+             data-category="Branding · 2024"
+             data-description="Identidad visual completa con enfoque orgánico. Paleta cromática y aplicaciones."
+             data-challenge="Comunicar calma y origen natural en un rubro donde todo se ve igual de 'artesanal'."
+             data-decision="Paleta terrosa, tipografía serif y texturas orgánicas: identidad que se siente hecha a mano, no manufacturada."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#2a3a2a;">
+              <img class="project-card__img" src="assets/images/branding/naturaleza-humana.jpg" alt="Naturaleza Humana" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver proyecto →</span></div>
+          </div>
+          <div class="project-card__info">
+            <h4>Naturaleza Humana</h4>
+            <span class="project-card__tag">Branding · 2024</span>
+          </div>
+        </div>
+        <div class="project-card project-card--tilt"
+             data-title="Fernet Cordobita"
+             data-category="Branding · 2025"
+             data-description="Etiquetas y packaging con identidad regional."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#1a0a0a;">
+              <img class="project-card__img" src="assets/images/branding/fernet-cordobita.jpg" alt="Fernet Cordobita" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver proyecto →</span></div>
+          </div>
+          <div class="project-card__info">
+            <h4>Fernet Cordobita</h4>
+            <span class="project-card__tag">Branding · 2025</span>
+          </div>
+        </div>
+        <div class="project-card project-card--tilt"
+             data-title="Mercado Montañés"
+             data-category="Branding · 2026"
+             data-description="Identidad de marca con enfoque en producto regional."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#1a1a0a;">
+              <img class="project-card__img" src="assets/images/branding/mercado-montanes.jpg" alt="Mercado Montañés" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver proyecto →</span></div>
+          </div>
+          <div class="project-card__info">
+            <h4>Mercado Montañés</h4>
+            <span class="project-card__tag">Branding · 2026</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== POSTERS ===== -->
+    <div class="category" id="posters">
+      <div class="category__divider anim-title">
+        <span class="category__tag">03</span>
+        <h3 class="category__title anim-underline">Posters</h3>
+        <div class="category__line"></div>
+        <span class="category__qty">3 proyectos</span>
+      </div>
+      <div class="grid grid--posters">
+        <div class="project-card project-card--tall project-card--tilt"
+             data-modal="lightbox"
+             data-title="Fantasma - Gustavo Cerati"
+             data-category="Poster · 2026"
+             data-description="Poster conceptual homenaje a Gustavo Cerati. Tipografía y atmósfera."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#0a0015;">
+              <img class="project-card__img" src="assets/images/proyectos/fantasma-cerati.jpg" alt="Fantasma - Gustavo Cerati" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
+          </div>
+          <div class="project-card__info">
+            <h4>Fantasma</h4>
+            <span class="project-card__tag">Gustavo Cerati · 2026</span>
+          </div>
+        </div>
+        <div class="project-card project-card--tall project-card--tilt"
+             data-modal="lightbox"
+             data-title="Fly me to the Moon"
+             data-category="Poster · 2024"
+             data-description="Póster cinematográfico con textura digital. Composición espacial."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#0a0a1a;">
+              <img class="project-card__img" src="assets/images/proyectos/fly-moon.jpg" alt="Fly me to the Moon" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
+          </div>
+          <div class="project-card__info">
+            <h4>Fly me to the Moon</h4>
+            <span class="project-card__tag">Poster · 2024</span>
+          </div>
+        </div>
+        <div class="project-card project-card--tall project-card--tilt"
+             data-modal="lightbox"
+             data-title="Arte Único Branca 2023"
+             data-category="Poster · 2023"
+             data-description="Pieza gráfica para Arte Único Branca 2023. Edición limitada."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#0a0a00;">
+              <img class="project-card__img" src="assets/images/proyectos/arte-unico-branca.jpg" alt="Arte Único Branca" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
+          </div>
+          <div class="project-card__info">
+            <h4>Arte Único Branca</h4>
+            <span class="project-card__tag">Poster · 2023</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PROYECTOS ===== -->
+    <div class="category" id="proyectos">
+      <div class="category__divider anim-title">
+        <span class="category__tag">04</span>
+        <h3 class="category__title anim-underline">Proyectos</h3>
+        <div class="category__line"></div>
+        <span class="category__qty">5 proyectos</span>
+      </div>
+      <div class="grid grid--proyectos">
+        <div class="project-card project-card--tall project-card--tilt"
+             data-title="Del Bardo al Arte"
+             data-category="Premios Diente · 2025"
+             data-description="Pieza gráfica para los Premios Diente 2025 de la Escuela Da Vinci."
+             data-behance="https://www.behance.net/gallery/232628389/Del-Bardo-al-Arte-Premios-Diente-2025">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#0a0a0a;">
+              <img class="project-card__img" src="assets/images/proyectos/bardo-arte.gif" alt="Del Bardo al Arte" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
+          </div>
+          <div class="project-card__info">
+            <h4>Del Bardo al Arte</h4>
+            <span class="project-card__tag">Premios Diente · 2025</span>
+          </div>
+        </div>
+        <div class="project-card project-card--tilt"
+             data-title="Wonder"
+             data-category="Proyecto · 2025"
+             data-description="Proyecto conceptual con identidad visual onírica."
+             data-behance="https://www.behance.net/gallery/233220773/WONDER">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#0a0015;">
+              <img class="project-card__img" src="assets/images/proyectos/wonder.gif" alt="Wonder" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
+          </div>
+          <div class="project-card__info">
+            <span class="project-card__tag">Proyecto · 2025</span>
+          </div>
+        </div>
+        <div class="project-card project-card--tilt"
+             data-title="Kentucky Vegano"
+             data-category="Campaña · 2024"
+             data-description="Campaña publicitaria integral para Kentucky Vegano."
+             data-behance="https://www.behance.net/gallery/205030765/Kentucky-Vegano-Campana-Publicitaria-Integral">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#1a0a00;">
+              <img class="project-card__img" src="assets/images/proyectos/kentucky.jpg" alt="Kentucky Vegano" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
+          </div>
+          <div class="project-card__info">
+            <span class="project-card__tag">Campaña · 2024</span>
+          </div>
+        </div>
+        <div class="project-card project-card--tilt"
+             data-title="Nogal Poster"
+             data-category="Poster · 2024"
+             data-description="Póster con textura y composición natural."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#1a1a0a;">
+              <img class="project-card__img" src="assets/images/proyectos/nogal-poster.jpg" alt="Nogal Poster" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
+          </div>
+          <div class="project-card__info">
+            <h4>Nogal</h4>
+            <span class="project-card__tag">Poster · 2024</span>
+          </div>
+        </div>
+        <div class="project-card project-card--tilt"
+             data-title="Desembarco"
+             data-category="Proyecto · 2024"
+             data-description="Portada editorial para Desembarco. Diagramación y tratamiento de imagen.">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#0a0a0a;">
+              <img class="project-card__img" src="assets/images/proyectos/desembarco-tapa.jpg" alt="Desembarco" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
+          </div>
+          <div class="project-card__info">
+            <h4>Desembarco</h4>
+            <span class="project-card__tag">Proyecto · 2024</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ILUSTRACIONES ===== -->
+    <div class="category" id="ilustraciones">
+      <div class="category__divider anim-title">
+        <span class="category__tag">05</span>
+        <h3 class="category__title anim-underline">Ilustraciones</h3>
+        <div class="category__line"></div>
+        <span class="category__qty">3 proyectos</span>
+      </div>
+      <div class="grid grid--ilustraciones">
+        <div class="project-card project-card--tall project-card--tilt"
+             data-modal="lightbox"
+             data-title="Polar Bear"
+             data-category="Ilustración · 2025"
+             data-description="Ilustración digital de oso polar. Estilo personal con textura."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#0a1a2a;">
+              <img class="project-card__img" src="assets/images/proyectos/polar-bear.jpg" alt="Polar Bear" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
+          </div>
+          <div class="project-card__info">
+            <h4>Polar Bear</h4>
+            <span class="project-card__tag">Ilustración · 2025</span>
+          </div>
+        </div>
+        <div class="project-card project-card--tall project-card--tilt"
+             data-modal="lightbox"
+             data-title="Kalisi"
+             data-category="Ilustración · 2025"
+             data-description="Ilustración digital con paleta pastel y estilo personal."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#1a0a1a;">
+              <img class="project-card__img" src="assets/images/proyectos/kalisi.jpg" alt="Kalisi" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
+          </div>
+          <div class="project-card__info">
+            <h4>Kalisi</h4>
+            <span class="project-card__tag">Ilustración · 2025</span>
+          </div>
+        </div>
+        <div class="project-card project-card--tall project-card--tilt"
+             data-modal="lightbox"
+             data-title="Ilustración Bowie"
+             data-category="Ilustración · 2022"
+             data-description="Póster ilustrado de David Bowie. Homenaje visual al artista."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#1a0a00;">
+              <img class="project-card__img" src="assets/images/proyectos/bowie.jpg" alt="Ilustración Bowie" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
+          </div>
+          <div class="project-card__info">
+            <h4>Ilustración Bowie</h4>
+            <span class="project-card__tag">Ilustración · 2022</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section__footer">
+      <a href="proyectos.html" class="btn btn--primary btn--large">
+        Ver todos los trabajos →
+      </a>
+    </div>
+  </section>
+
+  <!-- ========== ABOUT ========== -->
+  <section class="about" id="about">
+    <div class="about__inner">
+      <div class="about__text">
+        <span class="section__overline anim-title">Acerca de</span>
+        <h2 class="about__title anim-title anim-underline">Sobre mí</h2>
+        <p class="about__bio">Diseñador gráfico recibido en <strong>Escuela Da Vinci</strong>. Actualmente transformando ideas en imágenes que conectan en una agencia de marketing.</p>
+        <p class="about__bio">Me mueve el branding, el diseño editorial y contar historias visuales que <span class="highlight">no pasan desapercibidas</span>.</p>
+        <div class="about__meta">
+          <div class="about__item">
+            <span class="about__label">Formación</span>
+            <span class="about__value">Escuela Da Vinci · DG</span>
+          </div>
+          <div class="about__item">
+            <span class="about__label">Idiomas</span>
+            <span class="about__value">Español · English</span>
+          </div>
+          <div class="about__item">
+            <span class="about__label">Toolkit</span>
+            <span class="about__value">Ps · Ai · Id · Ae · Pr · Figma</span>
+          </div>
+          <div class="about__item">
+            <span class="about__label">CV</span>
+            <a href="#" class="about__value about__link">Descargar PDF →</a>
+          </div>
+        </div>
+      </div>
+      <div class="about__image">
+        <div class="about__photo-placeholder"><span>📸</span></div>
+        <div class="about__decor"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONTACT ========== -->
+  <section class="contact" id="contact">
+    <div class="contact__inner">
+      <span class="section__overline anim-title">Contacto</span>
+      <h2 class="contact__title anim-title anim-underline">¿Trabajamos<br>juntos?</h2>
+      <p class="contact__text">Abierto a proyectos freelance, colaboraciones o una charla.</p>
+      <a href="mailto:tomi@email.com" class="contact__btn">tomi@email.com →</a>
+      <div class="contact__socials">
+        <a href="https://www.behance.net/rhodeslover" target="_blank" class="social-link">
+          <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M22 7h-7V5h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14H15.97c.13 3.211 3.483 3.312 4.588 2.029l1.168 1Zm-2.599-3.063c-.172-1.656-1.372-2.581-3.106-2.581-1.728 0-2.985.918-3.136 2.581h6.242zM2 7h6.168c1.445 0 2.703.666 3.043 1.915.301 1.153.007 2.373-1.071 3.018 1.532.557 2.208 1.777 1.943 3.254-.259 1.511-1.463 2.813-3.851 2.813H2V7zm3.46 2v3.19h2.327c1.084 0 1.725-.405 1.725-1.414 0-1.292-.833-1.776-1.713-1.776H5.46zm0 5.188v3.162h2.607c1.149 0 1.838-.534 1.838-1.645 0-1.124-.727-1.517-1.754-1.517H5.46z"/></svg>
+          Behance
+        </a>
+        <a href="https://www.linkedin.com/in/tom%C3%A1s-z%C3%A1rate-a2104b37a/" target="_blank" class="social-link">
+          <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </a>
+        <a href="#" target="_blank" class="social-link">
+          <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+          Instagram
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>© 2026 Tomi Zárate</p>
+  </footer>
+  <!-- ========== MODAL ========== -->
+  <div class="modal" id="projectModal">
+    <div class="modal__backdrop" id="modalBackdrop"></div>
+    <button class="modal__nav modal__nav--prev" id="modalPrev" aria-label="Anterior">←</button>
+    <div class="modal__container">
+      <button class="modal__close" id="modalClose">✕</button>
+      <!-- Lightbox mode (Posters, Ilustraciones) -->
+            <div class="modal__lightbox" id="modalLightbox">
+              <div class="modal__lightbox-img-wrap" id="modalLightboxWrap">
+                <div class="zoom-stage" id="modalLightboxZoomStage">
+                  <img class="modal__lightbox-img zoom-target" id="modalLightboxImg" src="" alt="">
+                </div>
+                <div class="zoom-controls" id="modalLightboxZoomControls" hidden>
+                  <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Alejar">−</button>
+                  <span class="zoom-level" id="modalLightboxZoomLevel">100%</span>
+                  <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar">+</button>
+                  <button type="button" class="zoom-btn zoom-btn--reset" data-zoom="0" aria-label="Restablecer">Reset</button>
+                </div>
+              </div>
+              <h3 class="modal__lightbox-title" id="modalLightboxTitle"></h3>
+            </div>
+            <!-- Project mode (Redes, Branding, Proyectos) -->
+            <div class="modal__project" id="modalProject">
+              <div class="modal__project-left" id="modalProjectMediaWrap">
+                <div class="zoom-stage" id="modalProjectZoomStage">
+                  <img class="modal__project-img zoom-target" id="modalProjectImg" src="" alt="">
+                  <video class="modal__project-video" id="modalProjectVideo" muted loop playsinline></video>
+                </div>
+                <div class="zoom-controls" id="modalProjectZoomControls" hidden>
+                  <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Alejar">−</button>
+                  <span class="zoom-level" id="modalProjectZoomLevel">100%</span>
+                  <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar">+</button>
+                  <button type="button" class="zoom-btn zoom-btn--reset" data-zoom="0" aria-label="Restablecer">Reset</button>
+                </div>
+              </div>
+        <div class="modal__project-right">
+          <h3 class="modal__project-title" id="modalProjectTitle"></h3>
+          <span class="modal__project-cat" id="modalProjectCat"></span>
+          <p class="modal__project-desc" id="modalProjectDesc"></p>
+          <div class="modal__project-story" id="modalProjectStory" hidden>
+            <div class="modal__story-item">
+              <span class="modal__story-label">Desafío</span>
+              <p class="modal__story-text" id="modalProjectChallenge"></p>
+            </div>
+            <div class="modal__story-item">
+              <span class="modal__story-label">Decisión</span>
+              <p class="modal__story-text" id="modalProjectDecision"></p>
+            </div>
+          </div>
+          <div class="modal__project-actions" id="modalProjectActions"></div>
+        </div>
+      </div>
+      <!-- Related projects -->
+      <div class="modal__related" id="modalRelated">
+        <span class="modal__related-title">Otros proyectos</span>
+        <div class="modal__related-grid" id="modalRelatedGrid"></div>
+      </div>
+    </div>
+    <button class="modal__nav modal__nav--next" id="modalNext" aria-label="Siguiente">→</button>
+  </div>
+
+  <script src="js/zoom.js?v=2"></script>
+    <script src="js/main.js?v=11"></script>
+</body>
+</html>
