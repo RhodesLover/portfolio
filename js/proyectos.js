@@ -28,10 +28,16 @@
     controls: document.getElementById('pgZoomControls'),
     levelEl: document.getElementById('pgZoomLevel')
   }) : null;
+  const zoomStage = document.getElementById('pgZoomStage');
 
   let activeFilter = 'all';
   let visibleCells = cells.slice();
   let currentIndex = -1;
+
+  function setVideoFill(on) {
+    if (!zoomStage) return;
+    zoomStage.classList.toggle('is-video-fill', !!on);
+  }
 
   function updateCount() {
     if (totalEl) {
@@ -114,7 +120,7 @@
     c.style.setProperty('--stagger', (i % 8) * 45 + 'ms');
     io.observe(c);
   });
-  document.querySelectorAll('.pg-section__head, .pg-hero__title, .pg-hero__sub, .pg-cell--quote').forEach((el) => {
+  document.querySelectorAll('.pg-section__head, .pg-hero__title, .pg-hero__sub').forEach((el) => {
     io.observe(el);
   });
 
@@ -157,6 +163,8 @@
     vImg.removeAttribute('src');
     vImg.style.display = 'none';
     if (mediaZoom) mediaZoom.setEnabled(false);
+    setVideoFill(false);
+    if (zoomStage) zoomStage.style.aspectRatio = '';
   }
 
   function openViewer(cell) {
@@ -180,25 +188,20 @@
 
     clearViewerMedia();
 
-    let showingVideo = false;
-    // Prefer explicit motion if present when opening posters with +motion
-    if (type === 'video' || (extraVideo && type === 'image' && cell.querySelector('.pg-cell__badge'))) {
-      const src = type === 'video' ? media : extraVideo;
-      vVideo.style.display = 'block';
-      if (poster) vVideo.poster = poster;
-      vVideo.src = src;
-      vVideo.play().catch(() => {});
-      showingVideo = true;
-    } else if (type === 'video') {
+    // Imagen/poster primero. Si es video nativo (redes), abre video.
+    // Piezas con data-video (Fly Moon / Tokyo) abren el still y el motion es opt-in.
+    if (type === 'video') {
       vVideo.style.display = 'block';
       if (poster) vVideo.poster = poster;
       vVideo.src = media;
       vVideo.play().catch(() => {});
-      showingVideo = true;
+      setVideoFill(true);
+      if (mediaZoom) mediaZoom.setEnabled(false);
     } else {
       vImg.style.display = 'block';
       vImg.src = media;
       vImg.alt = title;
+      setVideoFill(false);
       if (mediaZoom) mediaZoom.setEnabled(!!media);
     }
 
@@ -223,11 +226,20 @@
       b.className = 'pg-viewer__link pg-viewer__link--ghost';
       b.textContent = 'Ver motion →';
       b.addEventListener('click', () => {
+        // Mantener el marco del poster y llenar el video (sin barras negras)
+        if (vImg.naturalWidth && vImg.naturalHeight && zoomStage) {
+          const ratio = vImg.naturalWidth / vImg.naturalHeight;
+          zoomStage.style.aspectRatio = String(ratio);
+        }
         vImg.style.display = 'none';
         vVideo.style.display = 'block';
+        if (media) vVideo.poster = media;
         vVideo.src = extraVideo;
+        setVideoFill(true);
         vVideo.play().catch(() => {});
         if (mediaZoom) mediaZoom.setEnabled(false);
+        b.disabled = true;
+        b.textContent = 'Motion';
       });
       vActions.appendChild(b);
     }
@@ -286,8 +298,10 @@
 
   // init
   applyFilter('all');
-  // mark hero in immediately
-  document.querySelectorAll('.pg-hero__title, .pg-hero__sub').forEach((el) => el.classList.add('is-in'));
+  // hero in immediately (evita título invisible si el observer falla)
+  document.querySelectorAll('.pg-hero__title, .pg-hero__sub').forEach((el) => {
+    el.classList.add('is-in');
+  });
 
   console.log('▦ Galería modular lista —', cells.length, 'piezas');
 })();
