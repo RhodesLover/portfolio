@@ -255,6 +255,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Lightbox elements
     const lightboxImg = document.getElementById('modalLightboxImg');
     const lightboxTitle = document.getElementById('modalLightboxTitle');
+    const lightboxZoom = (typeof createMediaZoom === 'function') ? createMediaZoom({
+      stage: document.getElementById('modalLightboxZoomStage'),
+      target: lightboxImg,
+      controls: document.getElementById('modalLightboxZoomControls'),
+      levelEl: document.getElementById('modalLightboxZoomLevel')
+    }) : null;
     
     // Project elements
     const projImg = document.getElementById('modalProjectImg');
@@ -266,6 +272,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const projChallenge = document.getElementById('modalProjectChallenge');
     const projDecision = document.getElementById('modalProjectDecision');
     const projActions = document.getElementById('modalProjectActions');
+    const projectZoom = (typeof createMediaZoom === 'function') ? createMediaZoom({
+      stage: document.getElementById('modalProjectZoomStage'),
+      target: projImg,
+      controls: document.getElementById('modalProjectZoomControls'),
+      levelEl: document.getElementById('modalProjectZoomLevel')
+    }) : null;
 
     // Nav elements
     const navPrev = document.getElementById('modalPrev');
@@ -356,6 +368,8 @@ document.addEventListener('DOMContentLoaded', () => {
       projVideo.removeAttribute('src');
       projVideo.load();
       projImg.removeAttribute('src');
+      if (lightboxZoom) lightboxZoom.reset();
+      if (projectZoom) projectZoom.reset();
 
       // Control de visibilidad inline (inmune a CSS cacheado viejo)
       modalProject.style.display = 'none';
@@ -368,6 +382,8 @@ document.addEventListener('DOMContentLoaded', () => {
         lightboxImg.src = mediaSrc || '';
         lightboxImg.alt = title;
         lightboxTitle.textContent = title;
+        if (lightboxZoom) lightboxZoom.setEnabled(!!mediaSrc);
+        if (projectZoom) projectZoom.setEnabled(false);
       } else {
         // PROJECT mode: media left + description right + Behance
         modal.classList.add('modal--project');
@@ -393,12 +409,15 @@ document.addEventListener('DOMContentLoaded', () => {
           projVideo.style.display = 'block';
           projVideo.src = mediaSrc;
           projVideo.play().catch(() => {});
+          if (projectZoom) projectZoom.setEnabled(false);
         } else {
           projVideo.style.display = 'none';
           projImg.style.display = 'block';
           projImg.src = mediaSrc || '';
           projImg.alt = title;
+          if (projectZoom) projectZoom.setEnabled(!!mediaSrc);
         }
+        if (lightboxZoom) lightboxZoom.setEnabled(false);
         
         projActions.innerHTML = '';
         if (behance) {
@@ -428,6 +447,8 @@ document.addEventListener('DOMContentLoaded', () => {
       projVideo.load();
       projImg.removeAttribute('src');
       lightboxImg.removeAttribute('src');
+      if (lightboxZoom) lightboxZoom.setEnabled(false);
+      if (projectZoom) projectZoom.setEnabled(false);
       modalProject.style.display = '';
       modalLightbox.style.display = '';
     }

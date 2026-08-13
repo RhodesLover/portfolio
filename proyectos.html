@@ -8,54 +8,54 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=11">
-</head>
-<body class="page-projects">
+  <link rel="stylesheet" href="css/style.css?v=12">
+  </head>
+  <body class="page-projects">
 
-  <nav class="nav nav--scrolled" id="nav">
-    <div class="nav__inner">
-      <a href="index.html" class="nav__logo">TZ</a>
-      <ul class="nav__links">
-        <li><a href="index.html#work" class="nav__link">Trabajo</a></li>
-        <li><a href="index.html#about" class="nav__link">Sobre mí</a></li>
-        <li><a href="index.html#contact" class="nav__link">Contacto</a></li>
-      </ul>
-      <a href="index.html" class="btn btn--outline btn--sm">← Volver</a>
-    </div>
-  </nav>
+    <nav class="nav nav--projects" id="nav">
+      <div class="nav__inner nav__inner--projects">
+        <a href="index.html" class="nav__logo">TZ</a>
+        <ul class="nav__links">
+          <li><a href="index.html#work" class="nav__link">Trabajo</a></li>
+          <li><a href="index.html#about" class="nav__link">Sobre mí</a></li>
+          <li><a href="index.html#contact" class="nav__link">Contacto</a></li>
+        </ul>
+        <a href="index.html" class="btn btn--outline btn--sm nav__back">← Volver</a>
+      </div>
+    </nav>
 
-  <!-- HERO editorial -->
-  <header class="pg-hero">
-    <div class="pg-hero__grid" aria-hidden="true">
-      <span></span><span></span><span></span><span></span>
-      <span></span><span></span><span></span><span></span>
-      <span></span><span></span><span></span><span></span>
-    </div>
-    <div class="pg-hero__meta">
-      <span class="pg-hero__index">00 / ARCHIVO</span>
-      <span class="pg-hero__count" id="pgTotalCount">26 piezas</span>
-    </div>
-    <h1 class="pg-hero__title">
-      <span class="pg-hero__line">Todos los</span>
-      <span class="pg-hero__line pg-hero__line--accent">trabajos</span>
-    </h1>
-    <p class="pg-hero__sub">Retícula modular por disciplina. Cada caja es un campo: mirá, filtrá, abrí.</p>
-    <div class="pg-hero__rule" aria-hidden="true"></div>
-  </header>
+    <!-- HERO editorial -->
+    <header class="pg-hero">
+      <div class="pg-hero__grid" aria-hidden="true">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <div class="pg-hero__meta">
+        <span class="pg-hero__index">Archivo completo</span>
+        <span class="pg-hero__count" id="pgTotalCount">29 piezas</span>
+      </div>
+      <h1 class="pg-hero__title">
+        <span class="pg-hero__line"><span class="pg-hero__word">Todos</span> <span class="pg-hero__word">los</span></span>
+        <span class="pg-hero__line pg-hero__line--accent"><span class="pg-hero__word">trabajos</span></span>
+      </h1>
+      <p class="pg-hero__sub">Selección por disciplina. Abrí cada pieza, filtrá y explorá el archivo completo.</p>
+      <div class="pg-hero__rule" aria-hidden="true"></div>
+    </header>
 
-  <!-- FILTROS sticky (secciones Drive) -->
-  <div class="pg-filter" id="pgFilter" role="navigation" aria-label="Filtrar por disciplina">
-    <div class="pg-filter__inner">
-      <button class="pg-filter__btn is-active" data-filter="all" type="button">Todo</button>
-      <button class="pg-filter__btn" data-filter="redes" type="button">Redes</button>
-      <button class="pg-filter__btn" data-filter="branding" type="button">Branding</button>
-      <button class="pg-filter__btn" data-filter="proyectos" type="button">Proyectos</button>
-      <button class="pg-filter__btn" data-filter="posters" type="button">Posters</button>
-      <button class="pg-filter__btn" data-filter="ilustraciones" type="button">Ilustraciones</button>
-      <button class="pg-filter__btn" data-filter="infografias" type="button">Infografías</button>
-      <button class="pg-filter__btn" data-filter="modelos" type="button">Modelos 3D</button>
+    <!-- FILTROS sticky (secciones Drive) -->
+    <div class="pg-filter" id="pgFilter" role="navigation" aria-label="Filtrar por disciplina">
+      <div class="pg-filter__inner">
+        <button class="btn btn--outline btn--sm pg-filter__btn is-active" data-filter="all" type="button">Todo</button>
+        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="redes" type="button">Redes</button>
+        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="branding" type="button">Branding</button>
+        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="proyectos" type="button">Proyectos</button>
+        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="posters" type="button">Posters</button>
+        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="ilustraciones" type="button">Ilustraciones</button>
+        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="infografias" type="button">Infografías</button>
+        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="modelos" type="button">Modelos 3D</button>
+      </div>
     </div>
-  </div>
 
   <main class="pg-main" id="pgMain">
 
@@ -549,12 +549,8 @@
             <span class="pg-cell__tag">3D · 2025</span>
           </div>
         </article>
-        <div class="pg-cell pg-cell--quote" aria-hidden="true">
-          <p>“A cada problema estudiado con rigor debiera corresponder una red de divisiones específica.”</p>
-          <span>— Müller-Brockmann</span>
-        </div>
-      </div>
-    </section>
+              </div>
+            </section>
 
   </main>
 
@@ -565,25 +561,34 @@
 
   <!-- VIEWER -->
   <div class="pg-viewer" id="pgViewer" aria-hidden="true">
-    <div class="pg-viewer__backdrop" id="pgViewerBackdrop"></div>
-    <button class="pg-viewer__close" id="pgViewerClose" type="button" aria-label="Cerrar">✕</button>
-    <button class="pg-viewer__nav pg-viewer__nav--prev" id="pgViewerPrev" type="button" aria-label="Anterior">‹</button>
-    <button class="pg-viewer__nav pg-viewer__nav--next" id="pgViewerNext" type="button" aria-label="Siguiente">›</button>
-    <div class="pg-viewer__stage">
-      <div class="pg-viewer__media-wrap">
-        <img class="pg-viewer__img" id="pgViewerImg" alt="">
-        <video class="pg-viewer__video" id="pgViewerVideo" controls playsinline muted loop></video>
-      </div>
-      <div class="pg-viewer__info">
-        <span class="pg-viewer__idx" id="pgViewerIdx">01</span>
-        <h3 class="pg-viewer__title" id="pgViewerTitle"></h3>
-        <span class="pg-viewer__cat" id="pgViewerCat"></span>
-        <p class="pg-viewer__desc" id="pgViewerDesc"></p>
-        <div class="pg-viewer__actions" id="pgViewerActions"></div>
+      <div class="pg-viewer__backdrop" id="pgViewerBackdrop"></div>
+      <button class="pg-viewer__close" id="pgViewerClose" type="button" aria-label="Cerrar">✕</button>
+      <button class="pg-viewer__nav pg-viewer__nav--prev" id="pgViewerPrev" type="button" aria-label="Anterior">‹</button>
+      <button class="pg-viewer__nav pg-viewer__nav--next" id="pgViewerNext" type="button" aria-label="Siguiente">›</button>
+      <div class="pg-viewer__stage">
+        <div class="pg-viewer__media-wrap" id="pgViewerMediaWrap">
+          <div class="zoom-stage" id="pgZoomStage">
+            <img class="pg-viewer__img zoom-target" id="pgViewerImg" alt="">
+            <video class="pg-viewer__video" id="pgViewerVideo" controls playsinline muted loop></video>
+          </div>
+          <div class="zoom-controls" id="pgZoomControls" hidden>
+            <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Alejar">−</button>
+            <span class="zoom-level" id="pgZoomLevel">100%</span>
+            <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar">+</button>
+            <button type="button" class="zoom-btn zoom-btn--reset" data-zoom="0" aria-label="Restablecer">Reset</button>
+          </div>
+        </div>
+        <div class="pg-viewer__info">
+          <span class="pg-viewer__idx" id="pgViewerIdx">01</span>
+          <h3 class="pg-viewer__title" id="pgViewerTitle"></h3>
+          <span class="pg-viewer__cat" id="pgViewerCat"></span>
+          <p class="pg-viewer__desc" id="pgViewerDesc"></p>
+          <div class="pg-viewer__actions" id="pgViewerActions"></div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <script src="js/proyectos.js?v=1"></script>
+    <script src="js/zoom.js?v=1"></script>
+    <script src="js/proyectos.js?v=2"></script>
 </body>
 </html>

@@ -22,6 +22,12 @@
   const vDesc = document.getElementById('pgViewerDesc');
   const vIdx = document.getElementById('pgViewerIdx');
   const vActions = document.getElementById('pgViewerActions');
+  const mediaZoom = (typeof createMediaZoom === 'function') ? createMediaZoom({
+    stage: document.getElementById('pgZoomStage'),
+    target: vImg,
+    controls: document.getElementById('pgZoomControls'),
+    levelEl: document.getElementById('pgZoomLevel')
+  }) : null;
 
   let activeFilter = 'all';
   let visibleCells = cells.slice();
@@ -150,6 +156,7 @@
     vVideo.style.display = 'none';
     vImg.removeAttribute('src');
     vImg.style.display = 'none';
+    if (mediaZoom) mediaZoom.setEnabled(false);
   }
 
   function openViewer(cell) {
@@ -173,6 +180,7 @@
 
     clearViewerMedia();
 
+    let showingVideo = false;
     // Prefer explicit motion if present when opening posters with +motion
     if (type === 'video' || (extraVideo && type === 'image' && cell.querySelector('.pg-cell__badge'))) {
       const src = type === 'video' ? media : extraVideo;
@@ -180,15 +188,18 @@
       if (poster) vVideo.poster = poster;
       vVideo.src = src;
       vVideo.play().catch(() => {});
+      showingVideo = true;
     } else if (type === 'video') {
       vVideo.style.display = 'block';
       if (poster) vVideo.poster = poster;
       vVideo.src = media;
       vVideo.play().catch(() => {});
+      showingVideo = true;
     } else {
       vImg.style.display = 'block';
       vImg.src = media;
       vImg.alt = title;
+      if (mediaZoom) mediaZoom.setEnabled(!!media);
     }
 
     vTitle.textContent = title;
@@ -216,6 +227,7 @@
         vVideo.style.display = 'block';
         vVideo.src = extraVideo;
         vVideo.play().catch(() => {});
+        if (mediaZoom) mediaZoom.setEnabled(false);
       });
       vActions.appendChild(b);
     }

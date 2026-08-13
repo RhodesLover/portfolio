@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=10">
+  <link rel="stylesheet" href="css/style.css?v=12">
 </head>
 <body>
 
@@ -505,18 +505,34 @@
     <div class="modal__container">
       <button class="modal__close" id="modalClose">✕</button>
       <!-- Lightbox mode (Posters, Ilustraciones) -->
-      <div class="modal__lightbox" id="modalLightbox">
-        <div class="modal__lightbox-img-wrap">
-          <img class="modal__lightbox-img" id="modalLightboxImg" src="" alt="">
-        </div>
-        <h3 class="modal__lightbox-title" id="modalLightboxTitle"></h3>
-      </div>
-      <!-- Project mode (Redes, Branding, Proyectos) -->
-      <div class="modal__project" id="modalProject">
-        <div class="modal__project-left">
-          <img class="modal__project-img" id="modalProjectImg" src="" alt="">
-          <video class="modal__project-video" id="modalProjectVideo" muted loop playsinline></video>
-        </div>
+            <div class="modal__lightbox" id="modalLightbox">
+              <div class="modal__lightbox-img-wrap" id="modalLightboxWrap">
+                <div class="zoom-stage" id="modalLightboxZoomStage">
+                  <img class="modal__lightbox-img zoom-target" id="modalLightboxImg" src="" alt="">
+                </div>
+                <div class="zoom-controls" id="modalLightboxZoomControls" hidden>
+                  <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Alejar">−</button>
+                  <span class="zoom-level" id="modalLightboxZoomLevel">100%</span>
+                  <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar">+</button>
+                  <button type="button" class="zoom-btn zoom-btn--reset" data-zoom="0" aria-label="Restablecer">Reset</button>
+                </div>
+              </div>
+              <h3 class="modal__lightbox-title" id="modalLightboxTitle"></h3>
+            </div>
+            <!-- Project mode (Redes, Branding, Proyectos) -->
+            <div class="modal__project" id="modalProject">
+              <div class="modal__project-left" id="modalProjectMediaWrap">
+                <div class="zoom-stage" id="modalProjectZoomStage">
+                  <img class="modal__project-img zoom-target" id="modalProjectImg" src="" alt="">
+                  <video class="modal__project-video" id="modalProjectVideo" muted loop playsinline></video>
+                </div>
+                <div class="zoom-controls" id="modalProjectZoomControls" hidden>
+                  <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Alejar">−</button>
+                  <span class="zoom-level" id="modalProjectZoomLevel">100%</span>
+                  <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar">+</button>
+                  <button type="button" class="zoom-btn zoom-btn--reset" data-zoom="0" aria-label="Restablecer">Reset</button>
+                </div>
+              </div>
         <div class="modal__project-right">
           <h3 class="modal__project-title" id="modalProjectTitle"></h3>
           <span class="modal__project-cat" id="modalProjectCat"></span>
@@ -543,6 +559,7 @@
     <button class="modal__nav modal__nav--next" id="modalNext" aria-label="Siguiente">→</button>
   </div>
 
-  <script src="js/main.js?v=9"></script>
+  <script src="js/zoom.js?v=1"></script>
+  <script src="js/main.js?v=10"></script>
 </body>
 </html>
