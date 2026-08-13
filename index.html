@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=14">
+  <link rel="stylesheet" href="css/style.css?v=15">
 </head>
 <body>
 
@@ -62,18 +62,6 @@
       </div>
     </div>
 
-  <!-- ========== SHOWREEL ========== -->
-  <section class="showreel" id="showreel">
-    <div class="showreel__inner">
-      <div class="showreel__video">
-        <div class="showreel__placeholder">
-          <div class="showreel__icon">▶</div>
-          <p>Showreel</p>
-          <span>Subí tu reel acá · MP4 · 16:9</span>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ========== WORK / SPIRAL (Active Theory x Locomotive) ========== -->
   <section class="work-orbit" id="work">
@@ -92,6 +80,8 @@
       </div>
       <div class="work-orbit__stage" id="orbitStage" aria-label="Selección de trabajos en órbita">
         <div class="work-orbit__glow" aria-hidden="true"></div>
+        <canvas class="work-orbit__fx" id="orbitFx" aria-hidden="true"></canvas>
+        <div class="work-orbit__core" aria-hidden="true"></div>
         <div class="work-orbit__ring" id="orbitRing">
         <article class="project-card spiral__item" style="--i:0" tabindex="0" role="button"
              data-title="Epic"
@@ -465,7 +455,7 @@
   </div>
 
   <script src="js/zoom.js?v=2"></script>
-    <script src="js/orbit.js?v=1"></script>
-  <script src="js/main.js?v=12"></script>
+    <script src="js/orbit.js?v=2"></script>
+  <script src="js/main.js?v=13"></script>
 </body>
 </html>
