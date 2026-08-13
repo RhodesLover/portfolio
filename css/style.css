@@ -1528,15 +1528,13 @@ body.modal-open .nav {
 
 /* ========== PROJECTS PAGE — galería modular ========== */
 .page-projects {
-  cursor: auto;
+  cursor: none;
   --pg-gap: var(--space-3);
   --pg-max: 1280px;
   --pg-hair: rgba(255,255,255,0.08);
   --pg-hair-hot: rgba(255,197,211,0.35);
+  --nav-h: 72px;
 }
-.page-projects .cursor-dot,
-.page-projects .cursor-ring,
-.page-projects #trailCanvas { display: none !important; }
 
 /* Hero con retícula de campos (12 cajas fantasma) */
 .pg-hero {
@@ -1636,12 +1634,12 @@ body.modal-open .nav {
 /* Filtros sticky */
 .pg-filter {
   position: sticky;
-  top: 64px;
+  top: var(--nav-h, 72px);
   z-index: 900;
-  backdrop-filter: blur(18px) saturate(1.15);
-  background: rgba(0,0,0,0.72);
-  border-bottom: 1px solid transparent;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  background: rgba(8, 8, 8, 0.6);
+  backdrop-filter: blur(10px) saturate(1.1);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
 }
 .pg-filter.is-stuck {
   border-bottom-color: rgba(255,255,255,0.06);
@@ -2355,8 +2353,8 @@ body.pg-viewer-open .nav { opacity: 0; pointer-events: none; }
   pointer-events: none;
   /* additive (lighter) applied inside canvas; page bg is black so no blend needed */
 }
-/* keep content above particles */
-.nav, .hero, .marquee, .section, .work-orbit, .about, .contact, .ed-work {
+/* keep content above particles (nav stays fixed above everything) */
+.hero, .marquee, .section, .work-orbit, .about, .contact, .ed-work {
   position: relative;
   z-index: 2;
 }

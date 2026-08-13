@@ -1,6 +1,88 @@
 /* ============================================================
    PROYECTOS — galería modular (filtros + viewer + motion)
    ============================================================ */
+
+/* Cursor personalizado (paridad con el home) */
+(function () {
+  'use strict';
+  const dot = document.getElementById('cursorDot');
+  const ring = document.getElementById('cursorRing');
+  if (!dot || !ring) return;
+
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', (e) => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px';
+    dot.style.top = my + 'px';
+  });
+
+  (function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  })();
+
+  const hoverables = 'a, button, .pg-cell, .btn, .pg-filter__btn';
+  document.querySelectorAll(hoverables).forEach((el) => {
+    el.addEventListener('mouseenter', () => {
+      dot.style.width = '16px'; dot.style.height = '16px';
+      ring.style.width = '60px'; ring.style.height = '60px';
+      ring.style.borderColor = 'rgba(255, 197, 211, 0.6)';
+      ring.style.backgroundColor = 'rgba(255, 197, 211, 0.05)';
+    });
+    el.addEventListener('mouseleave', () => {
+      dot.style.width = '8px'; dot.style.height = '8px';
+      ring.style.width = '40px'; ring.style.height = '40px';
+      ring.style.borderColor = 'rgba(255, 197, 211, 0.4)';
+      ring.style.backgroundColor = 'transparent';
+    });
+  });
+
+  /* estela (larga exposición) */
+  const trail = document.getElementById('trailCanvas');
+  if (trail && window.CanvasRenderingContext2D) {
+    const ctx = trail.getContext('2d');
+    let prevX = 0, prevY = 0, hasPrev = false, hot = false;
+    function sizeTrail() {
+      trail.width = window.innerWidth;
+      trail.height = window.innerHeight;
+      ctx.clearRect(0, 0, trail.width, trail.height);
+    }
+    sizeTrail();
+    window.addEventListener('resize', sizeTrail);
+    (function fadeTrail() {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = 'rgba(0,0,0,0.5)';
+      ctx.fillRect(0, 0, trail.width, trail.height);
+      ctx.globalCompositeOperation = 'source-over';
+      requestAnimationFrame(fadeTrail);
+    })();
+    document.addEventListener('mousemove', (e) => {
+      const x = e.clientX, y = e.clientY;
+      if (hasPrev) {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        ctx.shadowColor = hot ? 'rgba(255,197,211,0.9)' : 'rgba(255,197,211,0.65)';
+        ctx.shadowBlur = hot ? 22 : 14;
+        ctx.strokeStyle = hot ? 'rgba(255,210,220,0.85)' : 'rgba(255,197,211,0.55)';
+        ctx.lineWidth = hot ? 3.2 : 2;
+        ctx.beginPath(); ctx.moveTo(prevX, prevY); ctx.lineTo(x, y); ctx.stroke();
+        ctx.fillStyle = hot ? 'rgba(255,235,240,1)' : 'rgba(255,220,228,0.9)';
+        ctx.beginPath(); ctx.arc(x, y, hot ? 3 : 2.2, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+      prevX = x; prevY = y; hasPrev = true;
+    });
+    document.querySelectorAll(hoverables).forEach((el) => {
+      el.addEventListener('mouseenter', () => { hot = true; });
+      el.addEventListener('mouseleave', () => { hot = false; });
+    });
+  }
+})();
+
 (function () {
   'use strict';
 
