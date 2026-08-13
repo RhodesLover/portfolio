@@ -3,13 +3,30 @@
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Locomotive-style reveals + hero ready fallback
-  document.body.classList.add('home-ready');
-  document.querySelectorAll('.loco-reveal, .loco-line').forEach((el, i) => {
-    if (el.closest('.work-orbit')) return; // orbit.js owns these
-    const delay = 40 + i * 60;
-    setTimeout(() => el.classList.add('is-in'), delay);
+  // Page open sequence
+  const intro = document.getElementById('homeIntro');
+  requestAnimationFrame(() => {
+    document.body.classList.add('is-intro');
+    document.body.classList.remove('is-loading');
   });
+  // Locomotive-style reveals + hero ready
+  const armReveals = () => {
+    document.body.classList.add('home-ready');
+    document.querySelectorAll('.loco-reveal, .loco-line').forEach((el, i) => {
+      if (el.closest('.work-orbit')) return; // orbit.js owns these
+      const delay = 80 + i * 90;
+      setTimeout(() => el.classList.add('is-in'), delay);
+    });
+  };
+  // stagger intro veil out then content in
+  setTimeout(() => {
+    document.body.classList.add('is-entered');
+    if (intro) intro.classList.add('is-done');
+    armReveals();
+  }, 720);
+  setTimeout(() => {
+    if (intro) intro.setAttribute('aria-hidden', 'true');
+  }, 1400);
 
   /* ---------- CURSOR ---------- */
   const dot = document.getElementById('cursorDot');

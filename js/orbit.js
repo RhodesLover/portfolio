@@ -38,31 +38,32 @@
      CENTRAL CONFIG — single source of truth
      ========================================================= */
   const CONFIG = {
-    // path
-    radius: isCoarse ? 220 : 320,
-    radiusEnd: isCoarse ? 180 : 260,
-    turns: isCoarse ? 1.65 : 2.35,
-    verticalSpan: isCoarse ? 980 : 1480,
-    depth: isCoarse ? 420 : 720,
-    // camera
-    cameraDistance: isCoarse ? 420 : 560,
-    cameraOffsetY: isCoarse ? 24 : 18,
-    lookAhead: 0.045,
-    // scroll
-    scrollSensitivity: isCoarse ? 0.00105 : 0.00085,
-    runwayPerProject: isCoarse ? 0.72 : 0.95, // * vh
-    damping: reduceMotion ? 1 : 0.085,
-    velocityFriction: 0.92,
-    // presentation
-    projectScaleNear: 1.05,
-    projectScaleFar: 0.28,
-    blurFar: weakGPU ? 1.2 : 2.6,
-    opacityFar: 0.12,
-    // mouse
-    mouseParallax: reduceMotion ? 0 : (isCoarse ? 0 : 0.012),
-    mouseTilt: reduceMotion ? 0 : (isCoarse ? 0 : 0.018),
-    // particles
-    particleCount: weakGPU ? 28 : 64,
+    // path — calmer helix so work stays readable (AT feel: travel, not fly)
+    radius: isCoarse ? 160 : 210,
+    radiusEnd: isCoarse ? 140 : 180,
+    turns: isCoarse ? 0.85 : 1.05,
+    verticalSpan: isCoarse ? 1100 : 1600,
+    depth: isCoarse ? 220 : 320,
+    // camera — closer, steadier, less look-ahead whip
+    cameraDistance: isCoarse ? 360 : 430,
+    cameraOffsetY: isCoarse ? 10 : 6,
+    lookAhead: 0.018,
+    // scroll — longer runway + heavier damping = ordered pacing
+    scrollSensitivity: isCoarse ? 0.0007 : 0.00055,
+    runwayPerProject: isCoarse ? 0.85 : 1.05, // * vh
+    damping: reduceMotion ? 1 : 0.055,
+    velocityFriction: 0.88,
+    // presentation — keep pieces large & sharp (no blur pixelation)
+    projectScaleNear: 1.0,
+    projectScaleFar: 0.72,
+    blurFar: 0,
+    opacityFar: 0.28,
+    focusWindow: 0.11, // only nearby pieces fully present
+    // mouse — subtle influence only
+    mouseParallax: reduceMotion ? 0 : (isCoarse ? 0 : 0.006),
+    mouseTilt: reduceMotion ? 0 : (isCoarse ? 0 : 0.008),
+    // particles — quieter guide
+    particleCount: weakGPU ? 16 : 32,
   };
 
   /* =========================================================
@@ -186,18 +187,18 @@
       const p = SpiralPath.point(progress);
       const tan = SpiralPath.tangent(progress);
       // place camera behind tangent
-      this.x = p.x - tan.x * CONFIG.cameraDistance + mouse.x * CONFIG.mouseParallax * 140;
-      this.y = p.y - tan.y * CONFIG.cameraDistance * 0.35 + CONFIG.cameraOffsetY + mouse.y * CONFIG.mouseParallax * 80;
-      this.z = p.z - tan.z * CONFIG.cameraDistance + 40;
+      this.x = p.x - tan.x * CONFIG.cameraDistance + mouse.x * CONFIG.mouseParallax * 70;
+      this.y = p.y - tan.y * CONFIG.cameraDistance * 0.22 + CONFIG.cameraOffsetY + mouse.y * CONFIG.mouseParallax * 40;
+      this.z = p.z - tan.z * CONFIG.cameraDistance + 24;
 
       const ahead = SpiralPath.point(Math.min(1, progress + CONFIG.lookAhead));
-      this.lx = ahead.x + mouse.x * 18;
-      this.ly = ahead.y + mouse.y * 10;
+      this.lx = ahead.x + mouse.x * 8;
+      this.ly = ahead.y + mouse.y * 5;
       this.lz = ahead.z;
 
       // CSS camera: translate world opposite to camera, then subtle tilt
-      const tiltX = -mouse.y * CONFIG.mouseTilt * 28;
-      const tiltY = mouse.x * CONFIG.mouseTilt * 32;
+      const tiltX = -mouse.y * CONFIG.mouseTilt * 14;
+      const tiltY = mouse.x * CONFIG.mouseTilt * 16;
       world.style.transform =
         `translate3d(${(-this.x).toFixed(2)}px, ${(-this.y).toFixed(2)}px, ${(-this.z).toFixed(2)}px)` +
         ` rotateX(${tiltX.toFixed(3)}deg) rotateY(${tiltY.toFixed(3)}deg)`;
@@ -227,7 +228,8 @@
       let best = 0;
       let bestD = 1e9;
       const base = Math.min(stage.clientWidth || 800, stage.clientHeight || 600);
-      const cardW = Math.max(150, Math.min(isCoarse ? 220 : 250, base * 0.26));
+      // larger readable cards — no tiny scaled bitmaps
+      const cardW = Math.max(200, Math.min(isCoarse ? 280 : 340, base * 0.36));
 
       items.forEach((el, i) => {
         const t = this.ts[i];
@@ -236,41 +238,42 @@
 
         // distance along path parameter
         const dParam = Math.abs(t - progress);
-        // world distance to camera
         const dx = p.x - Camera.x;
         const dy = p.y - Camera.y;
         const dz = p.z - Camera.z;
         const dist = Math.hypot(dx, dy, dz);
-        const prox = 1 - Math.max(0, Math.min(1, dParam * 2.4));
+        // soft focus window: only nearby work is fully present
+        const prox = 1 - Math.max(0, Math.min(1, dParam / Math.max(0.04, CONFIG.focusWindow)));
 
-        // orientation from tangent (yaw/pitch-ish)
-        const yaw = Math.atan2(tan.x, tan.z) * (180 / Math.PI) * 0.55;
-        const pitch = -tan.y * 28;
-        const bank = tan.x * 10;
+        // gentle orientation — face camera more than path spin
+        const yaw = Math.atan2(tan.x, Math.max(0.15, tan.z)) * (180 / Math.PI) * 0.18;
+        const pitch = -tan.y * 8;
 
-        // hover boost integrated in space
         const hovered = mouse.hover === i;
-        const hoverBoost = hovered ? 0.14 : 0;
+        const hoverBoost = hovered ? 0.06 : 0;
         const scale =
           CONFIG.projectScaleFar +
-          (CONFIG.projectScaleNear - CONFIG.projectScaleFar) * (prox * 0.85 + hoverBoost);
-        const opacity = CONFIG.opacityFar + (1 - CONFIG.opacityFar) * Math.pow(prox, 0.85) * (hovered ? 1 : 0.92 + (1 - Math.min(1, Math.abs(mouse.hover === -1 ? 0 : 0.15))));
-        // dim others slightly when hovering one
-        const dim = mouse.hover >= 0 && mouse.hover !== i ? 0.55 : 1;
-        const blur = (1 - prox) * CONFIG.blurFar * (hovered ? 0.2 : 1);
+          (CONFIG.projectScaleNear - CONFIG.projectScaleFar) * (0.35 + prox * 0.65) +
+          hoverBoost;
+        let opacity = CONFIG.opacityFar + (1 - CONFIG.opacityFar) * Math.pow(Math.max(prox, 0.15), 0.7);
+        if (hovered) opacity = Math.min(1, opacity + 0.12);
+        // dim non-hovered only lightly
+        const dim = mouse.hover >= 0 && mouse.hover !== i ? 0.72 : 1;
 
         el.style.width = cardW + 'px';
         el.style.zIndex = String(100 + Math.round(prox * 500) + (hovered ? 200 : 0));
-        el.style.opacity = String(Math.max(0.05, opacity * dim));
-        el.style.filter = blur > 0.18 ? `blur(${blur.toFixed(2)}px)` : 'none';
-        // face slightly toward camera while keeping path orientation
-        const faceY = yaw * 0.35 + (Camera.x - p.x) * 0.02;
+        el.style.opacity = String(Math.max(0.18, opacity * dim));
+        // NEVER blur media — blur was causing pixelation on scaled bitmaps
+        el.style.filter = 'none';
+        // face camera primarily (readable artwork)
+        const faceY = yaw * 0.25 + (Camera.x - p.x) * 0.012;
         el.style.transform =
           `translate3d(${p.x.toFixed(2)}px, ${p.y.toFixed(2)}px, ${p.z.toFixed(2)}px)` +
-          ` rotateY(${(faceY).toFixed(2)}deg) rotateX(${pitch.toFixed(2)}deg) rotateZ(${(bank * 0.3).toFixed(2)}deg)` +
+          ` rotateY(${faceY.toFixed(2)}deg) rotateX(${pitch.toFixed(2)}deg)` +
           ` scale(${scale.toFixed(3)})`;
         el.dataset.t = t.toFixed(3);
         el.dataset.dist = dist.toFixed(1);
+        el.classList.toggle('is-near', prox > 0.55);
 
         if (dParam < bestD) {
           bestD = dParam;
@@ -281,7 +284,6 @@
       if (best !== this.active) {
         this.active = best;
         this.setFocus(best);
-        // play video only on active
         items.forEach((el, i) => {
           const v = el.querySelector('video');
           if (!v) return;
@@ -449,23 +451,26 @@
     // responsive config tweaks
     const w = window.innerWidth;
     if (w < 700) {
-      CONFIG.radius = 170;
-      CONFIG.radiusEnd = 140;
-      CONFIG.verticalSpan = 820;
-      CONFIG.cameraDistance = 360;
-      CONFIG.turns = 1.45;
+      CONFIG.radius = 120;
+      CONFIG.radiusEnd = 100;
+      CONFIG.verticalSpan = 980;
+      CONFIG.cameraDistance = 320;
+      CONFIG.turns = 0.75;
+      CONFIG.depth = 180;
     } else if (w < 1024) {
-      CONFIG.radius = 240;
-      CONFIG.radiusEnd = 200;
-      CONFIG.verticalSpan = 1100;
-      CONFIG.cameraDistance = 460;
-      CONFIG.turns = 1.9;
+      CONFIG.radius = 170;
+      CONFIG.radiusEnd = 145;
+      CONFIG.verticalSpan = 1280;
+      CONFIG.cameraDistance = 380;
+      CONFIG.turns = 0.92;
+      CONFIG.depth = 240;
     } else {
-      CONFIG.radius = isCoarse ? 220 : 320;
-      CONFIG.radiusEnd = isCoarse ? 180 : 260;
-      CONFIG.verticalSpan = isCoarse ? 980 : 1480;
-      CONFIG.cameraDistance = isCoarse ? 420 : 560;
-      CONFIG.turns = isCoarse ? 1.65 : 2.35;
+      CONFIG.radius = isCoarse ? 160 : 210;
+      CONFIG.radiusEnd = isCoarse ? 140 : 180;
+      CONFIG.verticalSpan = isCoarse ? 1100 : 1600;
+      CONFIG.cameraDistance = isCoarse ? 360 : 430;
+      CONFIG.turns = isCoarse ? 0.85 : 1.05;
+      CONFIG.depth = isCoarse ? 220 : 320;
     }
     buildPathTicks();
   }
