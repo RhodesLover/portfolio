@@ -1352,7 +1352,7 @@ body.modal-open .nav {
   overflow: visible;
 }
 .modal__lightbox-img-wrap .zoom-stage {
-  max-height: 72vh;
+  height: 72vh;
   width: min(100%, 920px);
   min-height: 220px;
 }
@@ -1371,9 +1371,8 @@ body.modal-open .nav {
 }
 .modal__project-left .zoom-stage {
   width: 100%;
-  flex: 1 1 auto;
+  height: calc(56vh - 52px);
   min-height: 0;
-  max-height: calc(56vh - 52px);
 }
 .modal__project-left .zoom-controls {
   position: static;
@@ -1381,7 +1380,9 @@ body.modal-open .nav {
 
 .modal__lightbox-img {
   max-width: 100%;
-  max-height: 78vh;
+  max-height: 100%;
+  width: auto;
+  height: auto;
   object-fit: contain;
   border-radius: 2px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.5);
@@ -1429,6 +1430,8 @@ body.modal-open .nav {
 .modal__project-video {
   max-width: 100%;
   max-height: 100%;
+  width: auto;
+  height: auto;
   object-fit: contain;
   background: #000;
 }
@@ -2000,9 +2003,8 @@ body.modal-open .nav {
 }
 .zoom-stage {
   width: 100%;
-  flex: 1 1 auto;
+  height: calc(82vh - 56px);
   min-height: 200px;
-  max-height: calc(82vh - 56px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2094,7 +2096,7 @@ body.modal-open .nav {
 .pg-viewer__img,
 .pg-viewer__video {
   max-width: 100%;
-  max-height: 82vh;
+  max-height: 100%;
   width: auto;
   height: auto;
   object-fit: contain;
@@ -2207,8 +2209,9 @@ body.pg-viewer-open .nav { opacity: 0; pointer-events: none; }
     .pg-grid--modelos { grid-template-columns: 1fr; }
     .pg-viewer__stage { grid-template-columns: 1fr; max-height: none; width: min(94vw, 900px); }
     .pg-viewer__media-wrap { max-height: 52vh; }
+    .pg-viewer__media-wrap .zoom-stage { height: calc(52vh - 56px); min-height: 160px; }
     .pg-viewer__img,
-    .pg-viewer__video { max-height: 52vh; }
+    .pg-viewer__video { max-height: 100%; }
     .modal__gallery { grid-template-columns: 1fr; }
 
   /* Tablet: modal más compacto, related 3 columnas */
@@ -2284,6 +2287,7 @@ body.pg-viewer-open .nav { opacity: 0; pointer-events: none; }
   .modal__close { top: -40px; right: 0; }
   .modal__project { grid-template-columns: 1fr; }
   .modal__project-left { max-height: 40vh; }
+  .modal__project-left .zoom-stage { height: calc(40vh - 52px); }
   .modal__project-right { padding: var(--space-3) var(--space-3); }
   .modal__lightbox { gap: 1rem; }
   .modal__lightbox-title { font-size: 0.75rem; }
@@ -2329,6 +2333,7 @@ body.pg-viewer-open .nav { opacity: 0; pointer-events: none; }
   .modal__container { width: 100%; gap: 1rem; }
   .modal__project { min-height: 0; }
   .modal__project-left { max-height: 34vh; }
+  .modal__project-left .zoom-stage { height: calc(34vh - 52px); }
   .modal__project-right { padding: 1rem; }
   .modal__project-title { font-size: 1.25rem; }
   .modal__related-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
