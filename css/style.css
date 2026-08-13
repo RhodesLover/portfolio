@@ -3015,3 +3015,254 @@ body.home-ready .hero--loco .loco-line__inner { transform: none; opacity: 1; }
   .pg-cell__frame::after { transition: none; }
 }
 
+/* ============================================================
+   SPIRAL NAV v3 — camera/world stage (spatial system)
+   ============================================================ */
+
+.work-orbit {
+  position: relative;
+  height: calc(100vh + var(--orbit-run, 2800px));
+  background: #000;
+  isolation: isolate;
+}
+
+.work-orbit__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  min-height: 560px;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.82fr) minmax(0, 1.5fr);
+  gap: clamp(0.75rem, 2.5vw, 2rem);
+  align-items: center;
+  padding: calc(72px + 0.75rem) clamp(1.1rem, 3.5vw, 3rem) 1.25rem;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 65% 50% at 64% 48%, rgba(255,197,211,0.07), transparent 64%),
+    radial-gradient(ellipse 35% 30% at 18% 78%, rgba(255,197,211,0.035), transparent 70%),
+    #000;
+}
+
+.work-orbit__copy {
+  position: relative;
+  z-index: 8;
+  max-width: 20rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  pointer-events: auto;
+}
+
+.work-orbit__stage {
+  position: relative;
+  width: 100%;
+  height: min(82vh, 760px);
+  perspective: 1100px;
+  perspective-origin: 50% 48%;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.work-orbit__viewport {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  perspective: 1100px;
+  z-index: 2;
+}
+
+.work-orbit__world {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+  z-index: 2;
+}
+
+.work-orbit__path {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.work-orbit__tick {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  border-radius: 50%;
+  background: rgba(255,197,211,0.28);
+  box-shadow: 0 0 10px rgba(255,197,211,0.25);
+  transform-style: preserve-3d;
+}
+
+.work-orbit__ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  z-index: 3;
+}
+
+/* projects are world-anchored from center origin */
+.work-orbit .spiral__item,
+.work-orbit .project-card.spiral__item {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 0;
+  width: 220px;
+  transform-style: preserve-3d;
+  transform-origin: center center;
+  will-change: transform, opacity, filter;
+  cursor: pointer;
+  outline: none;
+  opacity: 0.2;
+  /* override legacy card entrance */
+  transform: translate3d(0, 0, 0);
+}
+
+.work-orbit .project-card.visible {
+  opacity: inherit;
+  transform: inherit;
+}
+
+.spiral__item .spiral__frame {
+  transform: translate(-50%, -50%);
+}
+
+.spiral__meta {
+  display: none;
+}
+
+.work-orbit__fx {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.work-orbit__glow {
+  position: absolute;
+  inset: 8% 6%;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(255,197,211,0.12), transparent 58%);
+  filter: blur(16px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.9;
+}
+
+.work-orbit__core {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  width: min(36%, 240px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,197,211,0.16), rgba(255,197,211,0.04) 42%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(3px);
+  opacity: 0.75;
+}
+
+.work-orbit__focus {
+  position: absolute;
+  left: 50%;
+  bottom: 0.15rem;
+  transform: translateX(-50%);
+  z-index: 9;
+  width: min(94%, 380px);
+  text-align: center;
+  pointer-events: none;
+  padding: 1rem 0.5rem 0.25rem;
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,0.5) 30%, rgba(0,0,0,0.9));
+}
+
+.work-orbit__focus .btn {
+  pointer-events: auto;
+  margin-top: 0.55rem;
+}
+
+.spiral__item.is-active .spiral__frame {
+  box-shadow:
+    0 0 0 1px rgba(255,197,211,0.55),
+    0 30px 70px rgba(0,0,0,0.55),
+    0 0 55px rgba(255,197,211,0.2) !important;
+}
+
+.spiral__frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--bg, #111);
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+}
+
+.spiral__media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.spiral__badge {
+  position: absolute;
+  top: 0.55rem;
+  left: 0.55rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.28rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,197,211,0.35);
+  color: #FFC5D3;
+}
+
+@media (max-width: 900px) {
+  .work-orbit__sticky {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 0.35rem;
+    padding-top: calc(64px + 0.5rem);
+  }
+  .work-orbit__copy {
+    max-width: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem 0.85rem;
+  }
+  .work-orbit__title { width: 100%; font-size: clamp(2.2rem, 11vw, 3.2rem); }
+  .work-orbit__desc { display: none; }
+  .work-orbit__stage { height: min(64vh, 560px); }
+  .work-orbit__all { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-orbit__world,
+  .spiral__item { transition: none !important; }
+}
+
