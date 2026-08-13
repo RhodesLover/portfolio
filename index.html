@@ -8,13 +8,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20">
+  <link rel="stylesheet" href="css/style.css?v=14">
 </head>
 <body>
 
   <div class="cursor-dot" id="cursorDot"></div>
   <div class="cursor-ring" id="cursorRing"></div>
   <canvas id="trailCanvas"></canvas>
+  <canvas id="particlesCanvas" aria-hidden="true"></canvas>
 
   <nav class="nav" id="nav">
     <div class="nav__inner">
@@ -60,290 +61,378 @@
       </div>
     </div>
 
+  <!-- ========== SHOWREEL ========== -->
+  <section class="showreel" id="showreel">
+    <div class="showreel__inner">
+      <div class="showreel__video">
+        <div class="showreel__placeholder">
+          <div class="showreel__icon">▶</div>
+          <p>Showreel</p>
+          <span>Subí tu reel acá · MP4 · 16:9</span>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <!-- ========== WORK / EDITORIAL SEQUENCE ========== -->
-  <section class="ed-work" id="work" data-ed-work>
-    <header class="ed-work__intro">
-      <span class="ed-work__overline">Selección</span>
-      <h2 class="ed-work__title">Trabajo</h2>
-      <p class="ed-work__lead">Una pieza por pantalla. Scroll para avanzar.</p>
-      <div class="ed-work__progress" aria-hidden="true"><span class="ed-work__bar" id="edProgress"></span></div>
-      <a href="proyectos.html" class="ed-work__archive">Archivo completo →</a>
-    </header>
-    <div class="ed-work__track" id="edTrack">
-      
-      <article class="ed-scene project-card" data-layout="L" data-index="0" data-title="Epic" data-category="Social Media · 2026" data-description="Feed de Instagram completo para Epic. Identidad visual, plantillas animadas y contenido orgánico." data-challenge="Hacer que una marca de bar de especialidad se sienta premium y consistente en un feed saturado." data-decision="Sistema de plantillas animadas con paleta fría y tipografía display: mismo lenguaje, piezas distintas cada semana." data-behance="https://www.behance.net/rhodeslover" data-modal="project" tabindex="0" role="button" aria-label="Epic">
-        <div class="ed-scene__stage">
-          
-        <div class="ed-scene__comp ed-scene__comp--L">
-          <div class="ed-scene__visual"><video class="ed-scene__media" src="assets/videos/redes/epic.mp4" poster="assets/images/redes/epic-poster.jpg" muted loop playsinline preload="metadata"></video></div>
-          <div class="ed-scene__copy">
-          <div class="ed-scene__meta">
-            <span class="ed-scene__idx">01</span>
-            <span class="ed-scene__cat">Social Media · 2026</span>
+  <!-- ========== WORK ========== -->
+  <section class="section" id="work">
+    <div class="section__header anim-title">
+      <span class="section__overline">Selección</span>
+      <h2 class="section__title">Trabajo</h2>
+      <p class="section__desc">Una mirada a los proyectos que definen mi enfoque.</p>
+    </div>
+
+    <!-- ===== REDES ===== -->
+    <div class="category" id="social">
+      <div class="category__divider anim-title">
+        <span class="category__tag">01</span>
+        <h3 class="category__title anim-underline">Redes</h3>
+        <div class="category__line"></div>
+        <span class="category__qty">3 proyectos</span>
+      </div>
+      <div class="grid grid--social">
+        <div class="project-card project-card--hero project-card--tilt"
+             data-title="Epic"
+             data-category="Social Media · 2026"
+             data-description="Feed de Instagram completo para Epic. Identidad visual, plantillas animadas y contenido orgánico."
+             data-challenge="Hacer que una marca de bar de especialidad se sienta premium y consistente en un feed saturado."
+             data-decision="Sistema de plantillas animadas con paleta fría y tipografía display: mismo lenguaje, piezas distintas cada semana."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#1a1a2e;">
+              <video class="project-card__video" src="assets/videos/redes/epic.mp4" poster="assets/images/redes/epic-poster.jpg" muted loop playsinline></video>
+            </div>
+            <span class="project-card__badge">Animado</span>
+            <div class="project-card__overlay">
+              <span>Ver proyecto →</span>
+            </div>
           </div>
-          <h3 class="ed-scene__title">Epic</h3>
-          <p class="ed-scene__desc">Feed de Instagram completo para Epic. Identidad visual, plantillas animadas y contenido orgánico.</p>
-          <button type="button" class="ed-scene__open">Abrir pieza</button></div>
-        </div>
-        </div>
-      </article>
-      <article class="ed-scene project-card" data-layout="C" data-index="1" data-title="26Shop" data-category="Social Media · 2026" data-description="Estrategia de contenido para 26Shop. Posteos estáticos con identidad fresca." data-behance="https://www.behance.net/rhodeslover" data-modal="project" tabindex="0" role="button" aria-label="26Shop">
-        <div class="ed-scene__stage">
-          
-        <div class="ed-scene__comp ed-scene__comp--C">
-          <div class="ed-scene__visual ed-scene__visual--xl"><img class="ed-scene__media" src="assets/images/redes/26shop.jpg" alt="26Shop" loading="lazy" decoding="async"></div>
-          <div class="ed-scene__copy ed-scene__copy--overlay">
-          <div class="ed-scene__meta">
-            <span class="ed-scene__idx">02</span>
-            <span class="ed-scene__cat">Social Media · 2026</span>
+          <div class="project-card__info">
+            <h4>Epic</h4>
+            <span class="project-card__tag">Social Media · 2026</span>
           </div>
-          <h3 class="ed-scene__title">26Shop</h3>
-          <p class="ed-scene__desc">Estrategia de contenido para 26Shop. Posteos estáticos con identidad fresca.</p>
-          <button type="button" class="ed-scene__open">Abrir pieza</button></div>
         </div>
-        </div>
-      </article>
-      <article class="ed-scene project-card" data-layout="R" data-index="2" data-title="Distravel" data-category="Social Media · 2026" data-description="Campaña estacional para Distravel. Piezas animadas con foco en destinos." data-behance="https://www.behance.net/rhodeslover" data-modal="project" tabindex="0" role="button" aria-label="Distravel">
-        <div class="ed-scene__stage">
-          
-        <div class="ed-scene__comp ed-scene__comp--R">
-          <div class="ed-scene__copy">
-          <div class="ed-scene__meta">
-            <span class="ed-scene__idx">03</span>
-            <span class="ed-scene__cat">Social Media · 2026</span>
+        <div class="project-card project-card--tilt"
+             data-title="26Shop"
+             data-category="Social Media · 2026"
+             data-description="Estrategia de contenido para 26Shop. Posteos estáticos con identidad fresca."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#f5f0eb;">
+              <img class="project-card__img" src="assets/images/redes/26shop.jpg" alt="26Shop" loading="lazy">
+            </div>
+            <div class="project-card__overlay">
+              <span>Ver →</span>
+            </div>
           </div>
-          <h3 class="ed-scene__title">Distravel</h3>
-          <p class="ed-scene__desc">Campaña estacional para Distravel. Piezas animadas con foco en destinos.</p>
-          <button type="button" class="ed-scene__open">Abrir pieza</button></div>
-          <div class="ed-scene__visual"><video class="ed-scene__media" src="assets/videos/redes/distravel.mp4" poster="assets/images/redes/distravel-poster.jpg" muted loop playsinline preload="metadata"></video></div>
-        </div>
-        </div>
-      </article>
-      <article class="ed-scene project-card" data-layout="T" data-index="3" data-title="Naturaleza Humana" data-category="Branding · 2024" data-description="Identidad visual completa con enfoque orgánico. Paleta cromática y aplicaciones." data-challenge="Comunicar calma y origen natural en un rubro donde todo se ve igual de &#x27;artesanal&#x27;." data-decision="Paleta terrosa, tipografía serif y texturas orgánicas: identidad que se siente hecha a mano, no manufacturada." data-behance="https://www.behance.net/rhodeslover" data-modal="project" tabindex="0" role="button" aria-label="Naturaleza Humana">
-        <div class="ed-scene__stage">
-          
-        <div class="ed-scene__comp ed-scene__comp--T">
-          <div class="ed-scene__copy ed-scene__copy--lead">
-          <div class="ed-scene__meta">
-            <span class="ed-scene__idx">04</span>
-            <span class="ed-scene__cat">Branding · 2024</span>
+          <div class="project-card__info">
+            <h4>26Shop</h4>
+            <span class="project-card__tag">Social Media · 2026</span>
           </div>
-          <h3 class="ed-scene__title">Naturaleza Humana</h3>
-          <p class="ed-scene__desc">Identidad visual completa con enfoque orgánico. Paleta cromática y aplicaciones.</p>
-          <button type="button" class="ed-scene__open">Abrir pieza</button></div>
-          <div class="ed-scene__visual ed-scene__visual--side"><img class="ed-scene__media" src="assets/images/branding/naturaleza-humana.jpg" alt="Naturaleza Humana" loading="lazy" decoding="async"></div>
         </div>
-        </div>
-      </article>
-      <article class="ed-scene project-card" data-layout="L" data-index="4" data-title="Fernet Cordobita" data-category="Branding · 2025" data-description="Etiquetas y packaging con identidad regional." data-behance="https://www.behance.net/rhodeslover" data-modal="project" tabindex="0" role="button" aria-label="Fernet Cordobita">
-        <div class="ed-scene__stage">
-          
-        <div class="ed-scene__comp ed-scene__comp--L">
-          <div class="ed-scene__visual"><img class="ed-scene__media" src="assets/images/branding/fernet-cordobita.jpg" alt="Fernet Cordobita" loading="lazy" decoding="async"></div>
-          <div class="ed-scene__copy">
-          <div class="ed-scene__meta">
-            <span class="ed-scene__idx">05</span>
-            <span class="ed-scene__cat">Branding · 2025</span>
+        <div class="project-card project-card--tilt"
+             data-title="Distravel"
+             data-category="Social Media · 2026"
+             data-description="Campaña estacional para Distravel. Piezas animadas con foco en destinos."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#0d2137;">
+              <video class="project-card__video" src="assets/videos/redes/distravel.mp4" poster="assets/images/redes/distravel-poster.jpg" muted loop playsinline></video>
+            </div>
+            <span class="project-card__badge">Animado</span>
+            <div class="project-card__overlay">
+              <span>Ver →</span>
+            </div>
           </div>
-          <h3 class="ed-scene__title">Fernet Cordobita</h3>
-          <p class="ed-scene__desc">Etiquetas y packaging con identidad regional.</p>
-          <button type="button" class="ed-scene__open">Abrir pieza</button></div>
-        </div>
-        </div>
-      </article>
-      <article class="ed-scene project-card" data-layout="R" data-index="5" data-title="Mercado Montañés" data-category="Branding · 2026" data-description="Identidad de marca con enfoque en producto regional." data-behance="https://www.behance.net/rhodeslover" data-modal="project" tabindex="0" role="button" aria-label="Mercado Montañés">
-        <div class="ed-scene__stage">
-          
-        <div class="ed-scene__comp ed-scene__comp--R">
-          <div class="ed-scene__copy">
-          <div class="ed-scene__meta">
-            <span class="ed-scene__idx">06</span>
-            <span class="ed-scene__cat">Branding · 2026</span>
+          <div class="project-card__info">
+            <h4>Distravel</h4>
+            <span class="project-card__tag">Social Media · 2026</span>
           </div>
-          <h3 class="ed-scene__title">Mercado Montañés</h3>
-          <p class="ed-scene__desc">Identidad de marca con enfoque en producto regional.</p>
-          <button type="button" class="ed-scene__open">Abrir pieza</button></div>
-          <div class="ed-scene__visual"><img class="ed-scene__media" src="assets/images/branding/mercado-montanes.jpg" alt="Mercado Montañés" loading="lazy" decoding="async"></div>
         </div>
-        </div>
-      </article>
-      <article class="ed-scene project-card" data-layout="C" data-index="6" data-title="Fantasma - Gustavo Cerati" data-category="Poster · 2026" data-description="Poster conceptual homenaje a Gustavo Cerati. Tipografía y atmósfera." data-behance="https://www.behance.net/rhodeslover" data-modal="lightbox" tabindex="0" role="button" aria-label="Fantasma - Gustavo Cerati">
-        <div class="ed-scene__stage">
-          
-        <div class="ed-scene__comp ed-scene__comp--C">
-          <div class="ed-scene__visual ed-scene__visual--xl"><img class="ed-scene__media" src="assets/images/proyectos/fantasma-cerati.jpg" alt="Fantasma - Gustavo Cerati" loading="lazy" decoding="async"></div>
-          <div class="ed-scene__copy ed-scene__copy--overlay">
-          <div class="ed-scene__meta">
-            <span class="ed-scene__idx">07</span>
-            <span class="ed-scene__cat">Poster · 2026</span>
+      </div>
+    </div>
+
+    <!-- ===== BRANDING ===== -->
+    <div class="category" id="branding">
+      <div class="category__divider anim-title">
+        <span class="category__tag">02</span>
+        <h3 class="category__title anim-underline">Branding</h3>
+        <div class="category__line"></div>
+        <span class="category__qty">3 proyectos</span>
+      </div>
+      <div class="grid grid--branding">
+        <div class="project-card project-card--tilt"
+             data-title="Naturaleza Humana"
+             data-category="Branding · 2024"
+             data-description="Identidad visual completa con enfoque orgánico. Paleta cromática y aplicaciones."
+             data-challenge="Comunicar calma y origen natural en un rubro donde todo se ve igual de 'artesanal'."
+             data-decision="Paleta terrosa, tipografía serif y texturas orgánicas: identidad que se siente hecha a mano, no manufacturada."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#2a3a2a;">
+              <img class="project-card__img" src="assets/images/branding/naturaleza-humana.jpg" alt="Naturaleza Humana" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver proyecto →</span></div>
           </div>
-          <h3 class="ed-scene__title">Fantasma - Gustavo Cerati</h3>
-          <p class="ed-scene__desc">Poster conceptual homenaje a Gustavo Cerati. Tipografía y atmósfera.</p>
-          <button type="button" class="ed-scene__open">Abrir pieza</button></div>
-        </div>
-        </div>
-      </article>
-      <article class="ed-scene project-card" data-layout="L" data-index="7" data-title="Fly me to the Moon" data-category="Poster · 2024" data-description="Póster cinematográfico con textura digital. Composición espacial." data-behance="https://www.behance.net/rhodeslover" data-modal="lightbox" tabindex="0" role="button" aria-label="Fly me to the Moon">
-        <div class="ed-scene__stage">
-          
-        <div class="ed-scene__comp ed-scene__comp--L">
-          <div class="ed-scene__visual"><img class="ed-scene__media" src="assets/images/proyectos/fly-moon.jpg" alt="Fly me to the Moon" loading="lazy" decoding="async"></div>
-          <div class="ed-scene__copy">
-          <div class="ed-scene__meta">
-            <span class="ed-scene__idx">08</span>
-            <span class="ed-scene__cat">Poster · 2024</span>
+          <div class="project-card__info">
+            <h4>Naturaleza Humana</h4>
+            <span class="project-card__tag">Branding · 2024</span>
           </div>
-          <h3 class="ed-scene__title">Fly me to the Moon</h3>
-          <p class="ed-scene__desc">Póster cinematográfico con textura digital. Composición espacial.</p>
-          <button type="button" class="ed-scene__open">Abrir pieza</button></div>
         </div>
-        </div>
-      </article>
-      <article class="ed-scene project-card" data-layout="T" data-index="8" data-title="Arte Único Branca 2023" data-category="Poster · 2023" data-description="Pieza gráfica para Arte Único Branca 2023. Edición limitada." data-behance="https://www.behance.net/rhodeslover" data-modal="lightbox" tabindex="0" role="button" aria-label="Arte Único Branca 2023">
-        <div class="ed-scene__stage">
-          
-        <div class="ed-scene__comp ed-scene__comp--T">
-          <div class="ed-scene__copy ed-scene__copy--lead">
-          <div class="ed-scene__meta">
-            <span class="ed-scene__idx">09</span>
-            <span class="ed-scene__cat">Poster · 2023</span>
+        <div class="project-card project-card--tilt"
+             data-title="Fernet Cordobita"
+             data-category="Branding · 2025"
+             data-description="Etiquetas y packaging con identidad regional."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#1a0a0a;">
+              <img class="project-card__img" src="assets/images/branding/fernet-cordobita.jpg" alt="Fernet Cordobita" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver proyecto →</span></div>
           </div>
-          <h3 class="ed-scene__title">Arte Único Branca 2023</h3>
-          <p class="ed-scene__desc">Pieza gráfica para Arte Único Branca 2023. Edición limitada.</p>
-          <button type="button" class="ed-scene__open">Abrir pieza</button></div>
-          <div class="ed-scene__visual ed-scene__visual--side"><img class="ed-scene__media" src="assets/images/proyectos/arte-unico-branca.jpg" alt="Arte Único Branca 2023" loading="lazy" decoding="async"></div>
-        </div>
-        </div>
-      </article>
-      <article class="ed-scene project-card" data-layout="R" data-index="9" data-title="Del Bardo al Arte" data-category="Premios Diente · 2025" data-description="Pieza gráfica para los Premios Diente 2025 de la Escuela Da Vinci." data-behance="https://www.behance.net/gallery/232628389/Del-Bardo-al-Arte-Premios-Diente-2025" data-modal="project" tabindex="0" role="button" aria-label="Del Bardo al Arte">
-        <div class="ed-scene__stage">
-          
-        <div class="ed-scene__comp ed-scene__comp--R">
-          <div class="ed-scene__copy">
-          <div class="ed-scene__meta">
-            <span class="ed-scene__idx">10</span>
-            <span class="ed-scene__cat">Premios Diente · 2025</span>
+          <div class="project-card__info">
+            <h4>Fernet Cordobita</h4>
+            <span class="project-card__tag">Branding · 2025</span>
           </div>
-          <h3 class="ed-scene__title">Del Bardo al Arte</h3>
-          <p class="ed-scene__desc">Pieza gráfica para los Premios Diente 2025 de la Escuela Da Vinci.</p>
-          <button type="button" class="ed-scene__open">Abrir pieza</button></div>
-          <div class="ed-scene__visual"><img class="ed-scene__media" src="assets/images/proyectos/bardo-arte.gif" alt="Del Bardo al Arte" loading="lazy" decoding="async"></div>
         </div>
-        </div>
-      </article>
-      <article class="ed-scene project-card" data-layout="C" data-index="10" data-title="Wonder" data-category="Proyecto · 2025" data-description="Proyecto conceptual con identidad visual onírica." data-behance="https://www.behance.net/gallery/233220773/WONDER" data-modal="project" tabindex="0" role="button" aria-label="Wonder">
-        <div class="ed-scene__stage">
-          
-        <div class="ed-scene__comp ed-scene__comp--C">
-          <div class="ed-scene__visual ed-scene__visual--xl"><img class="ed-scene__media" src="assets/images/proyectos/wonder.gif" alt="Wonder" loading="lazy" decoding="async"></div>
-          <div class="ed-scene__copy ed-scene__copy--overlay">
-          <div class="ed-scene__meta">
-            <span class="ed-scene__idx">11</span>
-            <span class="ed-scene__cat">Proyecto · 2025</span>
+        <div class="project-card project-card--tilt"
+             data-title="Mercado Montañés"
+             data-category="Branding · 2026"
+             data-description="Identidad de marca con enfoque en producto regional."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#1a1a0a;">
+              <img class="project-card__img" src="assets/images/branding/mercado-montanes.jpg" alt="Mercado Montañés" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver proyecto →</span></div>
           </div>
-          <h3 class="ed-scene__title">Wonder</h3>
-          <p class="ed-scene__desc">Proyecto conceptual con identidad visual onírica.</p>
-          <button type="button" class="ed-scene__open">Abrir pieza</button></div>
-        </div>
-        </div>
-      </article>
-      <article class="ed-scene project-card" data-layout="L" data-index="11" data-title="Kentucky Vegano" data-category="Campaña · 2024" data-description="Campaña publicitaria integral para Kentucky Vegano." data-behance="https://www.behance.net/gallery/205030765/Kentucky-Vegano-Campana-Publicitaria-Integral" data-modal="project" tabindex="0" role="button" aria-label="Kentucky Vegano">
-        <div class="ed-scene__stage">
-          
-        <div class="ed-scene__comp ed-scene__comp--L">
-          <div class="ed-scene__visual"><img class="ed-scene__media" src="assets/images/proyectos/kentucky.jpg" alt="Kentucky Vegano" loading="lazy" decoding="async"></div>
-          <div class="ed-scene__copy">
-          <div class="ed-scene__meta">
-            <span class="ed-scene__idx">12</span>
-            <span class="ed-scene__cat">Campaña · 2024</span>
+          <div class="project-card__info">
+            <h4>Mercado Montañés</h4>
+            <span class="project-card__tag">Branding · 2026</span>
           </div>
-          <h3 class="ed-scene__title">Kentucky Vegano</h3>
-          <p class="ed-scene__desc">Campaña publicitaria integral para Kentucky Vegano.</p>
-          <button type="button" class="ed-scene__open">Abrir pieza</button></div>
         </div>
-        </div>
-      </article>
-      <article class="ed-scene project-card" data-layout="R" data-index="12" data-title="Nogal Poster" data-category="Poster · 2024" data-description="Póster con textura y composición natural." data-behance="https://www.behance.net/rhodeslover" data-modal="project" tabindex="0" role="button" aria-label="Nogal Poster">
-        <div class="ed-scene__stage">
-          
-        <div class="ed-scene__comp ed-scene__comp--R">
-          <div class="ed-scene__copy">
-          <div class="ed-scene__meta">
-            <span class="ed-scene__idx">13</span>
-            <span class="ed-scene__cat">Poster · 2024</span>
+      </div>
+    </div>
+
+    <!-- ===== POSTERS ===== -->
+    <div class="category" id="posters">
+      <div class="category__divider anim-title">
+        <span class="category__tag">03</span>
+        <h3 class="category__title anim-underline">Posters</h3>
+        <div class="category__line"></div>
+        <span class="category__qty">3 proyectos</span>
+      </div>
+      <div class="grid grid--posters">
+        <div class="project-card project-card--tall project-card--tilt"
+             data-modal="lightbox"
+             data-title="Fantasma - Gustavo Cerati"
+             data-category="Poster · 2026"
+             data-description="Poster conceptual homenaje a Gustavo Cerati. Tipografía y atmósfera."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#0a0015;">
+              <img class="project-card__img" src="assets/images/proyectos/fantasma-cerati.jpg" alt="Fantasma - Gustavo Cerati" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
           </div>
-          <h3 class="ed-scene__title">Nogal Poster</h3>
-          <p class="ed-scene__desc">Póster con textura y composición natural.</p>
-          <button type="button" class="ed-scene__open">Abrir pieza</button></div>
-          <div class="ed-scene__visual"><img class="ed-scene__media" src="assets/images/proyectos/nogal-poster.jpg" alt="Nogal Poster" loading="lazy" decoding="async"></div>
-        </div>
-        </div>
-      </article>
-      <article class="ed-scene project-card" data-layout="T" data-index="13" data-title="Desembarco" data-category="Proyecto · 2024" data-description="Portada editorial para Desembarco. Diagramación y tratamiento de imagen." data-modal="project" tabindex="0" role="button" aria-label="Desembarco">
-        <div class="ed-scene__stage">
-          
-        <div class="ed-scene__comp ed-scene__comp--T">
-          <div class="ed-scene__copy ed-scene__copy--lead">
-          <div class="ed-scene__meta">
-            <span class="ed-scene__idx">14</span>
-            <span class="ed-scene__cat">Proyecto · 2024</span>
+          <div class="project-card__info">
+            <h4>Fantasma</h4>
+            <span class="project-card__tag">Gustavo Cerati · 2026</span>
           </div>
-          <h3 class="ed-scene__title">Desembarco</h3>
-          <p class="ed-scene__desc">Portada editorial para Desembarco. Diagramación y tratamiento de imagen.</p>
-          <button type="button" class="ed-scene__open">Abrir pieza</button></div>
-          <div class="ed-scene__visual ed-scene__visual--side"><img class="ed-scene__media" src="assets/images/proyectos/desembarco-tapa.jpg" alt="Desembarco" loading="lazy" decoding="async"></div>
         </div>
-        </div>
-      </article>
-      <article class="ed-scene project-card" data-layout="C" data-index="14" data-title="Polar Bear" data-category="Ilustración · 2025" data-description="Ilustración digital de oso polar. Estilo personal con textura." data-behance="https://www.behance.net/rhodeslover" data-modal="lightbox" tabindex="0" role="button" aria-label="Polar Bear">
-        <div class="ed-scene__stage">
-          
-        <div class="ed-scene__comp ed-scene__comp--C">
-          <div class="ed-scene__visual ed-scene__visual--xl"><img class="ed-scene__media" src="assets/images/proyectos/polar-bear.jpg" alt="Polar Bear" loading="lazy" decoding="async"></div>
-          <div class="ed-scene__copy ed-scene__copy--overlay">
-          <div class="ed-scene__meta">
-            <span class="ed-scene__idx">15</span>
-            <span class="ed-scene__cat">Ilustración · 2025</span>
+        <div class="project-card project-card--tall project-card--tilt"
+             data-modal="lightbox"
+             data-title="Fly me to the Moon"
+             data-category="Poster · 2024"
+             data-description="Póster cinematográfico con textura digital. Composición espacial."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#0a0a1a;">
+              <img class="project-card__img" src="assets/images/proyectos/fly-moon.jpg" alt="Fly me to the Moon" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
           </div>
-          <h3 class="ed-scene__title">Polar Bear</h3>
-          <p class="ed-scene__desc">Ilustración digital de oso polar. Estilo personal con textura.</p>
-          <button type="button" class="ed-scene__open">Abrir pieza</button></div>
-        </div>
-        </div>
-      </article>
-      <article class="ed-scene project-card" data-layout="L" data-index="15" data-title="Kalisi" data-category="Ilustración · 2025" data-description="Ilustración digital con paleta pastel y estilo personal." data-behance="https://www.behance.net/rhodeslover" data-modal="lightbox" tabindex="0" role="button" aria-label="Kalisi">
-        <div class="ed-scene__stage">
-          
-        <div class="ed-scene__comp ed-scene__comp--L">
-          <div class="ed-scene__visual"><img class="ed-scene__media" src="assets/images/proyectos/kalisi.jpg" alt="Kalisi" loading="lazy" decoding="async"></div>
-          <div class="ed-scene__copy">
-          <div class="ed-scene__meta">
-            <span class="ed-scene__idx">16</span>
-            <span class="ed-scene__cat">Ilustración · 2025</span>
+          <div class="project-card__info">
+            <h4>Fly me to the Moon</h4>
+            <span class="project-card__tag">Poster · 2024</span>
           </div>
-          <h3 class="ed-scene__title">Kalisi</h3>
-          <p class="ed-scene__desc">Ilustración digital con paleta pastel y estilo personal.</p>
-          <button type="button" class="ed-scene__open">Abrir pieza</button></div>
         </div>
-        </div>
-      </article>
-      <article class="ed-scene project-card" data-layout="R" data-index="16" data-title="Ilustración Bowie" data-category="Ilustración · 2022" data-description="Póster ilustrado de David Bowie. Homenaje visual al artista." data-behance="https://www.behance.net/rhodeslover" data-modal="lightbox" tabindex="0" role="button" aria-label="Ilustración Bowie">
-        <div class="ed-scene__stage">
-          
-        <div class="ed-scene__comp ed-scene__comp--R">
-          <div class="ed-scene__copy">
-          <div class="ed-scene__meta">
-            <span class="ed-scene__idx">17</span>
-            <span class="ed-scene__cat">Ilustración · 2022</span>
+        <div class="project-card project-card--tall project-card--tilt"
+             data-modal="lightbox"
+             data-title="Arte Único Branca 2023"
+             data-category="Poster · 2023"
+             data-description="Pieza gráfica para Arte Único Branca 2023. Edición limitada."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#0a0a00;">
+              <img class="project-card__img" src="assets/images/proyectos/arte-unico-branca.jpg" alt="Arte Único Branca" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
           </div>
-          <h3 class="ed-scene__title">Ilustración Bowie</h3>
-          <p class="ed-scene__desc">Póster ilustrado de David Bowie. Homenaje visual al artista.</p>
-          <button type="button" class="ed-scene__open">Abrir pieza</button></div>
-          <div class="ed-scene__visual"><img class="ed-scene__media" src="assets/images/proyectos/bowie.jpg" alt="Ilustración Bowie" loading="lazy" decoding="async"></div>
+          <div class="project-card__info">
+            <h4>Arte Único Branca</h4>
+            <span class="project-card__tag">Poster · 2023</span>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <!-- ===== PROYECTOS ===== -->
+    <div class="category" id="proyectos">
+      <div class="category__divider anim-title">
+        <span class="category__tag">04</span>
+        <h3 class="category__title anim-underline">Proyectos</h3>
+        <div class="category__line"></div>
+        <span class="category__qty">5 proyectos</span>
+      </div>
+      <div class="grid grid--proyectos">
+        <div class="project-card project-card--tall project-card--tilt"
+             data-title="Del Bardo al Arte"
+             data-category="Premios Diente · 2025"
+             data-description="Pieza gráfica para los Premios Diente 2025 de la Escuela Da Vinci."
+             data-behance="https://www.behance.net/gallery/232628389/Del-Bardo-al-Arte-Premios-Diente-2025">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#0a0a0a;">
+              <img class="project-card__img" src="assets/images/proyectos/bardo-arte.gif" alt="Del Bardo al Arte" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
+          </div>
+          <div class="project-card__info">
+            <h4>Del Bardo al Arte</h4>
+            <span class="project-card__tag">Premios Diente · 2025</span>
+          </div>
         </div>
-      </article>
+        <div class="project-card project-card--tilt"
+             data-title="Wonder"
+             data-category="Proyecto · 2025"
+             data-description="Proyecto conceptual con identidad visual onírica."
+             data-behance="https://www.behance.net/gallery/233220773/WONDER">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#0a0015;">
+              <img class="project-card__img" src="assets/images/proyectos/wonder.gif" alt="Wonder" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
+          </div>
+          <div class="project-card__info">
+            <span class="project-card__tag">Proyecto · 2025</span>
+          </div>
+        </div>
+        <div class="project-card project-card--tilt"
+             data-title="Kentucky Vegano"
+             data-category="Campaña · 2024"
+             data-description="Campaña publicitaria integral para Kentucky Vegano."
+             data-behance="https://www.behance.net/gallery/205030765/Kentucky-Vegano-Campana-Publicitaria-Integral">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#1a0a00;">
+              <img class="project-card__img" src="assets/images/proyectos/kentucky.jpg" alt="Kentucky Vegano" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
+          </div>
+          <div class="project-card__info">
+            <span class="project-card__tag">Campaña · 2024</span>
+          </div>
+        </div>
+        <div class="project-card project-card--tilt"
+             data-title="Nogal Poster"
+             data-category="Poster · 2024"
+             data-description="Póster con textura y composición natural."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#1a1a0a;">
+              <img class="project-card__img" src="assets/images/proyectos/nogal-poster.jpg" alt="Nogal Poster" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
+          </div>
+          <div class="project-card__info">
+            <h4>Nogal</h4>
+            <span class="project-card__tag">Poster · 2024</span>
+          </div>
+        </div>
+        <div class="project-card project-card--tilt"
+             data-title="Desembarco"
+             data-category="Proyecto · 2024"
+             data-description="Portada editorial para Desembarco. Diagramación y tratamiento de imagen.">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#0a0a0a;">
+              <img class="project-card__img" src="assets/images/proyectos/desembarco-tapa.jpg" alt="Desembarco" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
+          </div>
+          <div class="project-card__info">
+            <h4>Desembarco</h4>
+            <span class="project-card__tag">Proyecto · 2024</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ILUSTRACIONES ===== -->
+    <div class="category" id="ilustraciones">
+      <div class="category__divider anim-title">
+        <span class="category__tag">05</span>
+        <h3 class="category__title anim-underline">Ilustraciones</h3>
+        <div class="category__line"></div>
+        <span class="category__qty">3 proyectos</span>
+      </div>
+      <div class="grid grid--ilustraciones">
+        <div class="project-card project-card--tall project-card--tilt"
+             data-modal="lightbox"
+             data-title="Polar Bear"
+             data-category="Ilustración · 2025"
+             data-description="Ilustración digital de oso polar. Estilo personal con textura."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#0a1a2a;">
+              <img class="project-card__img" src="assets/images/proyectos/polar-bear.jpg" alt="Polar Bear" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
+          </div>
+          <div class="project-card__info">
+            <h4>Polar Bear</h4>
+            <span class="project-card__tag">Ilustración · 2025</span>
+          </div>
+        </div>
+        <div class="project-card project-card--tall project-card--tilt"
+             data-modal="lightbox"
+             data-title="Kalisi"
+             data-category="Ilustración · 2025"
+             data-description="Ilustración digital con paleta pastel y estilo personal."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#1a0a1a;">
+              <img class="project-card__img" src="assets/images/proyectos/kalisi.jpg" alt="Kalisi" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
+          </div>
+          <div class="project-card__info">
+            <h4>Kalisi</h4>
+            <span class="project-card__tag">Ilustración · 2025</span>
+          </div>
+        </div>
+        <div class="project-card project-card--tall project-card--tilt"
+             data-modal="lightbox"
+             data-title="Ilustración Bowie"
+             data-category="Ilustración · 2022"
+             data-description="Póster ilustrado de David Bowie. Homenaje visual al artista."
+             data-behance="https://www.behance.net/rhodeslover">
+          <div class="project-card__media">
+            <div class="project-card__media-bg" style="background:#1a0a00;">
+              <img class="project-card__img" src="assets/images/proyectos/bowie.jpg" alt="Ilustración Bowie" loading="lazy">
+            </div>
+            <div class="project-card__overlay"><span>Ver →</span></div>
+          </div>
+          <div class="project-card__info">
+            <h4>Ilustración Bowie</h4>
+            <span class="project-card__tag">Ilustración · 2022</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section__footer">
+      <a href="proyectos.html" class="btn btn--primary btn--large">
+        Ver todos los trabajos →
+      </a>
     </div>
   </section>
 
@@ -470,7 +559,7 @@
   </div>
 
   <script src="js/zoom.js?v=2"></script>
-  <script src="js/editorial.js?v=2"></script>
-    <script src="js/main.js?v=18"></script>
+  <script src="js/particles.js?v=1"></script>
+    <script src="js/main.js?v=19"></script>
 </body>
 </html>

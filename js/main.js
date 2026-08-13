@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentIndex = -1;
 
     function getMediaSrc(card, forThumb = false) {
-      const imgEl = card.querySelector('.project-card__img, .project-card__video, .ed-scene__media');
+      const imgEl = card.querySelector('.project-card__img, .project-card__video');
       if (!imgEl) return { src: '', isVideo: false };
       const src = imgEl.src || '';
       if (imgEl.tagName === 'VIDEO') {
