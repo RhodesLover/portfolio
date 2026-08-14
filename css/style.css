@@ -1522,7 +1522,19 @@ body.modal-open .nav {
   background: transparent;
   border: 1.5px solid #1769FF;
   color: #1769FF;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
   transition: all 0.3s;
+}
+.modal__behance-btn--insta {
+  border-color: #FFC5D3;
+  color: #FFC5D3;
+}
+.modal__behance-btn--insta:hover {
+  background: #FFC5D3;
+  color: #000;
+  transform: translateY(-2px);
 }
 .modal__behance-btn:hover {
   background: #1769FF;
@@ -2161,6 +2173,8 @@ body.modal-open .nav {
   padding: 0.7rem 1rem;
   border-radius: 2px;
   cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
   text-decoration: none;
   transition: background 0.25s, color 0.25s;
 }

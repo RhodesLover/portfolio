@@ -293,7 +293,15 @@
     vIdx.textContent = idxLabel ? idxLabel.textContent : String(currentIndex + 1).padStart(2, '0');
 
     vActions.innerHTML = '';
-    if (behance) {
+    const isRedes = (cell.dataset.section === 'redes') || (cat || '').indexOf('Social') === 0;
+    if (isRedes) {
+      // Redes → botón "Ver Instagram" (prototipo Figma a futuro, sin acción por ahora)
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pg-viewer__link';
+      b.textContent = 'Ver Instagram →';
+      vActions.appendChild(b);
+    } else if (behance) {
       const a = document.createElement('a');
       a.href = behance;
       a.target = '_blank';

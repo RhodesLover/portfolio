@@ -420,7 +420,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (lightboxZoom) lightboxZoom.setEnabled(false);
         
         projActions.innerHTML = '';
-        if (behance) {
+        const isSocial = (category || '').indexOf('Social') === 0;
+        if (isSocial) {
+          // Redes → botón "Ver Instagram" (prototipo Figma a futuro, sin acción por ahora)
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'modal__behance-btn modal__behance-btn--insta';
+          btn.textContent = 'Ver Instagram →';
+          projActions.appendChild(btn);
+        } else if (behance) {
           const btn = document.createElement('a');
           btn.href = behance;
           btn.target = '_blank';
