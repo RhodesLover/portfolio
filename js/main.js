@@ -483,7 +483,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.project-card').forEach(card => {
       card.addEventListener('click', function(e) {
         e.preventDefault();
-        openModal(this);
+        // Posters/Ilustraciones (lightbox) → modal; Redes/Branding/Proyectos → viewer galería
+        if (this.dataset.modal === 'lightbox') {
+          openModal(this);
+        } else if (window.__openHomeViewer) {
+          window.__openHomeViewer(this);
+        } else {
+          openModal(this);
+        }
       });
     });
 
@@ -538,4 +545,156 @@ document.addEventListener('DOMContentLoaded', () => {
 
   build();
   window.addEventListener('resize', build);
+})();
+
+/* ============================================================
+   HOME VIEWER — viewer estilo galería (Redes / Branding / Proyectos)
+   Posters/Ilustraciones siguen con el modal lightbox.
+   ============================================================ */
+(function () {
+  'use strict';
+  const viewer = document.getElementById('pgViewer');
+  if (!viewer) return;
+
+  const backdrop = document.getElementById('pgViewerBackdrop');
+  const closeBtn = document.getElementById('pgViewerClose');
+  const prevBtn = document.getElementById('pgViewerPrev');
+  const nextBtn = document.getElementById('pgViewerNext');
+  const vImg = document.getElementById('pgViewerImg');
+  const vVideo = document.getElementById('pgViewerVideo');
+  const vTitle = document.getElementById('pgViewerTitle');
+  const vCat = document.getElementById('pgViewerCat');
+  const vDesc = document.getElementById('pgViewerDesc');
+  const vIdx = document.getElementById('pgViewerIdx');
+  const vActions = document.getElementById('pgViewerActions');
+  const zoomStage = document.getElementById('pgZoomStage');
+
+  const mediaZoom = (typeof createMediaZoom === 'function') ? createMediaZoom({
+    stage: zoomStage,
+    target: vImg,
+    controls: document.getElementById('pgZoomControls'),
+    levelEl: document.getElementById('pgZoomLevel')
+  }) : null;
+
+  // solo las cards que NO son lightbox (Redes / Branding / Proyectos)
+  const viewerCards = Array.from(document.querySelectorAll('.project-card'))
+    .filter((c) => c.dataset.modal !== 'lightbox');
+  let currentIndex = -1;
+
+  function getCardMedia(card) {
+    const vid = card.querySelector('.project-card__video');
+    if (vid) {
+      return { type: 'video', media: vid.getAttribute('src') || vid.currentSrc || '', poster: vid.getAttribute('poster') || '' };
+    }
+    const img = card.querySelector('.project-card__img');
+    return { type: 'image', media: img ? (img.getAttribute('src') || '') : '', poster: '' };
+  }
+
+  function setVideoFill(on) {
+    if (zoomStage) zoomStage.classList.toggle('is-video-fill', !!on);
+  }
+
+  function clearViewerMedia() {
+    vVideo.pause();
+    vVideo.removeAttribute('src');
+    vVideo.load();
+    vVideo.style.display = 'none';
+    vImg.removeAttribute('src');
+    vImg.style.display = 'none';
+    if (mediaZoom) mediaZoom.setEnabled(false);
+    setVideoFill(false);
+    if (zoomStage) zoomStage.style.aspectRatio = '';
+  }
+
+  function openViewer(card) {
+    if (!viewer || !card) return;
+    currentIndex = viewerCards.indexOf(card);
+    if (currentIndex < 0) return;
+
+    const title = card.dataset.title || '';
+    const category = card.dataset.category || '';
+    const desc = card.dataset.description || '';
+    const behance = card.dataset.behance || '';
+    const media = getCardMedia(card);
+
+    clearViewerMedia();
+
+    if (media.type === 'video' && media.media) {
+      vVideo.style.display = 'block';
+      if (media.poster) vVideo.poster = media.poster;
+      vVideo.src = media.media;
+      vVideo.play().catch(() => {});
+      setVideoFill(true);
+      if (mediaZoom) mediaZoom.setEnabled(false);
+    } else {
+      vImg.style.display = 'block';
+      vImg.src = media.media;
+      vImg.alt = title;
+      setVideoFill(false);
+      if (mediaZoom) mediaZoom.setEnabled(!!media.media);
+    }
+
+    vTitle.textContent = title;
+    vCat.textContent = category;
+    vDesc.textContent = desc;
+    vIdx.textContent = String(currentIndex + 1).padStart(2, '0');
+
+    vActions.innerHTML = '';
+    const isSocial = (category || '').indexOf('Social') === 0;
+    if (isSocial) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pg-viewer__link';
+      b.textContent = 'Ver Instagram →';
+      vActions.appendChild(b);
+    } else if (behance) {
+      const a = document.createElement('a');
+      a.href = behance;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.className = 'pg-viewer__link';
+      a.textContent = 'Ver en Behance →';
+      vActions.appendChild(a);
+    }
+
+    if (prevBtn) prevBtn.disabled = currentIndex <= 0;
+    if (nextBtn) nextBtn.disabled = currentIndex >= viewerCards.length - 1;
+
+    viewer.classList.add('is-open');
+    viewer.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('pg-viewer-open');
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+  }
+
+  function closeViewer() {
+    if (!viewer) return;
+    viewer.classList.remove('is-open');
+    viewer.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('pg-viewer-open');
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+    clearViewerMedia();
+  }
+
+  function navigate(dir) {
+    if (currentIndex < 0) return;
+    const next = currentIndex + dir;
+    if (next < 0 || next >= viewerCards.length) return;
+    openViewer(viewerCards[next]);
+  }
+
+  if (closeBtn) closeBtn.addEventListener('click', closeViewer);
+  if (backdrop) backdrop.addEventListener('click', closeViewer);
+  if (prevBtn) prevBtn.addEventListener('click', () => navigate(-1));
+  if (nextBtn) nextBtn.addEventListener('click', () => navigate(1));
+
+  document.addEventListener('keydown', (e) => {
+    if (!viewer || !viewer.classList.contains('is-open')) return;
+    if (e.key === 'Escape') closeViewer();
+    if (e.key === 'ArrowLeft') navigate(-1);
+    if (e.key === 'ArrowRight') navigate(1);
+  });
+
+  window.__openHomeViewer = openViewer;
 })();

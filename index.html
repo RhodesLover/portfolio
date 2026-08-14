@@ -554,8 +554,37 @@
     <button class="modal__nav modal__nav--next" id="modalNext" aria-label="Siguiente">→</button>
   </div>
 
+  <!-- VIEWER estilo galería (Redes / Branding / Proyectos) -->
+  <div class="pg-viewer" id="pgViewer" aria-hidden="true">
+    <div class="pg-viewer__backdrop" id="pgViewerBackdrop"></div>
+    <button class="pg-viewer__close" id="pgViewerClose" type="button" aria-label="Cerrar">✕</button>
+    <button class="pg-viewer__nav pg-viewer__nav--prev" id="pgViewerPrev" type="button" aria-label="Anterior">‹</button>
+    <button class="pg-viewer__nav pg-viewer__nav--next" id="pgViewerNext" type="button" aria-label="Siguiente">›</button>
+    <div class="pg-viewer__stage">
+      <div class="pg-viewer__media-wrap" id="pgViewerMediaWrap">
+        <div class="zoom-stage" id="pgZoomStage">
+          <img class="pg-viewer__img zoom-target" id="pgViewerImg" alt="">
+          <video class="pg-viewer__video" id="pgViewerVideo" controls playsinline muted loop></video>
+        </div>
+        <div class="zoom-controls" id="pgZoomControls" hidden>
+          <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Alejar">−</button>
+          <span class="zoom-level" id="pgZoomLevel">100%</span>
+          <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar">+</button>
+          <button type="button" class="zoom-btn zoom-btn--reset" data-zoom="0" aria-label="Restablecer">Reset</button>
+        </div>
+      </div>
+      <div class="pg-viewer__info">
+        <span class="pg-viewer__idx" id="pgViewerIdx">01</span>
+        <h3 class="pg-viewer__title" id="pgViewerTitle"></h3>
+        <span class="pg-viewer__cat" id="pgViewerCat"></span>
+        <p class="pg-viewer__desc" id="pgViewerDesc"></p>
+        <div class="pg-viewer__actions" id="pgViewerActions"></div>
+      </div>
+    </div>
+  </div>
+
   <script src="js/zoom.js?v=2"></script>
   <script src="js/particles.js?v=3"></script>
-    <script src="js/main.js?v=21"></script>
+    <script src="js/main.js?v=22"></script>
 </body>
 </html>
