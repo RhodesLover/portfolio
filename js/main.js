@@ -494,3 +494,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
   console.log('🐦 Portfolio ready.');
 });
+
+/* ============================================================
+   MARQUEE — loop infinito quirúrgico
+   Clona el set base en 2 mitades idénticas, cada una más ancha
+   que el viewport, para que translateX(-50%) reinicie sin corte.
+   ============================================================ */
+(function () {
+  'use strict';
+  const track = document.getElementById('marqueeTrack');
+  if (!track) return;
+
+  const base = Array.from(track.children).map((el) => el.cloneNode(true));
+
+  function build() {
+    // medir el ancho de UN set (los ítems base) fuera del flujo
+    const probe = document.createElement('div');
+    probe.style.cssText =
+      'position:absolute;left:-9999px;top:0;visibility:hidden;width:max-content;display:flex;white-space:nowrap;';
+    base.forEach((el) => probe.appendChild(el.cloneNode(true)));
+    document.body.appendChild(probe);
+    const setWidth = probe.scrollWidth || 1;
+    probe.remove();
+
+    const viewport = window.innerWidth || 1;
+    // sets por mitad: al menos 1, y suficientes para cubrir el viewport
+    const perHalf = Math.max(1, Math.ceil(viewport / setWidth));
+    const copies = perHalf * 2; // dos mitades idénticas
+
+    track.innerHTML = '';
+    for (let i = 0; i < copies; i++) {
+      base.forEach((el) => track.appendChild(el.cloneNode(true)));
+    }
+  }
+
+  build();
+  window.addEventListener('resize', build);
+})();
