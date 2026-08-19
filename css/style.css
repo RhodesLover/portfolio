@@ -2793,9 +2793,12 @@ body.figma-proto-open #trailCanvas {
   visibility: hidden !important;
   z-index: 0;
 }
-/* Apertura: libro ya expandido, tapa arranca a la derecha y gira */
+/* Apertura y cierre: tapa siempre en la mitad derecha, bisagra en el lomo.
+   Sin dorso beige: solo frente + backface-visibility hidden → no hay hoja blanca. */
 .carta-book[data-mode="opening"] .carta-book__cover,
-.carta-book.is-opening-cover .carta-book__cover {
+.carta-book.is-opening-cover .carta-book__cover,
+.carta-book[data-mode="closing"] .carta-book__cover,
+.carta-book.is-closing-cover .carta-book__cover {
   width: 50%;
   left: auto;
   right: 0;
@@ -2805,29 +2808,19 @@ body.figma-proto-open #trailCanvas {
   z-index: 8;
   box-shadow: -10px 20px 40px rgba(0,0,0,0.28);
 }
-.carta-book[data-mode="opening"] .carta-book__spread {
+.carta-book[data-mode="opening"] .carta-book__spread,
+.carta-book[data-mode="closing"] .carta-book__spread {
   opacity: 1;
   pointer-events: auto;
 }
-/* Cierre: tapa vuelve desde la izquierda hacia la derecha */
-.carta-book[data-mode="closing"] .carta-book__cover,
-.carta-book.is-closing-cover .carta-book__cover {
-  width: 50%;
-  left: 0;
-  right: auto;
-  pointer-events: none;
-  opacity: 1 !important;
-  visibility: visible !important;
-  z-index: 8;
-}
-.carta-book[data-mode="closing"] .carta-book__spread {
-  opacity: 1;
+/* dorso de tapa desactivado (era la "página blanca") */
+.carta-book__cover-face--back,
+.carta-book__inside-cover {
+  display: none !important;
 }
 .carta-book__cover-face {
   position: absolute;
   inset: 0;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   overflow: hidden;
   background: #1a1410;
 }
@@ -2835,23 +2828,12 @@ body.figma-proto-open #trailCanvas {
   z-index: 2;
   border-radius: 0 4px 4px 0;
   box-shadow: inset -1px 0 0 rgba(255,255,255,0.08);
+  /* al girar past 90° desaparece en vez de mostrar dorso blanco */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 .carta-book[data-mode="closed"] .carta-book__cover-face--front {
   border-radius: 3px 5px 5px 3px;
-}
-.carta-book__cover-face--back {
-  transform: rotateY(180deg);
-  background:
-    linear-gradient(135deg, #efe8db 0%, #e5dccb 50%, #ddd2bf 100%);
-  border-radius: 4px 0 0 4px;
-}
-.carta-book__inside-cover {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.35), transparent 50%),
-    linear-gradient(135deg, #f4ecdf, #e8dfcf);
-  box-shadow: inset -18px 0 28px rgba(0,0,0,0.08);
 }
 .carta-book__cover-edge {
   position: absolute;

@@ -234,68 +234,70 @@
   }
 
   async function openCover() {
-    if (!book || !cover) return;
+      if (!book || !cover) return;
 
-    // preparar pliego 2|3 debajo ANTES de girar
-    paintSpread(1);
-    resetFlipper();
-    stowCover(false);
-    book.classList.add('is-opening-cover');
-    setMode('opening');
+      // preparar pliego 2|3 debajo ANTES de girar (sin hoja blanca)
+      paintSpread(1);
+      resetFlipper();
+      stowCover(false);
+      book.classList.add('is-opening-cover');
+      setMode('opening');
 
-    cover.style.transition = 'none';
-    cover.style.transform = 'rotateY(0deg)';
-    cover.style.opacity = '1';
-    cover.style.visibility = 'visible';
-    void cover.offsetWidth;
+      // tapa en mitad derecha, solo frente (dorso desactivado en CSS)
+      cover.style.transition = 'none';
+      cover.style.transform = 'rotateY(0deg)';
+      cover.style.opacity = '1';
+      cover.style.visibility = 'visible';
+      void cover.offsetWidth;
 
-    cover.style.transition =
-      'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
-    cover.style.transform = 'rotateY(-180deg)';
+      cover.style.transition =
+        'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
+      cover.style.transform = 'rotateY(-180deg)';
 
-    await wait(FLIP_MS + 40);
+      await wait(FLIP_MS + 40);
 
-    // CRÍTICO: esconder tapa para no tapar p2 con el dorso beige
-    state = 1;
-    paintSpread(1);
-    setMode('open');
-    book.classList.remove('is-opening-cover');
-    hardResetCoverStyles();
-    stowCover(true);
-    resetFlipper();
-    updateChrome();
-  }
+      // esconder tapa: no queda hoja a la izquierda
+      state = 1;
+      paintSpread(1);
+      setMode('open');
+      book.classList.remove('is-opening-cover');
+      hardResetCoverStyles();
+      stowCover(true);
+      resetFlipper();
+      updateChrome();
+    }
 
-  async function closeCover() {
-    if (!book || !cover) return;
+    async function closeCover() {
+      if (!book || !cover) return;
 
-    // volver a mostrar tapa abierta (sobre la izquierda) y cerrar
-    book.classList.add('is-closing-cover');
-    setMode('closing');
-    stowCover(false);
-    paintSpread(1); // todavía se ve 2|3 un instante bajo la tapa
+      // Cierre desde la DERECHA (misma bisagra que la apertura).
+      // Antes partía desde la izquierda y se veía una hoja blanca.
+      book.classList.add('is-closing-cover');
+      setMode('closing');
+      stowCover(false);
+      paintSpread(1); // pliego 2|3 visible bajo la tapa
 
-    cover.style.transition = 'none';
-    cover.style.transform = 'rotateY(-180deg)';
-    cover.style.opacity = '1';
-    cover.style.visibility = 'visible';
-    void cover.offsetWidth;
+      cover.style.transition = 'none';
+      cover.style.transform = 'rotateY(-180deg)'; // abierta, bisagra en lomo (derecha)
+      cover.style.opacity = '1';
+      cover.style.visibility = 'visible';
+      void cover.offsetWidth;
 
-    cover.style.transition =
-      'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
-    cover.style.transform = 'rotateY(0deg)';
+      cover.style.transition =
+        'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
+      cover.style.transform = 'rotateY(0deg)'; // cierra sobre la derecha
 
-    await wait(FLIP_MS + 40);
+      await wait(FLIP_MS + 40);
 
-    state = 0;
-    paintSpread(0);
-    setMode('closed');
-    book.classList.remove('is-closing-cover');
-    hardResetCoverStyles();
-    stowCover(false);
-    resetFlipper();
-    updateChrome();
-  }
+      state = 0;
+      paintSpread(0);
+      setMode('closed');
+      book.classList.remove('is-closing-cover');
+      hardResetCoverStyles();
+      stowCover(false);
+      resetFlipper();
+      updateChrome();
+    }
 
   async function flipForwardInterior() {
     // 1 (p2|p3) → 2 (p4|p5)
