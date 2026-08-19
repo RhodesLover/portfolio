@@ -2388,3 +2388,171 @@ body.pg-viewer-open #trailCanvas { display: none; }
   z-index: 2;
 }
 
+/* ============================================================
+   FIGMA PROTO — overlay blur + marco celular (Instagram)
+   Por encima del viewer/modal (10000). Cursor se levanta a 11002.
+   ============================================================ */
+.figma-proto {
+  position: fixed;
+  inset: 0;
+  z-index: 11000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.28s ease, visibility 0.28s ease;
+}
+.figma-proto.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.figma-proto__backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.figma-proto__close {
+  position: fixed;
+  top: 1.15rem;
+  right: 1.15rem;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(12, 12, 12, 0.55);
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.25s, border-color 0.25s, transform 0.25s;
+}
+.figma-proto__close:hover {
+  background: rgba(255, 197, 211, 0.18);
+  border-color: rgba(255, 197, 211, 0.55);
+  transform: scale(1.05);
+}
+.figma-proto__stage {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  transform: translateY(14px) scale(0.96);
+  transition: transform 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.figma-proto.is-open .figma-proto__stage {
+  transform: translateY(0) scale(1);
+}
+.figma-proto__label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  color: rgba(255, 245, 248, 0.72);
+  text-align: center;
+}
+/* Marco tipo celular (feed IG vertical) */
+.figma-proto__phone {
+  --phone-w: min(390px, calc(100vw - 2.5rem));
+  --phone-h: min(780px, calc(100vh - 6.5rem));
+  width: var(--phone-w);
+  height: var(--phone-h);
+  max-height: 86vh;
+  aspect-ratio: 9 / 19.5;
+  border-radius: 36px;
+  padding: 10px;
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.02)),
+    #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.55),
+    0 28px 80px rgba(0, 0, 0, 0.55),
+    0 0 40px rgba(255, 197, 211, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+.figma-proto__phone::before {
+  /* notch / isla */
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92px;
+  height: 22px;
+  border-radius: 20px;
+  background: #050505;
+  z-index: 2;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+.figma-proto__screen {
+  width: 100%;
+  height: 100%;
+  border-radius: 28px;
+  overflow: hidden;
+  background: #111;
+  position: relative;
+}
+.figma-proto__frame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  background: #111;
+}
+.figma-proto__hint {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.4px;
+  color: rgba(245, 245, 245, 0.42);
+  text-align: center;
+  max-width: 22rem;
+  line-height: 1.45;
+}
+body.figma-proto-open .nav {
+  opacity: 0;
+  pointer-events: none;
+}
+body.figma-proto-open .cursor-dot,
+body.figma-proto-open .cursor-ring {
+  z-index: 11002;
+}
+body.figma-proto-open #trailCanvas {
+  display: none;
+}
+@media (max-width: 480px) {
+  .figma-proto {
+    padding: 0.65rem;
+  }
+  .figma-proto__phone {
+    --phone-w: min(100vw - 1.2rem, 390px);
+    --phone-h: min(100vh - 5.5rem, 780px);
+    border-radius: 28px;
+    padding: 8px;
+  }
+  .figma-proto__screen {
+    border-radius: 22px;
+  }
+  .figma-proto__close {
+    top: 0.7rem;
+    right: 0.7rem;
+  }
+  .figma-proto__phone::before {
+    width: 78px;
+    height: 18px;
+    top: 12px;
+  }
+}
+

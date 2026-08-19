@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=24">
+  <link rel="stylesheet" href="css/style.css?v=25">
     </head>
     <body class="page-projects">
     <canvas id="particlesCanvas" aria-hidden="true"></canvas>
@@ -121,19 +121,20 @@
           </div>
         </article>
         <article class="pg-cell" tabindex="0" role="button"
-          data-title="Mercado Montañés" data-cat="Social Media · 2026" data-section="redes"
-          data-desc="Identidad de marca para tienda de productos regionales."
-          data-behance="https://www.behance.net/rhodeslover"
-          data-media="assets/images/branding/mercado-montanes.jpg" data-type="image">
-          <div class="pg-cell__frame" style="--bg:#1a1a0a">
-            <img class="pg-cell__media" src="assets/images/branding/mercado-montanes.jpg" alt="Mercado Montañés" loading="lazy">
-          </div>
-          <div class="pg-cell__meta">
-            <span class="pg-cell__idx">01.4</span>
-            <h3 class="pg-cell__name">Mercado Montañés</h3>
-            <span class="pg-cell__tag">Social · 2026</span>
-          </div>
-        </article>
+                  data-title="Mercado Montañés" data-cat="Social Media · 2026" data-section="redes"
+                  data-desc="Identidad de marca para tienda de productos regionales. Probá el feed en el prototipo de Instagram."
+                  data-behance="https://www.behance.net/rhodeslover"
+                  data-figma-proto="https://embed.figma.com/proto/Z9YXd0PzQFpEinJBUGzePg/Mercado-Monta%C3%B1%C3%A9s?node-id=81-2836&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&embed-host=share"
+                  data-media="assets/images/branding/mercado-montanes.jpg" data-type="image">
+                  <div class="pg-cell__frame" style="--bg:#1a1a0a">
+                    <img class="pg-cell__media" src="assets/images/branding/mercado-montanes.jpg" alt="Mercado Montañés" loading="lazy">
+                  </div>
+                  <div class="pg-cell__meta">
+                    <span class="pg-cell__idx">01.4</span>
+                    <h3 class="pg-cell__name">Mercado Montañés</h3>
+                    <span class="pg-cell__tag">Social · 2026</span>
+                  </div>
+                </article>
       </div>
     </section>
 
@@ -604,10 +605,26 @@
           <div class="pg-viewer__actions" id="pgViewerActions"></div>
         </div>
       </div>
-    </div>
+  </div>
 
-    <script src="js/zoom.js?v=2"></script>
-    <script src="js/particles.js?v=3"></script>
-        <script src="js/proyectos.js?v=8"></script>
+  <!-- FIGMA PROTO — overlay blur + marco celular (Instagram) -->
+  <div class="figma-proto" id="figmaProto" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Prototipo Instagram">
+    <div class="figma-proto__backdrop" id="figmaProtoBackdrop"></div>
+    <button class="figma-proto__close" id="figmaProtoClose" type="button" aria-label="Cerrar prototipo">✕</button>
+    <div class="figma-proto__stage">
+      <span class="figma-proto__label" id="figmaProtoLabel">Prototipo · Instagram</span>
+      <div class="figma-proto__phone">
+        <div class="figma-proto__screen">
+          <iframe class="figma-proto__frame" id="figmaProtoFrame" title="Prototipo Figma" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        </div>
+      </div>
+      <p class="figma-proto__hint">Interactúá como en el celular · Esc o ✕ para cerrar</p>
+    </div>
+  </div>
+
+  <script src="js/zoom.js?v=2"></script>
+  <script src="js/particles.js?v=3"></script>
+  <script src="js/figma-proto.js?v=1"></script>
+  <script src="js/proyectos.js?v=9"></script>
 </body>
 </html>

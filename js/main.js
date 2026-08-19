@@ -421,12 +421,29 @@ document.addEventListener('DOMContentLoaded', () => {
         
         projActions.innerHTML = '';
         const isSocial = (category || '').indexOf('Social') === 0;
+        const figmaProto = card.dataset.figmaProto || '';
         if (isSocial) {
-          // Redes → botón "Ver Instagram" (prototipo Figma a futuro, sin acción por ahora)
+          // Redes → botón "Ver Instagram" (abre prototipo Figma si data-figma-proto)
           const btn = document.createElement('button');
           btn.type = 'button';
           btn.className = 'modal__behance-btn modal__behance-btn--insta';
           btn.textContent = 'Ver Instagram →';
+          if (figmaProto && typeof window.openFigmaProto === 'function') {
+            btn.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              window.openFigmaProto(figmaProto, title);
+            });
+          } else if (figmaProto) {
+            btn.addEventListener('click', (e) => {
+              e.preventDefault();
+              window.open(figmaProto, '_blank', 'noopener');
+            });
+          } else {
+            btn.disabled = true;
+            btn.title = 'Prototipo próximamente';
+            btn.setAttribute('aria-disabled', 'true');
+          }
           projActions.appendChild(btn);
         } else if (behance) {
           const btn = document.createElement('a');
@@ -641,11 +658,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     vActions.innerHTML = '';
     const isSocial = (category || '').indexOf('Social') === 0;
+    const figmaProto = card.dataset.figmaProto || '';
     if (isSocial) {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'pg-viewer__link';
       b.textContent = 'Ver Instagram →';
+      if (figmaProto && typeof window.openFigmaProto === 'function') {
+        b.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          window.openFigmaProto(figmaProto, title);
+        });
+      } else if (figmaProto) {
+        b.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.open(figmaProto, '_blank', 'noopener');
+        });
+      } else {
+        b.disabled = true;
+        b.title = 'Prototipo próximamente';
+        b.setAttribute('aria-disabled', 'true');
+      }
       vActions.appendChild(b);
     } else if (behance) {
       const a = document.createElement('a');

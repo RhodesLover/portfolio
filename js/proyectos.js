@@ -294,12 +294,29 @@
 
     vActions.innerHTML = '';
     const isRedes = (cell.dataset.section === 'redes') || (cat || '').indexOf('Social') === 0;
+    const figmaProto = cell.dataset.figmaProto || '';
     if (isRedes) {
-      // Redes → botón "Ver Instagram" (prototipo Figma a futuro, sin acción por ahora)
+      // Redes → botón "Ver Instagram" (abre prototipo Figma si data-figma-proto)
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'pg-viewer__link';
       b.textContent = 'Ver Instagram →';
+      if (figmaProto && typeof window.openFigmaProto === 'function') {
+        b.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          window.openFigmaProto(figmaProto, title);
+        });
+      } else if (figmaProto) {
+        b.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.open(figmaProto, '_blank', 'noopener');
+        });
+      } else {
+        b.disabled = true;
+        b.title = 'Prototipo próximamente';
+        b.setAttribute('aria-disabled', 'true');
+      }
       vActions.appendChild(b);
     } else if (behance) {
       const a = document.createElement('a');
