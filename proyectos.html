@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=30">
+  <link rel="stylesheet" href="css/style.css?v=32">
     </head>
     <body class="page-projects">
     <canvas id="particlesCanvas" aria-hidden="true"></canvas>
@@ -615,30 +615,81 @@
     <iframe class="figma-proto__frame" id="figmaProtoFrame" title="Prototipo Figma" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
   </div>
 
-  <!-- CARTA REVISTA — Diseño de carta Mercado Montañés -->
+  <!-- CARTA REVISTA — libro 3D (portada + spreads) -->
   <div class="carta-revista" id="cartaRevista" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Diseño de carta">
     <div class="carta-revista__backdrop" id="cartaRevistaBackdrop"></div>
     <button class="carta-revista__close" id="cartaRevistaClose" type="button" aria-label="Cerrar carta">✕</button>
-    <div class="carta-revista__shell">
+
+    <div class="carta-revista__stage" id="cartaRevistaStage">
       <div class="carta-revista__meta">
         <span class="carta-revista__title" id="cartaRevistaTitle">Diseño de carta</span>
-        <span class="carta-revista__counter" id="cartaRevistaCounter">1 / 5</span>
+        <span class="carta-revista__counter" id="cartaRevistaCounter">Portada</span>
       </div>
-      <div class="carta-revista__stage" id="cartaRevistaStage" title="Click izquierda/derecha para pasar página">
-        <img class="carta-revista__img" id="cartaRevistaImg" alt="Página de la carta" decoding="async">
+
+      <div class="carta-book" id="cartaBook" data-mode="closed">
+        <div class="carta-book__ambient" aria-hidden="true"></div>
+        <div class="carta-book__scene">
+          <div class="carta-book__shell" id="cartaBookShell">
+            <!-- hoja base (siempre visible debajo) -->
+            <div class="carta-book__spread" id="cartaSpread">
+              <div class="carta-book__leaf carta-book__leaf--left" id="cartaLeafLeft">
+                <div class="carta-book__paper">
+                  <img class="carta-book__img" id="cartaImgLeft" alt="" draggable="false">
+                  <div class="carta-book__shade carta-book__shade--left"></div>
+                </div>
+              </div>
+              <div class="carta-book__spine" aria-hidden="true"></div>
+              <div class="carta-book__leaf carta-book__leaf--right" id="cartaLeafRight">
+                <div class="carta-book__paper">
+                  <img class="carta-book__img" id="cartaImgRight" alt="" draggable="false">
+                  <div class="carta-book__shade carta-book__shade--right"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- portada (se abre hacia la izquierda) -->
+            <div class="carta-book__cover" id="cartaCover">
+              <div class="carta-book__cover-face carta-book__cover-face--front">
+                <img class="carta-book__img" id="cartaImgCover" alt="Portada" draggable="false">
+                <div class="carta-book__cover-edge"></div>
+              </div>
+              <div class="carta-book__cover-face carta-book__cover-face--back">
+                <div class="carta-book__inside-cover"></div>
+              </div>
+            </div>
+
+            <!-- hoja que voltea en spreads interiores -->
+            <div class="carta-book__flipper" id="cartaFlipper" aria-hidden="true">
+              <div class="carta-book__flip-face carta-book__flip-face--front">
+                <img class="carta-book__img" id="cartaFlipFront" alt="" draggable="false">
+                <div class="carta-book__shade carta-book__shade--flip-front"></div>
+              </div>
+              <div class="carta-book__flip-face carta-book__flip-face--back">
+                <img class="carta-book__img" id="cartaFlipBack" alt="" draggable="false">
+                <div class="carta-book__shade carta-book__shade--flip-back"></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="carta-revista__nav">
-        <button class="carta-revista__btn" id="cartaRevistaPrev" type="button" aria-label="Página anterior">←</button>
-        <button class="carta-revista__btn" id="cartaRevistaNext" type="button" aria-label="Página siguiente">→</button>
+
+      <div class="carta-revista__controls">
+        <button class="carta-revista__navbtn" id="cartaRevistaPrev" type="button" aria-label="Página anterior">
+          <span aria-hidden="true">‹</span>
+        </button>
+        <div class="carta-revista__dots" id="cartaRevistaDots" aria-hidden="true"></div>
+        <button class="carta-revista__navbtn" id="cartaRevistaNext" type="button" aria-label="Página siguiente">
+          <span aria-hidden="true">›</span>
+        </button>
       </div>
-      <p class="carta-revista__hint">Click · scroll · flechas · swipe</p>
+      <p class="carta-revista__hint">Arrastrá · click en el borde · rueda · flechas</p>
     </div>
   </div>
 
 <script src="js/zoom.js?v=2"></script>
   <script src="js/particles.js?v=3"></script>
-  <script src="js/carta-revista.js?v=1"></script>
+  <script src="js/carta-revista.js?v=3"></script>
   <script src="js/figma-proto.js?v=4"></script>
-  <script src="js/proyectos.js?v=12"></script>
+  <script src="js/proyectos.js?v=13"></script>
 </body>
 </html>

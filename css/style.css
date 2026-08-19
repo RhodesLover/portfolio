@@ -2494,7 +2494,7 @@ body.figma-proto-open #trailCanvas {
 
 
 /* ============================================================
-   CARTA REVISTA — Diseño de carta (flipbook overlay)
+   CARTA REVISTA — libro 3D real (portada + spreads + flip)
    ============================================================ */
 .carta-revista {
   position: fixed;
@@ -2503,11 +2503,11 @@ body.figma-proto-open #trailCanvas {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.25rem 4.5rem;
+  padding: 1rem 4.25rem 1.25rem 1.25rem;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.28s ease, visibility 0.28s ease;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
 }
 .carta-revista.is-open {
   opacity: 1;
@@ -2518,15 +2518,16 @@ body.figma-proto-open #trailCanvas {
   position: fixed;
   inset: 0;
   z-index: 0;
-  background: rgba(0, 0, 0, 0.28);
-  backdrop-filter: blur(20px) saturate(1.05);
-  -webkit-backdrop-filter: blur(20px) saturate(1.05);
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 45%, rgba(40, 28, 24, 0.35), rgba(0, 0, 0, 0.55));
+  backdrop-filter: blur(22px) saturate(1.08);
+  -webkit-backdrop-filter: blur(22px) saturate(1.08);
 }
 .carta-revista__close {
   position: fixed;
   top: 50%;
   right: 1.25rem;
-  z-index: 3;
+  z-index: 5;
   width: 58px;
   height: 58px;
   border-radius: 50%;
@@ -2546,112 +2547,419 @@ body.figma-proto-open #trailCanvas {
   border-color: rgba(255, 197, 211, 0.7);
   transform: translateY(-50%) scale(1.08);
 }
-.carta-revista__shell {
+
+.carta-revista__stage {
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.85rem;
-  width: min(520px, calc(100vw - 6.5rem));
-  max-height: calc(100vh - 2rem);
+  gap: 0.9rem;
+  width: min(980px, calc(100vw - 5.5rem));
+  transform: translateY(18px) scale(0.94);
+  opacity: 0;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
 }
+.carta-revista.is-open .carta-revista__stage {
+  transform: none;
+  opacity: 1;
+}
+.carta-revista.is-closing .carta-revista__stage {
+  transform: translateY(14px) scale(0.96);
+  opacity: 0;
+  transition-duration: 0.28s;
+}
+
 .carta-revista__meta {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
-  width: 100%;
+  width: min(100%, 920px);
   font-family: 'DM Sans', sans-serif;
+  padding: 0 0.25rem;
 }
 .carta-revista__title {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 2px;
+  letter-spacing: 2.4px;
   text-transform: uppercase;
   color: rgba(255, 245, 248, 0.78);
 }
 .carta-revista__counter {
   font-size: 0.72rem;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
   color: rgba(245, 245, 245, 0.55);
   font-variant-numeric: tabular-nums;
 }
-.carta-revista__stage {
+
+/* --- BOOK --- */
+.carta-book {
+  --page-w: min(340px, 38vw);
+  --page-h: calc(var(--page-w) * 1.414);
+  --flip-ms: 900ms;
+  position: relative;
+  width: calc(var(--page-w) * 2);
+  height: var(--page-h);
+  max-width: calc(100vw - 5.5rem);
+  max-height: min(78vh, 860px);
+  perspective: 2200px;
+  user-select: none;
+}
+.carta-book[data-mode="closed"] {
+  width: var(--page-w);
+}
+.carta-book[data-mode="opening"],
+.carta-book[data-mode="closing"],
+.carta-book[data-mode="open"] {
+  width: calc(var(--page-w) * 2);
+}
+.carta-book__ambient {
+  position: absolute;
+  left: 50%;
+  bottom: -6%;
+  width: 78%;
+  height: 18%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.55), transparent 70%);
+  filter: blur(10px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.85;
+}
+.carta-book__scene {
   position: relative;
   width: 100%;
-  max-height: min(78vh, 820px);
-  aspect-ratio: 595 / 842;
-  border-radius: 4px;
-  overflow: hidden;
-  background: #f4f0e8;
-  box-shadow:
-    0 28px 80px rgba(0, 0, 0, 0.45),
-    0 0 0 1px rgba(255, 255, 255, 0.08);
-  cursor: pointer;
-  transform-origin: center center;
-  transition: transform 0.18s ease, opacity 0.18s ease;
+  height: 100%;
+  z-index: 1;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
 }
-.carta-revista__stage.is-turn-next {
-  transform: translateX(-18px) rotateY(-6deg);
-  opacity: 0.35;
-}
-.carta-revista__stage.is-turn-prev {
-  transform: translateX(18px) rotateY(6deg);
-  opacity: 0.35;
-}
-.carta-revista__stage.is-turn-in {
-  animation: cartaIn 0.22s ease both;
-}
-@keyframes cartaIn {
-  from { transform: translateY(10px) scale(0.985); opacity: 0.4; }
-  to { transform: none; opacity: 1; }
-}
-.carta-revista__img {
+.carta-book__shell {
+  position: relative;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  display: block;
-  background: #f4f0e8;
-  user-select: none;
-  -webkit-user-drag: none;
+  transform-style: preserve-3d;
+  transition: width 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* spread base */
+.carta-book__spread {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  transform-style: preserve-3d;
+  border-radius: 3px 4px 4px 3px;
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.5),
+    0 8px 24px rgba(0, 0, 0, 0.28);
+  overflow: visible;
+}
+.carta-book[data-mode="closed"] .carta-book__spread {
+  opacity: 0;
   pointer-events: none;
 }
-.carta-revista__nav {
+.carta-book[data-mode="open"] .carta-book__spread {
+  opacity: 1;
+}
+
+.carta-book__leaf {
+  position: relative;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  background: #f3eee4;
+}
+.carta-book__leaf--left {
+  border-radius: 3px 0 0 3px;
+}
+.carta-book__leaf--right {
+  border-radius: 0 4px 4px 0;
+}
+.carta-book__paper {
+  position: absolute;
+  inset: 0;
+  background: #f3eee4;
+}
+.carta-book__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  background: #f3eee4;
+}
+.carta-book__spine {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 28px;
+  transform: translateX(-50%);
+  z-index: 4;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(0,0,0,0.22) 0%,
+    rgba(0,0,0,0.05) 35%,
+    rgba(255,255,255,0.12) 50%,
+    rgba(0,0,0,0.05) 65%,
+    rgba(0,0,0,0.2) 100%
+  );
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+}
+.carta-book__shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.carta-book__shade--left {
+  background: linear-gradient(90deg, transparent 70%, rgba(0,0,0,0.14) 100%);
+}
+.carta-book__shade--right {
+  background: linear-gradient(270deg, transparent 70%, rgba(0,0,0,0.16) 100%);
+}
+
+/* COVER */
+.carta-book__cover {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  z-index: 8;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transform: rotateY(0deg);
+  transition: transform var(--flip-ms) cubic-bezier(0.33, 0.1, 0.25, 1),
+              width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              left 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              right 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.35s ease;
+  cursor: pointer;
+  will-change: transform;
+}
+/* Cerrada: la tapa ES el libro (ancho completo) */
+.carta-book[data-mode="closed"] .carta-book__cover {
+  width: 100%;
+  left: 0;
+  right: 0;
+  box-shadow:
+    0 28px 60px rgba(0,0,0,0.48),
+    8px 0 18px rgba(0,0,0,0.18);
+  border-radius: 3px 5px 5px 3px;
+}
+.carta-book[data-mode="closed"] .carta-book__cover-face--front {
+  border-radius: 3px 5px 5px 3px;
+}
+/* Abierta: tapa estacionada a la izquierda (dorso visible / stack) */
+.carta-book[data-mode="open"] .carta-book__cover {
+  width: 50%;
+  left: 0;
+  right: auto;
+  transform: rotateY(-180deg);
+  pointer-events: none;
+  box-shadow: none;
+}
+/* Apertura: libro ya expandido, tapa arranca a la derecha y gira */
+.carta-book[data-mode="opening"] .carta-book__cover,
+.carta-book.is-opening-cover .carta-book__cover {
+  width: 50%;
+  left: auto;
+  right: 0;
+  pointer-events: none;
+  box-shadow: -10px 20px 40px rgba(0,0,0,0.28);
+}
+.carta-book[data-mode="opening"] .carta-book__spread {
+  opacity: 1;
+}
+/* Cierre: tapa vuelve desde la izquierda hacia la derecha */
+.carta-book[data-mode="closing"] .carta-book__cover,
+.carta-book.is-closing-cover .carta-book__cover {
+  width: 50%;
+  left: 0;
+  right: auto;
+  pointer-events: none;
+}
+.carta-book[data-mode="closing"] .carta-book__spread {
+  opacity: 0.35;
+}
+.carta-book__cover-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+  background: #1a1410;
+}
+.carta-book__cover-face--front {
+  z-index: 2;
+  border-radius: 0 4px 4px 0;
+  box-shadow: inset -1px 0 0 rgba(255,255,255,0.08);
+}
+.carta-book[data-mode="closed"] .carta-book__cover-face--front {
+  border-radius: 3px 5px 5px 3px;
+}
+.carta-book__cover-face--back {
+  transform: rotateY(180deg);
+  background:
+    linear-gradient(135deg, #efe8db 0%, #e5dccb 50%, #ddd2bf 100%);
+  border-radius: 4px 0 0 4px;
+}
+.carta-book__inside-cover {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.35), transparent 50%),
+    linear-gradient(135deg, #f4ecdf, #e8dfcf);
+  box-shadow: inset -18px 0 28px rgba(0,0,0,0.08);
+}
+.carta-book__cover-edge {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  background: linear-gradient(90deg, rgba(0,0,0,0.28), transparent);
+  pointer-events: none;
+  z-index: 3;
+}
+.carta-book[data-mode="closed"] .carta-book__cover-edge {
+  /* thickness cue on closed book right edge */
+  left: auto;
+  right: 0;
+  width: 7px;
+  background: linear-gradient(270deg, rgba(0,0,0,0.35), rgba(255,255,255,0.05) 40%, transparent);
+}
+
+/* interior flipper (right half) */
+.carta-book__flipper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  z-index: 6;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transform: rotateY(0deg);
+  transition: transform var(--flip-ms) cubic-bezier(0.33, 0.1, 0.25, 1);
+  pointer-events: none;
+  opacity: 0;
+}
+.carta-book.is-flipping .carta-book__flipper {
+  opacity: 1;
+  pointer-events: none;
+}
+.carta-book__flip-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+  background: #f3eee4;
+}
+.carta-book__flip-face--front {
+  border-radius: 0 4px 4px 0;
+  box-shadow: 0 0 24px rgba(0,0,0,0.15);
+}
+.carta-book__flip-face--back {
+  transform: rotateY(180deg);
+  border-radius: 4px 0 0 4px;
+}
+.carta-book__shade--flip-front {
+  background: linear-gradient(270deg, transparent 55%, rgba(0,0,0,0.18));
+}
+.carta-book__shade--flip-back {
+  background: linear-gradient(90deg, transparent 55%, rgba(0,0,0,0.2));
+}
+
+/* grab zones */
+.carta-book__shell::before,
+.carta-book__shell::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 18%;
+  z-index: 12;
+  cursor: pointer;
+}
+.carta-book__shell::before { left: 0; }
+.carta-book__shell::after { right: 0; }
+.carta-book[data-mode="closed"] .carta-book__shell::before { display: none; }
+.carta-book[data-mode="closed"] .carta-book__shell::after {
+  width: 100%;
+  cursor: pointer;
+}
+
+/* controls */
+.carta-revista__controls {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.65rem;
+  gap: 0.85rem;
+  margin-top: 0.15rem;
 }
-.carta-revista__btn {
-  min-width: 44px;
-  height: 40px;
-  padding: 0 0.9rem;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(12, 12, 12, 0.45);
+.carta-revista__navbtn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(12,12,12,0.42);
   color: #fff;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.78rem;
-  letter-spacing: 0.4px;
+  font-size: 1.55rem;
+  line-height: 1;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s, opacity 0.2s;
+  display: grid;
+  place-items: center;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s, opacity 0.2s;
 }
-.carta-revista__btn:hover:not(:disabled) {
-  background: rgba(255, 197, 211, 0.18);
-  border-color: rgba(255, 197, 211, 0.55);
+.carta-revista__navbtn:hover:not(:disabled) {
+  background: rgba(255, 197, 211, 0.2);
+  border-color: rgba(255, 197, 211, 0.6);
+  transform: scale(1.06);
 }
-.carta-revista__btn:disabled {
-  opacity: 0.35;
+.carta-revista__navbtn:disabled {
+  opacity: 0.3;
   cursor: default;
+}
+.carta-revista__dots {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  min-width: 72px;
+  justify-content: center;
+}
+.carta-revista__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 0;
+  padding: 0;
+  background: rgba(255,255,255,0.28);
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s, width 0.2s, border-radius 0.2s;
+}
+.carta-revista__dot.is-active {
+  background: #ffc5d3;
+  width: 18px;
+  border-radius: 999px;
 }
 .carta-revista__hint {
   font-family: 'DM Sans', sans-serif;
   font-size: 0.68rem;
-  letter-spacing: 0.3px;
-  color: rgba(245, 245, 245, 0.4);
+  letter-spacing: 0.35px;
+  color: rgba(245,245,245,0.4);
   text-align: center;
+  margin: 0;
 }
+
 body.carta-revista-open .pg-viewer,
 body.carta-revista-open .modal {
   opacity: 0 !important;
@@ -2664,23 +2972,41 @@ body.carta-revista-open .nav {
 }
 body.carta-revista-open .cursor-dot,
 body.carta-revista-open .cursor-ring {
-  z-index: 11060;
+  z-index: 11070;
 }
 body.carta-revista-open #trailCanvas {
   display: none;
 }
+
+@media (max-width: 900px) {
+  .carta-book {
+    --page-w: min(300px, 42vw);
+  }
+}
 @media (max-width: 720px) {
   .carta-revista {
-    padding: 0.85rem 3.4rem 0.85rem 0.85rem;
+    padding: 0.75rem 3.3rem 0.85rem 0.75rem;
   }
-  .carta-revista__shell {
-    width: min(100%, calc(100vw - 4.2rem));
+  .carta-book {
+    --page-w: min(46vw, 210px);
+    --page-h: calc(var(--page-w) * 1.414);
+    max-height: 72vh;
   }
   .carta-revista__close {
-    right: 0.7rem;
+    right: 0.65rem;
     width: 52px;
     height: 52px;
     font-size: 1.2rem;
   }
   .carta-revista__hint { display: none; }
+  .carta-revista__navbtn {
+    width: 42px;
+    height: 42px;
+  }
+}
+@media (max-width: 480px) {
+  /* en mobile muy chico: aún spreads, más compacto */
+  .carta-book {
+    --page-w: min(44vw, 170px);
+  }
 }
