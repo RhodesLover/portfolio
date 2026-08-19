@@ -422,6 +422,8 @@ document.addEventListener('DOMContentLoaded', () => {
         projActions.innerHTML = '';
         const isSocial = (category || '').indexOf('Social') === 0;
         const figmaProto = card.dataset.figmaProto || '';
+        const cartaDir = card.dataset.carta || '';
+        const cartaPages = card.dataset.cartaPages || '';
         if (isSocial) {
           // Redes → botón "Ver Instagram" (abre prototipo Figma si data-figma-proto)
           const btn = document.createElement('button');
@@ -444,6 +446,17 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.title = 'Prototipo próximamente';
             btn.setAttribute('aria-disabled', 'true');
           }
+          projActions.appendChild(btn);
+        } else if (cartaDir && typeof window.openCartaRevista === 'function') {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'modal__behance-btn';
+          btn.textContent = 'Diseño de carta →';
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            window.openCartaRevista(cartaDir, title || 'Diseño de carta', cartaPages);
+          });
           projActions.appendChild(btn);
         } else if (behance) {
           const btn = document.createElement('a');
@@ -659,6 +672,8 @@ document.addEventListener('DOMContentLoaded', () => {
     vActions.innerHTML = '';
     const isSocial = (category || '').indexOf('Social') === 0;
     const figmaProto = card.dataset.figmaProto || '';
+    const cartaDir = card.dataset.carta || '';
+    const cartaPages = card.dataset.cartaPages || '';
     if (isSocial) {
       const b = document.createElement('button');
       b.type = 'button';
@@ -680,6 +695,17 @@ document.addEventListener('DOMContentLoaded', () => {
         b.title = 'Prototipo próximamente';
         b.setAttribute('aria-disabled', 'true');
       }
+      vActions.appendChild(b);
+    } else if (cartaDir && typeof window.openCartaRevista === 'function') {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pg-viewer__link';
+      b.textContent = 'Diseño de carta →';
+      b.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        window.openCartaRevista(cartaDir, title || 'Diseño de carta', cartaPages);
+      });
       vActions.appendChild(b);
     } else if (behance) {
       const a = document.createElement('a');

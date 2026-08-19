@@ -295,6 +295,8 @@
     vActions.innerHTML = '';
     const isRedes = (cell.dataset.section === 'redes') || (cat || '').indexOf('Social') === 0;
     const figmaProto = cell.dataset.figmaProto || '';
+    const cartaDir = cell.dataset.carta || '';
+    const cartaPages = cell.dataset.cartaPages || '';
     if (isRedes) {
       // Redes → botón "Ver Instagram" (abre prototipo Figma si data-figma-proto)
       const b = document.createElement('button');
@@ -317,6 +319,17 @@
         b.title = 'Prototipo próximamente';
         b.setAttribute('aria-disabled', 'true');
       }
+      vActions.appendChild(b);
+    } else if (cartaDir && typeof window.openCartaRevista === 'function') {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pg-viewer__link';
+      b.textContent = 'Diseño de carta →';
+      b.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        window.openCartaRevista(cartaDir, title || 'Diseño de carta', cartaPages);
+      });
       vActions.appendChild(b);
     } else if (behance) {
       const a = document.createElement('a');
