@@ -2418,27 +2418,32 @@ body.pg-viewer-open #trailCanvas { display: none; }
   backdrop-filter: blur(22px) saturate(1.05);
   -webkit-backdrop-filter: blur(22px) saturate(1.05);
 }
+/* Solo prototipos Figma: cerrar al medio-derecha, un poco más grande */
 .figma-proto__close {
   position: fixed;
-  top: 1rem;
-  right: 1rem;
+  top: 50%;
+  right: 1.25rem;
+  left: auto;
+  bottom: auto;
   z-index: 3;
-  width: 44px;
-  height: 44px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  background: rgba(12, 12, 12, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(12, 12, 12, 0.48);
   color: #fff;
-  font-size: 1rem;
+  font-size: 1.35rem;
+  line-height: 1;
   cursor: pointer;
   display: grid;
   place-items: center;
+  transform: translateY(-50%);
   transition: background 0.25s, border-color 0.25s, transform 0.25s;
 }
 .figma-proto__close:hover {
-  background: rgba(255, 197, 211, 0.22);
-  border-color: rgba(255, 197, 211, 0.6);
-  transform: scale(1.05);
+  background: rgba(255, 197, 211, 0.26);
+  border-color: rgba(255, 197, 211, 0.7);
+  transform: translateY(-50%) scale(1.08);
 }
 /* Iframe a pantalla completa — sin caja negra propia */
 .figma-proto__frame {
@@ -2475,7 +2480,14 @@ body.figma-proto-open #trailCanvas {
 }
 @media (max-width: 480px) {
   .figma-proto__close {
-    top: 0.65rem;
-    right: 0.65rem;
+    top: 50%;
+    right: 0.7rem;
+    width: 52px;
+    height: 52px;
+    font-size: 1.2rem;
+    transform: translateY(-50%);
+  }
+  .figma-proto__close:hover {
+    transform: translateY(-50%) scale(1.08);
   }
 }
