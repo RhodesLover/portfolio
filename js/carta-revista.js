@@ -82,39 +82,45 @@
   }
 
   function normalizePages(input, pageCount) {
-    if (Array.isArray(input)) return input.filter(Boolean);
-    if (typeof input === 'string' && input.trim()) {
-      var s = input.trim();
-      if (s.indexOf(',') >= 0) {
-        return s.split(',').map(function (x) { return x.trim(); }).filter(Boolean);
+      if (Array.isArray(input)) return input.filter(Boolean);
+      if (typeof input === 'string' && input.trim()) {
+        var s = input.trim();
+        if (s.indexOf(',') >= 0) {
+          return s.split(',').map(function (x) { return x.trim(); }).filter(Boolean);
+        }
+        var base = s.replace(/\/+$/, '');
+        var n = parseInt(pageCount, 10);
+        if (!n || n < 1) n = 5;
+        var list = [];
+        for (var i = 1; i <= n; i++) {
+          var num = i < 10 ? '0' + i : String(i);
+          // vectores del PDF → SVG nítido al zoom (fallback webp si no hay svg)
+          list.push(base + '/page-' + num + '.svg');
+        }
+        return list;
       }
-      var base = s.replace(/\/+$/, '');
-      var n = parseInt(pageCount, 10);
-      if (!n || n < 1) n = 5;
-      var list = [];
-      for (var i = 1; i <= n; i++) {
-        var num = i < 10 ? '0' + i : String(i);
-        list.push(base + '/page-' + num + '.webp');
-      }
-      return list;
+      return [];
     }
-    return [];
-  }
 
-  function preload(list) {
-    list.forEach(function (src) {
-      if (!src) return;
-      var im = new Image();
-      im.decoding = 'async';
-      im.src = src;
-    });
-  }
+    function preload(list) {
+      list.forEach(function (src) {
+        if (!src) return;
+        // Image() también precarga SVG como documento
+        var im = new Image();
+        im.decoding = 'async';
+        im.src = src;
+      });
+    }
 
-  function setSrc(el, src) {
-    if (!el) return;
-    var next = src || blank();
-    if (el.getAttribute('src') !== next) el.src = next;
-  }
+    function setSrc(el, src) {
+      if (!el) return;
+      var next = src || blank();
+      if (el.getAttribute('src') !== next) {
+        el.src = next;
+        // hint al browser: SVG/escala nítida
+        el.style.imageRendering = 'auto';
+      }
+    }
 
   function setOpen(on) {
     open = !!on;

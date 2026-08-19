@@ -2735,6 +2735,13 @@ body.figma-proto-open #trailCanvas {
   pointer-events: none;
   -webkit-user-drag: none;
   background: #f3eee4;
+  /* SVG vectorial del PDF: nítido al zoom (no pixelar como webp) */
+  image-rendering: auto;
+  -ms-interpolation-mode: bicubic;
+}
+img.carta-book__img[src$=".svg"] {
+  /* fuerza rasterización a escala de pantalla, no bitmap fijo */
+  image-rendering: auto;
 }
 .carta-book__spine {
   position: absolute;
