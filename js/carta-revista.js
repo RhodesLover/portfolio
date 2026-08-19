@@ -157,98 +157,114 @@
   }
 
   function stowCover(stowed) {
-    if (!cover || !book) return;
-    book.classList.toggle('is-cover-stowed', !!stowed);
-    cover.setAttribute('aria-hidden', stowed ? 'true' : 'false');
-    if (stowed) {
-      // fuera del stack visual: no tapa la página izquierda
-      cover.style.visibility = 'hidden';
-      cover.style.pointerEvents = 'none';
-      cover.style.opacity = '0';
-    } else {
-      cover.style.visibility = '';
-      cover.style.pointerEvents = '';
-      cover.style.opacity = '';
-    }
-  }
-
-  function hardResetCoverStyles() {
-    if (!cover) return;
-    cover.style.transition = '';
-    cover.style.transform = '';
-  }
-
-  function updateChrome() {
-    if (counter) counter.textContent = stateLabel();
-    if (prevBtn) prevBtn.disabled = state <= 0 || busy;
-    if (nextBtn) nextBtn.disabled = state >= maxState || busy;
-    updateDots();
-    root.setAttribute('data-state', String(state));
-    var sp = spreadPages();
-    root.setAttribute('data-left', sp.left == null ? '' : String(sp.left));
-    root.setAttribute('data-right', sp.right == null ? '' : String(sp.right));
-    // no pisar modes de animación
-    if (!busy && book) {
-      if (state === 0) {
-        setMode('closed');
-        stowCover(false);
+      if (!cover || !book) return;
+      book.classList.toggle('is-cover-stowed', !!stowed);
+      cover.setAttribute('aria-hidden', stowed ? 'true' : 'false');
+      if (stowed) {
+        // fuera del stack visual: no tapa la página izquierda
+        cover.style.visibility = 'hidden';
+        cover.style.pointerEvents = 'none';
+        cover.style.opacity = '0';
       } else {
-        setMode('open');
-        stowCover(true);
+        cover.style.visibility = '';
+        cover.style.pointerEvents = '';
+        cover.style.opacity = '';
       }
     }
-  }
 
-  /**
-   * Pinta el pliego base según estado.
-   * Índices 0-based en `pages`: p1=0 … p5=4
-   * Portada sola no usa left; interiors siempre left|right correctos.
-   */
-  function paintSpread(s) {
-    if (!pages.length) return;
-    setSrc(imgCover, pages[0]);
-
-    if (s <= 0) {
-      setSrc(imgLeft, blank());
-      // peek bajo la tapa (no se ve cerrada, pero listo al abrir)
-      setSrc(imgRight, pages[1] || blank());
-      if (imgLeft) imgLeft.alt = '';
-      if (imgRight) imgRight.alt = pages[1] ? 'Página 2' : '';
-      if (imgCover) imgCover.alt = 'Portada';
-      return;
+    function hardResetCoverStyles() {
+      if (!cover) return;
+      cover.style.transition = '';
+      cover.style.transform = '';
+      cover.style.left = '';
+      cover.style.right = '';
+      cover.style.width = '';
+      cover.style.opacity = '';
+      cover.style.visibility = '';
+      cover.style.pointerEvents = '';
     }
 
-    if (s === 1) {
-      setSrc(imgLeft, pages[1] || blank());   // p2
-      setSrc(imgRight, pages[2] || blank());  // p3
-      if (imgLeft) imgLeft.alt = 'Página 2';
-      if (imgRight) imgRight.alt = 'Página 3';
-      return;
+    /** Posiciona la tapa en la mitad derecha (bisagra al lomo) sin animar left/right. */
+    function pinCoverRightHalf(rotationY) {
+      if (!cover) return;
+      cover.style.transition = 'none';
+      cover.style.left = 'auto';
+      cover.style.right = '0';
+      cover.style.width = '50%';
+      cover.style.transform = 'rotateY(' + rotationY + 'deg)';
+      cover.style.opacity = '1';
+      cover.style.visibility = 'visible';
+      cover.style.pointerEvents = 'none';
+      void cover.offsetWidth;
     }
 
-    // s >= 2 → p4 | p5
-    setSrc(imgLeft, pages[3] || blank());
-    setSrc(imgRight, pages[4] || blank());
-    if (imgLeft) imgLeft.alt = 'Página 4';
-    if (imgRight) imgRight.alt = 'Página 5';
-  }
+    function updateChrome() {
+      if (counter) counter.textContent = stateLabel();
+      if (prevBtn) prevBtn.disabled = state <= 0 || busy;
+      if (nextBtn) nextBtn.disabled = state >= maxState || busy;
+      updateDots();
+      root.setAttribute('data-state', String(state));
+      var sp = spreadPages();
+      root.setAttribute('data-left', sp.left == null ? '' : String(sp.left));
+      root.setAttribute('data-right', sp.right == null ? '' : String(sp.right));
+      // no pisar modes de animación
+      if (!busy && book) {
+        if (state === 0) {
+          setMode('closed');
+          stowCover(false);
+        } else {
+          setMode('open');
+          stowCover(true);
+        }
+      }
+    }
 
-  async function openCover() {
+    /**
+     * Pinta el pliego base según estado.
+     * Índices 0-based en `pages`: p1=0 … p5=4
+     * Portada sola no usa left; interiors siempre left|right correctos.
+     */
+    function paintSpread(s) {
+      if (!pages.length) return;
+      setSrc(imgCover, pages[0]);
+
+      if (s <= 0) {
+        setSrc(imgLeft, blank());
+        // peek bajo la tapa (no se ve cerrada, pero listo al abrir)
+        setSrc(imgRight, pages[1] || blank());
+        if (imgLeft) imgLeft.alt = '';
+        if (imgRight) imgRight.alt = pages[1] ? 'Página 2' : '';
+        if (imgCover) imgCover.alt = 'Portada';
+        return;
+      }
+
+      if (s === 1) {
+        setSrc(imgLeft, pages[1] || blank());   // p2
+        setSrc(imgRight, pages[2] || blank());  // p3
+        if (imgLeft) imgLeft.alt = 'Página 2';
+        if (imgRight) imgRight.alt = 'Página 3';
+        return;
+      }
+
+      // s >= 2 → p4 | p5
+      setSrc(imgLeft, pages[3] || blank());
+      setSrc(imgRight, pages[4] || blank());
+      if (imgLeft) imgLeft.alt = 'Página 4';
+      if (imgRight) imgRight.alt = 'Página 5';
+    }
+
+    async function openCover() {
       if (!book || !cover) return;
 
-      // preparar pliego 2|3 debajo ANTES de girar (sin hoja blanca)
+      // pliego 2|3 debajo ANTES de girar
       paintSpread(1);
       resetFlipper();
-      stowCover(false);
+      book.classList.remove('is-cover-stowed');
       book.classList.add('is-opening-cover');
       setMode('opening');
 
-      // tapa en mitad derecha, solo frente (dorso desactivado en CSS)
-      cover.style.transition = 'none';
-      cover.style.transform = 'rotateY(0deg)';
-      cover.style.opacity = '1';
-      cover.style.visibility = 'visible';
-      void cover.offsetWidth;
+      // anclar YA en mitad derecha, sin transición de left/right
+      pinCoverRightHalf(0);
 
       cover.style.transition =
         'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
@@ -256,7 +272,6 @@
 
       await wait(FLIP_MS + 40);
 
-      // esconder tapa: no queda hoja a la izquierda
       state = 1;
       paintSpread(1);
       setMode('open');
@@ -270,31 +285,44 @@
     async function closeCover() {
       if (!book || !cover) return;
 
-      // Cierre desde la DERECHA (misma bisagra que la apertura).
-      // Antes partía desde la izquierda y se veía una hoja blanca.
+      // Volver a portada: misma bisagra (mitad derecha).
+      // Importante: pinear a la derecha ANTES de hacerse visible,
+      // para no animar un salto desde la posición stowed.
       book.classList.add('is-closing-cover');
+      book.classList.remove('is-cover-stowed');
       setMode('closing');
-      stowCover(false);
-      paintSpread(1); // pliego 2|3 visible bajo la tapa
+      paintSpread(1);
 
+      // 1) invisible + anclada a la derecha en -180 (como si estuviera abierta)
       cover.style.transition = 'none';
-      cover.style.transform = 'rotateY(-180deg)'; // abierta, bisagra en lomo (derecha)
+      cover.style.left = 'auto';
+      cover.style.right = '0';
+      cover.style.width = '50%';
+      cover.style.transform = 'rotateY(-180deg)';
+      cover.style.opacity = '0';
+      cover.style.visibility = 'hidden';
+      cover.style.pointerEvents = 'none';
+      void cover.offsetWidth;
+
+      // 2) mostrar ya en posición correcta (sin slide)
       cover.style.opacity = '1';
       cover.style.visibility = 'visible';
       void cover.offsetWidth;
 
+      // 3) solo girar a 0 (cierra sobre la derecha)
       cover.style.transition =
         'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
-      cover.style.transform = 'rotateY(0deg)'; // cierra sobre la derecha
+      cover.style.transform = 'rotateY(0deg)';
 
       await wait(FLIP_MS + 40);
 
+      // 4) estacionar cerrada a ancho completo (sin animar left/width del flip)
       state = 0;
       paintSpread(0);
-      setMode('closed');
       book.classList.remove('is-closing-cover');
       hardResetCoverStyles();
       stowCover(false);
+      setMode('closed');
       resetFlipper();
       updateChrome();
     }

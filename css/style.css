@@ -2751,12 +2751,11 @@ body.figma-proto-open #trailCanvas {
   transform-origin: left center;
   transform-style: preserve-3d;
   transform: rotateY(0deg);
+  /* SOLO transform anima el flip. left/right/width NO deben animar:
+     al volver de stowed (izq) a closing (der) eso se veía como hoja fantasma. */
   transition: transform var(--flip-ms) cubic-bezier(0.33, 0.1, 0.25, 1),
-              width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-              left 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-              right 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 0.35s ease,
-              opacity 0.2s ease;
+              opacity 0.15s ease,
+              box-shadow 0.35s ease;
   cursor: pointer;
   will-change: transform;
 }
@@ -2778,14 +2777,13 @@ body.figma-proto-open #trailCanvas {
   border-radius: 3px 5px 5px 3px;
 }
 /*
-  Abierta: la tapa NO se queda sobre el pliego.
-  Antes quedaba a la izquierda con dorso beige y tapaba p2 (bug Gemini).
+  Abierta: tapa fuera del stack (no ocupa la izquierda).
 */
 .carta-book[data-mode="open"] .carta-book__cover,
 .carta-book.is-cover-stowed .carta-book__cover {
   width: 50%;
-  left: 0;
-  right: auto;
+  left: auto;
+  right: 0; /* misma ancla que open/close — evita salto L→R al cerrar */
   transform: rotateY(-180deg);
   pointer-events: none;
   box-shadow: none;
@@ -2793,8 +2791,7 @@ body.figma-proto-open #trailCanvas {
   visibility: hidden !important;
   z-index: 0;
 }
-/* Apertura y cierre: tapa siempre en la mitad derecha, bisagra en el lomo.
-   Sin dorso beige: solo frente + backface-visibility hidden → no hay hoja blanca. */
+/* Apertura y cierre: mitad derecha, bisagra en el lomo */
 .carta-book[data-mode="opening"] .carta-book__cover,
 .carta-book.is-opening-cover .carta-book__cover,
 .carta-book[data-mode="closing"] .carta-book__cover,
