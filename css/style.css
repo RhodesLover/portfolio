@@ -2389,16 +2389,16 @@ body.pg-viewer-open #trailCanvas { display: none; }
 }
 
 /* ============================================================
-   FIGMA PROTO — minimal: blur + iframe centrado + close
+   FIGMA PROTO — fullscreen + fondo de página blur (no negro)
    ============================================================ */
 .figma-proto {
   position: fixed;
   inset: 0;
   z-index: 11000;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 0;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -2409,23 +2409,25 @@ body.pg-viewer-open #trailCanvas { display: none; }
   visibility: visible;
   pointer-events: auto;
 }
+/* Blur de la página real — poco tinte, nada de negro sólido */
 .figma-proto__backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  z-index: 0;
+  background: rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(22px) saturate(1.05);
+  -webkit-backdrop-filter: blur(22px) saturate(1.05);
 }
 .figma-proto__close {
   position: fixed;
   top: 1rem;
   right: 1rem;
-  z-index: 2;
+  z-index: 3;
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(12, 12, 12, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(12, 12, 12, 0.4);
   color: #fff;
   font-size: 1rem;
   cursor: pointer;
@@ -2434,27 +2436,31 @@ body.pg-viewer-open #trailCanvas { display: none; }
   transition: background 0.25s, border-color 0.25s, transform 0.25s;
 }
 .figma-proto__close:hover {
-  background: rgba(255, 197, 211, 0.18);
-  border-color: rgba(255, 197, 211, 0.55);
+  background: rgba(255, 197, 211, 0.22);
+  border-color: rgba(255, 197, 211, 0.6);
   transform: scale(1.05);
 }
-/* El iframe ES la ventana — tamaño feed móvil, sin chrome extra */
+/* Iframe a pantalla completa — sin caja negra propia */
 .figma-proto__frame {
   position: relative;
   z-index: 1;
-  width: min(390px, calc(100vw - 2rem));
-  height: min(780px, calc(100vh - 2rem));
-  max-height: 90vh;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  background: #111;
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   display: block;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
-  transform: translateY(10px) scale(0.98);
-  transition: transform 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: none;
 }
-.figma-proto.is-open .figma-proto__frame {
-  transform: translateY(0) scale(1);
+/* Ocultar viewer/modal oscuros debajo para que el blur muestre la página */
+body.figma-proto-open .pg-viewer,
+body.figma-proto-open .modal {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 body.figma-proto-open .nav {
   opacity: 0;
@@ -2468,11 +2474,8 @@ body.figma-proto-open #trailCanvas {
   display: none;
 }
 @media (max-width: 480px) {
-  .figma-proto { padding: 0.5rem; }
-  .figma-proto__frame {
-    width: min(100vw - 1rem, 390px);
-    height: min(100vh - 1rem, 780px);
-    border-radius: 10px;
+  .figma-proto__close {
+    top: 0.65rem;
+    right: 0.65rem;
   }
-  .figma-proto__close { top: 0.65rem; right: 0.65rem; }
 }

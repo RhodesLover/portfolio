@@ -1,5 +1,5 @@
 /* ============================================================
-   FIGMA PROTO — minimal overlay (blur + iframe)
+   FIGMA PROTO — fullscreen + blur de página
    API: window.openFigmaProto(url) / window.closeFigmaProto()
    ============================================================ */
 (function () {
@@ -51,7 +51,10 @@
   }
 
   if (closeBtn) closeBtn.addEventListener('click', closeFigmaProto);
-  if (backdrop) backdrop.addEventListener('click', closeFigmaProto);
+  // backdrop click: only if target is backdrop (iframe covers full screen, so rare)
+  if (backdrop) {
+    backdrop.addEventListener('click', closeFigmaProto);
+  }
 
   document.addEventListener(
     'keydown',
