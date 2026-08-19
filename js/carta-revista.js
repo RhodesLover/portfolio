@@ -1,11 +1,12 @@
 /* ============================================================
-   CARTA REVISTA — libro 3D (portada + spreads + flip real)
+   CARTA REVISTA — libro 3D (portada + spreads)
    PDF 5 págs → estados:
      0: portada cerrada (p1)
      1: spread p2 | p3
      2: spread p4 | p5
-   API: openCartaRevista(dir|list, title?, pageCount?)
-        closeCartaRevista()
+
+   Fix crítico: la tapa NO se deja sobre el pliego abierto
+   (antes el dorso beige tapaba la página izquierda / p2).
    ============================================================ */
 (function () {
   'use strict';
@@ -30,19 +31,24 @@
   const dotsEl = document.getElementById('cartaRevistaDots');
   const shell = document.getElementById('cartaBookShell');
 
-  const FLIP_MS = 900;
+  const FLIP_MS = 880;
 
   let open = false;
   let busy = false;
-  let pages = []; // [p1..p5]
-  let state = 0;  // 0 cover, 1 first spread, 2 second spread
+  let pages = [];
+  let state = 0; // 0 cover, 1 = 2|3, 2 = 4|5
   let maxState = 0;
   let touchX = null;
-  let dragStartX = null;
   let closeTimer = null;
 
   function blank() {
     return 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+  }
+
+  function wait(ms) {
+    return new Promise(function (resolve) {
+      window.setTimeout(resolve, ms);
+    });
   }
 
   function normalizePages(input, pageCount) {
@@ -69,8 +75,15 @@
     list.forEach(function (src) {
       if (!src) return;
       var im = new Image();
+      im.decoding = 'async';
       im.src = src;
     });
+  }
+
+  function setSrc(el, src) {
+    if (!el) return;
+    var next = src || blank();
+    if (el.getAttribute('src') !== next) el.src = next;
   }
 
   function setOpen(on) {
@@ -89,7 +102,14 @@
     if (state === 0) return 'Portada';
     if (state === 1) return 'Págs. 2–3';
     if (state === 2) return 'Págs. 4–5';
-    return (state + 1) + ' / ' + (maxState + 1);
+    return String(state);
+  }
+
+  /** Páginas reales del pliego actual (1-based), null = tapa sola */
+  function spreadPages() {
+    if (state === 0) return { left: null, right: 1 };
+    if (state === 1) return { left: 2, right: 3 };
+    return { left: 4, right: 5 };
   }
 
   function buildDots() {
@@ -99,7 +119,7 @@
       var b = document.createElement('button');
       b.type = 'button';
       b.className = 'carta-revista__dot' + (i === state ? ' is-active' : '');
-      b.setAttribute('aria-label', 'Ir a ' + (i === 0 ? 'portada' : 'sección ' + i));
+      b.setAttribute('aria-label', i === 0 ? 'Portada' : 'Pliego ' + i);
       (function (idx) {
         b.addEventListener('click', function (e) {
           e.stopPropagation();
@@ -118,131 +138,230 @@
     }
   }
 
+  function setMode(mode) {
+    if (!book) return;
+    book.setAttribute('data-mode', mode);
+    book.setAttribute('data-state', String(state));
+  }
+
+  function resetFlipper() {
+    if (!flipper) return;
+    book && book.classList.remove('is-flipping');
+    flipper.style.transition = 'none';
+    flipper.style.transform = 'rotateY(0deg)';
+    flipper.style.opacity = '0';
+    flipper.setAttribute('aria-hidden', 'true');
+    // reflow
+    void flipper.offsetWidth;
+    flipper.style.transition = '';
+  }
+
+  function stowCover(stowed) {
+    if (!cover || !book) return;
+    book.classList.toggle('is-cover-stowed', !!stowed);
+    cover.setAttribute('aria-hidden', stowed ? 'true' : 'false');
+    if (stowed) {
+      // fuera del stack visual: no tapa la página izquierda
+      cover.style.visibility = 'hidden';
+      cover.style.pointerEvents = 'none';
+      cover.style.opacity = '0';
+    } else {
+      cover.style.visibility = '';
+      cover.style.pointerEvents = '';
+      cover.style.opacity = '';
+    }
+  }
+
+  function hardResetCoverStyles() {
+    if (!cover) return;
+    cover.style.transition = '';
+    cover.style.transform = '';
+  }
+
   function updateChrome() {
     if (counter) counter.textContent = stateLabel();
     if (prevBtn) prevBtn.disabled = state <= 0 || busy;
     if (nextBtn) nextBtn.disabled = state >= maxState || busy;
     updateDots();
-    if (book) {
-      book.setAttribute('data-mode', state === 0 ? 'closed' : 'open');
-      book.setAttribute('data-state', String(state));
+    root.setAttribute('data-state', String(state));
+    var sp = spreadPages();
+    root.setAttribute('data-left', sp.left == null ? '' : String(sp.left));
+    root.setAttribute('data-right', sp.right == null ? '' : String(sp.right));
+    // no pisar modes de animación
+    if (!busy && book) {
+      if (state === 0) {
+        setMode('closed');
+        stowCover(false);
+      } else {
+        setMode('open');
+        stowCover(true);
+      }
     }
   }
 
+  /**
+   * Pinta el pliego base según estado.
+   * Índices 0-based en `pages`: p1=0 … p5=4
+   * Portada sola no usa left; interiors siempre left|right correctos.
+   */
   function paintSpread(s) {
-    // s: 0 cover, 1 = p2|p3, 2 = p4|p5
     if (!pages.length) return;
-    if (imgCover) imgCover.src = pages[0] || blank();
-    if (s === 0) {
-      if (imgLeft) imgLeft.src = blank();
-      if (imgRight) imgRight.src = pages[1] || blank(); // under cover peek
-      return;
-    }
-    if (s === 1) {
-      if (imgLeft) imgLeft.src = pages[1] || blank();
-      if (imgRight) imgRight.src = pages[2] || blank();
-      return;
-    }
-    // s >= 2
-    if (imgLeft) imgLeft.src = pages[3] || blank();
-    if (imgRight) imgRight.src = pages[4] || blank();
-  }
+    setSrc(imgCover, pages[0]);
 
-  function wait(ms) {
-    return new Promise(function (resolve) { setTimeout(resolve, ms); });
+    if (s <= 0) {
+      setSrc(imgLeft, blank());
+      // peek bajo la tapa (no se ve cerrada, pero listo al abrir)
+      setSrc(imgRight, pages[1] || blank());
+      if (imgLeft) imgLeft.alt = '';
+      if (imgRight) imgRight.alt = pages[1] ? 'Página 2' : '';
+      if (imgCover) imgCover.alt = 'Portada';
+      return;
+    }
+
+    if (s === 1) {
+      setSrc(imgLeft, pages[1] || blank());   // p2
+      setSrc(imgRight, pages[2] || blank());  // p3
+      if (imgLeft) imgLeft.alt = 'Página 2';
+      if (imgRight) imgRight.alt = 'Página 3';
+      return;
+    }
+
+    // s >= 2 → p4 | p5
+    setSrc(imgLeft, pages[3] || blank());
+    setSrc(imgRight, pages[4] || blank());
+    if (imgLeft) imgLeft.alt = 'Página 4';
+    if (imgRight) imgRight.alt = 'Página 5';
   }
 
   async function openCover() {
-      if (!book || !cover) return;
-      // 1) expandir libro + preparar spread debajo
-      paintSpread(1);
-      book.classList.add('is-opening-cover');
-      book.setAttribute('data-mode', 'opening'); // ancho doble, tapa a la derecha
-      cover.style.transition = 'none';
-      cover.style.transform = 'rotateY(0deg)';
-      void cover.offsetWidth;
-      // 2) girar tapa hacia la izquierda
-      cover.style.transition = 'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
-      cover.style.transform = 'rotateY(-180deg)';
-      await wait(FLIP_MS + 30);
-      // 3) estacionar abierta
-      book.setAttribute('data-mode', 'open');
-      book.classList.remove('is-opening-cover');
-      cover.style.transition = '';
-      cover.style.transform = '';
-      state = 1;
-      paintSpread(1);
-      updateChrome();
-    }
+    if (!book || !cover) return;
 
-    async function closeCover() {
-      if (!book || !cover) return;
-      book.classList.add('is-closing-cover');
-      book.setAttribute('data-mode', 'closing'); // ancho doble mientras cierra
-      cover.style.transition = 'none';
-      cover.style.transform = 'rotateY(-180deg)';
-      void cover.offsetWidth;
-      cover.style.transition = 'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
-      cover.style.transform = 'rotateY(0deg)';
-      await wait(FLIP_MS + 30);
-      book.setAttribute('data-mode', 'closed');
-      book.classList.remove('is-closing-cover');
-      cover.style.transition = '';
-      cover.style.transform = '';
-      state = 0;
-      paintSpread(0);
-      updateChrome();
-    }
+    // preparar pliego 2|3 debajo ANTES de girar
+    paintSpread(1);
+    resetFlipper();
+    stowCover(false);
+    book.classList.add('is-opening-cover');
+    setMode('opening');
+
+    cover.style.transition = 'none';
+    cover.style.transform = 'rotateY(0deg)';
+    cover.style.opacity = '1';
+    cover.style.visibility = 'visible';
+    void cover.offsetWidth;
+
+    cover.style.transition =
+      'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
+    cover.style.transform = 'rotateY(-180deg)';
+
+    await wait(FLIP_MS + 40);
+
+    // CRÍTICO: esconder tapa para no tapar p2 con el dorso beige
+    state = 1;
+    paintSpread(1);
+    setMode('open');
+    book.classList.remove('is-opening-cover');
+    hardResetCoverStyles();
+    stowCover(true);
+    resetFlipper();
+    updateChrome();
+  }
+
+  async function closeCover() {
+    if (!book || !cover) return;
+
+    // volver a mostrar tapa abierta (sobre la izquierda) y cerrar
+    book.classList.add('is-closing-cover');
+    setMode('closing');
+    stowCover(false);
+    paintSpread(1); // todavía se ve 2|3 un instante bajo la tapa
+
+    cover.style.transition = 'none';
+    cover.style.transform = 'rotateY(-180deg)';
+    cover.style.opacity = '1';
+    cover.style.visibility = 'visible';
+    void cover.offsetWidth;
+
+    cover.style.transition =
+      'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
+    cover.style.transform = 'rotateY(0deg)';
+
+    await wait(FLIP_MS + 40);
+
+    state = 0;
+    paintSpread(0);
+    setMode('closed');
+    book.classList.remove('is-closing-cover');
+    hardResetCoverStyles();
+    stowCover(false);
+    resetFlipper();
+    updateChrome();
+  }
 
   async function flipForwardInterior() {
-    // state 1 → 2 : right page (p3) flips, back shows p4, under becomes p4|p5
+    // 1 (p2|p3) → 2 (p4|p5)
     if (!flipper || !book) return;
+
     book.classList.add('is-flipping');
-    // front of flipper = current right (p3), back = new left (p4)
-    if (flipFront) flipFront.src = pages[2] || blank();
-    if (flipBack) flipBack.src = pages[3] || blank();
-    // under right becomes p5; left stays p2 until halfway then becomes p4
-    if (imgRight) imgRight.src = pages[4] || blank();
+    flipper.setAttribute('aria-hidden', 'false');
+    flipper.style.opacity = '1';
+
+    // frente del flip = p3 actual; dorso = p4 entrante
+    setSrc(flipFront, pages[2] || blank());
+    setSrc(flipBack, pages[3] || blank());
+
+    // bajo el flipper, la derecha ya es p5; izquierda sigue p2 hasta mitad
+    setSrc(imgRight, pages[4] || blank());
+    setSrc(imgLeft, pages[1] || blank());
+
     flipper.style.transition = 'none';
     flipper.style.transform = 'rotateY(0deg)';
     void flipper.offsetWidth;
-    flipper.style.transition = 'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
+    flipper.style.transition =
+      'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
     flipper.style.transform = 'rotateY(-180deg)';
-    // mid-swap left
-    await wait(FLIP_MS * 0.48);
-    if (imgLeft) imgLeft.src = pages[3] || blank();
-    await wait(FLIP_MS * 0.52 + 20);
-    flipper.style.transition = 'none';
-    flipper.style.transform = 'rotateY(0deg)';
-    book.classList.remove('is-flipping');
+
+    await wait(FLIP_MS * 0.5);
+    // a mitad de camino la izquierda ya es p4
+    setSrc(imgLeft, pages[3] || blank());
+    await wait(FLIP_MS * 0.5 + 40);
+
     state = 2;
     paintSpread(2);
+    resetFlipper();
+    stowCover(true);
+    setMode('open');
     updateChrome();
   }
 
   async function flipBackInterior() {
-    // state 2 → 1
+    // 2 (p4|p5) → 1 (p2|p3)
     if (!flipper || !book) return;
+
     book.classList.add('is-flipping');
-    // animate from open (-180) back to 0: front will be p3, back p4
-    if (flipFront) flipFront.src = pages[2] || blank();
-    if (flipBack) flipBack.src = pages[3] || blank();
-    // under: left should end as p2, right as p3
-    if (imgLeft) imgLeft.src = pages[1] || blank();
-    if (imgRight) imgRight.src = pages[2] || blank();
+    flipper.setAttribute('aria-hidden', 'false');
+    flipper.style.opacity = '1';
+
+    setSrc(flipFront, pages[2] || blank()); // p3
+    setSrc(flipBack, pages[3] || blank());  // p4
+
+    // destino bajo el flip
+    setSrc(imgLeft, pages[1] || blank());  // p2
+    setSrc(imgRight, pages[2] || blank()); // p3
+
     flipper.style.transition = 'none';
     flipper.style.transform = 'rotateY(-180deg)';
     void flipper.offsetWidth;
-    flipper.style.transition = 'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
+    flipper.style.transition =
+      'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
     flipper.style.transform = 'rotateY(0deg)';
-    await wait(FLIP_MS * 0.48);
-    // during unflip right under can stay p3
-    await wait(FLIP_MS * 0.52 + 20);
-    flipper.style.transition = 'none';
-    flipper.style.transform = 'rotateY(0deg)';
-    book.classList.remove('is-flipping');
+
+    await wait(FLIP_MS + 40);
+
     state = 1;
     paintSpread(1);
+    resetFlipper();
+    stowCover(true);
+    setMode('open');
     updateChrome();
   }
 
@@ -250,6 +369,7 @@
     if (!open || busy) return;
     target = Math.max(0, Math.min(maxState, target | 0));
     if (target === state) return;
+
     busy = true;
     updateChrome();
     try {
@@ -265,41 +385,61 @@
       }
     } finally {
       busy = false;
+      // garantía final de coherencia UI ↔ contenido
+      paintSpread(state);
+      resetFlipper();
+      if (state === 0) {
+        setMode('closed');
+        stowCover(false);
+      } else {
+        setMode('open');
+        stowCover(true);
+      }
       updateChrome();
     }
   }
 
-  function nextPage() { goTo(state + 1); }
-  function prevPage() { goTo(state - 1); }
+  function nextPage() {
+    goTo(state + 1);
+  }
+  function prevPage() {
+    goTo(state - 1);
+  }
 
   function openCartaRevista(input, title, pageCount) {
     pages = normalizePages(input, pageCount);
     if (!pages.length) return;
+
     if (closeTimer) {
       clearTimeout(closeTimer);
       closeTimer = null;
     }
-    maxState = pages.length >= 5 ? 2 : (pages.length <= 1 ? 0 : 1);
-    // if 3 pages: cover + one spread p2|p3
-    if (pages.length === 3) maxState = 1;
-    if (pages.length === 4) maxState = 2; // cover + p2|p3 + p4|blank
+
+    // portada + spreads de a 2 a partir de p2
+    // 5 páginas → estados 0,1,2
+    if (pages.length <= 1) maxState = 0;
+    else if (pages.length <= 3) maxState = 1;
+    else maxState = 2;
+
     state = 0;
     busy = false;
+
     if (titleEl) titleEl.textContent = title || 'Diseño de carta';
     preload(pages);
-    paintSpread(0);
-    if (cover) {
-      cover.style.transition = '';
-      cover.style.transform = '';
-    }
-    if (flipper) {
-      flipper.style.transition = 'none';
-      flipper.style.transform = 'rotateY(0deg)';
-    }
+
     if (book) {
-      book.classList.remove('is-flipping', 'is-opening-cover', 'is-closing-cover');
-      book.setAttribute('data-mode', 'closed');
+      book.classList.remove(
+        'is-flipping',
+        'is-opening-cover',
+        'is-closing-cover',
+        'is-cover-stowed'
+      );
     }
+    hardResetCoverStyles();
+    stowCover(false);
+    resetFlipper();
+    paintSpread(0);
+    setMode('closed');
     buildDots();
     updateChrome();
     setOpen(true);
@@ -310,16 +450,29 @@
     if (!open && !root.classList.contains('is-open')) return;
     root.classList.add('is-closing');
     root.classList.remove('is-open');
-    // short close anim then cleanup
     closeTimer = setTimeout(function () {
       setOpen(false);
       root.classList.remove('is-closing');
       if (imgCover) imgCover.removeAttribute('src');
       if (imgLeft) imgLeft.removeAttribute('src');
       if (imgRight) imgRight.removeAttribute('src');
+      if (flipFront) flipFront.removeAttribute('src');
+      if (flipBack) flipBack.removeAttribute('src');
       pages = [];
       state = 0;
       busy = false;
+      hardResetCoverStyles();
+      stowCover(false);
+      resetFlipper();
+      if (book) {
+        book.classList.remove(
+          'is-flipping',
+          'is-opening-cover',
+          'is-closing-cover',
+          'is-cover-stowed'
+        );
+        setMode('closed');
+      }
       var viewerOpen = document.body.classList.contains('pg-viewer-open');
       var modalOpen = document.body.classList.contains('modal-open');
       var figmaOpen = document.body.classList.contains('figma-proto-open');
@@ -333,26 +486,30 @@
 
   if (closeBtn) closeBtn.addEventListener('click', closeCartaRevista);
   if (backdrop) backdrop.addEventListener('click', closeCartaRevista);
-  if (prevBtn) prevBtn.addEventListener('click', function (e) {
-    e.stopPropagation();
-    prevPage();
-  });
-  if (nextBtn) nextBtn.addEventListener('click', function (e) {
-    e.stopPropagation();
-    nextPage();
-  });
+  if (prevBtn) {
+    prevBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      prevPage();
+    });
+  }
+  if (nextBtn) {
+    nextBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      nextPage();
+    });
+  }
 
-  // click zones on book
   if (shell) {
     shell.addEventListener('click', function (e) {
       if (!open || busy) return;
+      // no navegar si click en controles externos
       var rect = shell.getBoundingClientRect();
-      var x = e.clientX - rect.left;
-      var ratio = x / rect.width;
-      if (state === 0 || ratio > 0.55) nextPage();
+      var ratio = (e.clientX - rect.left) / rect.width;
+      if (state === 0 || ratio > 0.52) nextPage();
       else prevPage();
     });
   }
+
   if (cover) {
     cover.addEventListener('click', function (e) {
       if (!open || busy) return;
@@ -361,18 +518,18 @@
     });
   }
 
-  // drag / swipe
   function onPointerDown(e) {
     if (!open || busy) return;
-    dragStartX = (e.touches && e.touches[0] ? e.touches[0].clientX : e.clientX);
-    touchX = dragStartX;
+    touchX = e.touches && e.touches[0] ? e.touches[0].clientX : e.clientX;
   }
   function onPointerUp(e) {
     if (!open || touchX == null) return;
-    var endX = (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientX : e.clientX);
+    var endX =
+      e.changedTouches && e.changedTouches[0]
+        ? e.changedTouches[0].clientX
+        : e.clientX;
     var dx = endX - touchX;
     touchX = null;
-    dragStartX = null;
     if (Math.abs(dx) < 48) return;
     if (dx < 0) nextPage();
     else prevPage();

@@ -2597,7 +2597,7 @@ body.figma-proto-open #trailCanvas {
 .carta-book {
   --page-w: min(340px, 38vw);
   --page-h: calc(var(--page-w) * 1.414);
-  --flip-ms: 900ms;
+  --flip-ms: 880ms;
   position: relative;
   width: calc(var(--page-w) * 2);
   height: var(--page-h);
@@ -2649,30 +2649,42 @@ body.figma-proto-open #trailCanvas {
   position: absolute;
   inset: 0;
   display: flex;
+  flex-direction: row;
+  align-items: stretch;
   transform-style: preserve-3d;
   border-radius: 3px 4px 4px 3px;
   box-shadow:
     0 30px 70px rgba(0, 0, 0, 0.5),
     0 8px 24px rgba(0, 0, 0, 0.28);
-  overflow: visible;
+  overflow: hidden; /* recorte limpio del pliego, no del lienzo izquierdo */
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+}
+.carta-book[data-mode="opening"] .carta-book__spread,
+.carta-book[data-mode="open"] .carta-book__spread,
+.carta-book[data-mode="closing"] .carta-book__spread {
+  opacity: 1;
+  pointer-events: auto;
 }
 .carta-book[data-mode="closed"] .carta-book__spread {
   opacity: 0;
   pointer-events: none;
 }
-.carta-book[data-mode="open"] .carta-book__spread {
-  opacity: 1;
-}
 
 .carta-book__leaf {
   position: relative;
+  flex: 0 0 50%;
   width: 50%;
+  max-width: 50%;
   height: 100%;
   overflow: hidden;
   background: #f3eee4;
+  z-index: 1;
 }
 .carta-book__leaf--left {
   border-radius: 3px 0 0 3px;
+  left: 0;
 }
 .carta-book__leaf--right {
   border-radius: 0 4px 4px 0;
@@ -2680,12 +2692,15 @@ body.figma-proto-open #trailCanvas {
 .carta-book__paper {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   background: #f3eee4;
+  overflow: hidden;
 }
 .carta-book__img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain; /* no recortar contenido del PDF */
   object-position: center;
   display: block;
   pointer-events: none;
@@ -2740,7 +2755,8 @@ body.figma-proto-open #trailCanvas {
               width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
               left 0.45s cubic-bezier(0.22, 1, 0.36, 1),
               right 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 0.35s ease;
+              box-shadow 0.35s ease,
+              opacity 0.2s ease;
   cursor: pointer;
   will-change: transform;
 }
@@ -2749,6 +2765,10 @@ body.figma-proto-open #trailCanvas {
   width: 100%;
   left: 0;
   right: 0;
+  transform: rotateY(0deg);
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
   box-shadow:
     0 28px 60px rgba(0,0,0,0.48),
     8px 0 18px rgba(0,0,0,0.18);
@@ -2757,14 +2777,21 @@ body.figma-proto-open #trailCanvas {
 .carta-book[data-mode="closed"] .carta-book__cover-face--front {
   border-radius: 3px 5px 5px 3px;
 }
-/* Abierta: tapa estacionada a la izquierda (dorso visible / stack) */
-.carta-book[data-mode="open"] .carta-book__cover {
+/*
+  Abierta: la tapa NO se queda sobre el pliego.
+  Antes quedaba a la izquierda con dorso beige y tapaba p2 (bug Gemini).
+*/
+.carta-book[data-mode="open"] .carta-book__cover,
+.carta-book.is-cover-stowed .carta-book__cover {
   width: 50%;
   left: 0;
   right: auto;
   transform: rotateY(-180deg);
   pointer-events: none;
   box-shadow: none;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  z-index: 0;
 }
 /* Apertura: libro ya expandido, tapa arranca a la derecha y gira */
 .carta-book[data-mode="opening"] .carta-book__cover,
@@ -2773,10 +2800,14 @@ body.figma-proto-open #trailCanvas {
   left: auto;
   right: 0;
   pointer-events: none;
+  opacity: 1 !important;
+  visibility: visible !important;
+  z-index: 8;
   box-shadow: -10px 20px 40px rgba(0,0,0,0.28);
 }
 .carta-book[data-mode="opening"] .carta-book__spread {
   opacity: 1;
+  pointer-events: auto;
 }
 /* Cierre: tapa vuelve desde la izquierda hacia la derecha */
 .carta-book[data-mode="closing"] .carta-book__cover,
@@ -2785,9 +2816,12 @@ body.figma-proto-open #trailCanvas {
   left: 0;
   right: auto;
   pointer-events: none;
+  opacity: 1 !important;
+  visibility: visible !important;
+  z-index: 8;
 }
 .carta-book[data-mode="closing"] .carta-book__spread {
-  opacity: 0.35;
+  opacity: 1;
 }
 .carta-book__cover-face {
   position: absolute;
@@ -2837,7 +2871,7 @@ body.figma-proto-open #trailCanvas {
   background: linear-gradient(270deg, rgba(0,0,0,0.35), rgba(255,255,255,0.05) 40%, transparent);
 }
 
-/* interior flipper (right half) */
+/* interior flipper (right half) — solo visible durante el flip */
 .carta-book__flipper {
   position: absolute;
   top: 0;
@@ -2851,9 +2885,11 @@ body.figma-proto-open #trailCanvas {
   transition: transform var(--flip-ms) cubic-bezier(0.33, 0.1, 0.25, 1);
   pointer-events: none;
   opacity: 0;
+  visibility: hidden;
 }
 .carta-book.is-flipping .carta-book__flipper {
   opacity: 1;
+  visibility: visible;
   pointer-events: none;
 }
 .carta-book__flip-face {
