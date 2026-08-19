@@ -2594,6 +2594,35 @@ body.figma-proto-open #trailCanvas {
 }
 
 /* --- BOOK --- */
+.carta-revista__zoom-stage.zoom-stage {
+  position: relative;
+  width: min(100%, calc(var(--page-w, 340px) * 2 + 4rem));
+  max-width: calc(100vw - 3rem);
+  height: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  overflow: hidden;
+  background: transparent;
+  border: none;
+  touch-action: none;
+  padding: 0.25rem 0 0.15rem;
+}
+.carta-revista__zoom-stage .carta-book.zoom-target {
+  transform-origin: center center;
+  transition: transform 0.12s ease-out;
+  will-change: transform;
+  flex: 0 0 auto;
+}
+.carta-revista__zoom-controls.zoom-controls {
+  position: relative;
+  margin: 0 auto;
+  z-index: 12;
+}
+
 .carta-book {
   --page-w: min(340px, 38vw);
   --page-h: calc(var(--page-w) * 1.414);

@@ -30,16 +30,46 @@
   const nextBtn = document.getElementById('cartaRevistaNext');
   const dotsEl = document.getElementById('cartaRevistaDots');
   const shell = document.getElementById('cartaBookShell');
+    const zoomStage = document.getElementById('cartaZoomStage');
+    const zoomControls = document.getElementById('cartaZoomControls');
+    const zoomLevel = document.getElementById('cartaZoomLevel');
 
-  const FLIP_MS = 880;
+    const FLIP_MS = 880;
 
-  let open = false;
-  let busy = false;
-  let pages = [];
-  let state = 0; // 0 cover, 1 = 2|3, 2 = 4|5
-  let maxState = 0;
-  let touchX = null;
-  let closeTimer = null;
+    let open = false;
+    let busy = false;
+    let pages = [];
+    let state = 0; // 0 cover, 1 = 2|3, 2 = 4|5
+    let maxState = 0;
+    let touchX = null;
+    let closeTimer = null;
+
+    const mediaZoom =
+          typeof window.createMediaZoom === 'function' && zoomStage && book
+            ? window.createMediaZoom({
+                stage: zoomStage,
+                target: book,
+                controls: zoomControls,
+                levelEl: zoomLevel,
+                min: 1,
+                max: 3.5,
+                step: 0.25,
+                // rueda la maneja la revista (página vs zoom)
+                enableWheel: false
+              })
+            : null;
+
+    function isZoomed() {
+      return !!(mediaZoom && mediaZoom.isZoomed && mediaZoom.isZoomed());
+    }
+
+    function resetZoom() {
+      if (mediaZoom) mediaZoom.reset();
+    }
+
+    function setZoomEnabled(on) {
+      if (mediaZoom) mediaZoom.setEnabled(!!on);
+    }
 
   function blank() {
     return 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
@@ -396,104 +426,70 @@
   }
 
   async function goTo(target) {
-    if (!open || busy) return;
-    target = Math.max(0, Math.min(maxState, target | 0));
-    if (target === state) return;
+        if (!open || busy) return;
+        target = Math.max(0, Math.min(maxState, target | 0));
+        if (target === state) return;
 
-    busy = true;
-    updateChrome();
-    try {
-      while (state < target) {
-        if (state === 0) await openCover();
-        else if (state === 1) await flipForwardInterior();
-        else break;
+        // al cambiar de pliego, volver a 100%
+        if (isZoomed()) resetZoom();
+
+        busy = true;
+        updateChrome();
+        try {
+          while (state < target) {
+            if (state === 0) await openCover();
+            else if (state === 1) await flipForwardInterior();
+            else break;
+          }
+          while (state > target) {
+            if (state === 2) await flipBackInterior();
+            else if (state === 1) await closeCover();
+            else break;
+          }
+        } finally {
+          busy = false;
+          // garantía final de coherencia UI ↔ contenido
+          paintSpread(state);
+          resetFlipper();
+          if (state === 0) {
+            setMode('closed');
+            stowCover(false);
+          } else {
+            setMode('open');
+            stowCover(true);
+          }
+          updateChrome();
+        }
       }
-      while (state > target) {
-        if (state === 2) await flipBackInterior();
-        else if (state === 1) await closeCover();
-        else break;
-      }
-    } finally {
-      busy = false;
-      // garantía final de coherencia UI ↔ contenido
-      paintSpread(state);
-      resetFlipper();
-      if (state === 0) {
-        setMode('closed');
-        stowCover(false);
-      } else {
-        setMode('open');
-        stowCover(true);
-      }
-      updateChrome();
+
+    function nextPage() {
+      goTo(state + 1);
     }
-  }
-
-  function nextPage() {
-    goTo(state + 1);
-  }
-  function prevPage() {
-    goTo(state - 1);
-  }
-
-  function openCartaRevista(input, title, pageCount) {
-    pages = normalizePages(input, pageCount);
-    if (!pages.length) return;
-
-    if (closeTimer) {
-      clearTimeout(closeTimer);
-      closeTimer = null;
+    function prevPage() {
+      goTo(state - 1);
     }
 
-    // portada + spreads de a 2 a partir de p2
-    // 5 páginas → estados 0,1,2
-    if (pages.length <= 1) maxState = 0;
-    else if (pages.length <= 3) maxState = 1;
-    else maxState = 2;
+    function openCartaRevista(input, title, pageCount) {
+      pages = normalizePages(input, pageCount);
+      if (!pages.length) return;
 
-    state = 0;
-    busy = false;
+      if (closeTimer) {
+        clearTimeout(closeTimer);
+        closeTimer = null;
+      }
 
-    if (titleEl) titleEl.textContent = title || 'Diseño de carta';
-    preload(pages);
+      // portada + spreads de a 2 a partir de p2
+      // 5 páginas → estados 0,1,2
+      if (pages.length <= 1) maxState = 0;
+      else if (pages.length <= 3) maxState = 1;
+      else maxState = 2;
 
-    if (book) {
-      book.classList.remove(
-        'is-flipping',
-        'is-opening-cover',
-        'is-closing-cover',
-        'is-cover-stowed'
-      );
-    }
-    hardResetCoverStyles();
-    stowCover(false);
-    resetFlipper();
-    paintSpread(0);
-    setMode('closed');
-    buildDots();
-    updateChrome();
-    setOpen(true);
-    if (closeBtn) closeBtn.focus({ preventScroll: true });
-  }
-
-  function closeCartaRevista() {
-    if (!open && !root.classList.contains('is-open')) return;
-    root.classList.add('is-closing');
-    root.classList.remove('is-open');
-    closeTimer = setTimeout(function () {
-      setOpen(false);
-      root.classList.remove('is-closing');
-      if (imgCover) imgCover.removeAttribute('src');
-      if (imgLeft) imgLeft.removeAttribute('src');
-      if (imgRight) imgRight.removeAttribute('src');
-      if (flipFront) flipFront.removeAttribute('src');
-      if (flipBack) flipBack.removeAttribute('src');
-      pages = [];
       state = 0;
       busy = false;
-      hardResetCoverStyles();
-      stowCover(false);
-      resetFlipper();
+
+      if (titleEl) titleEl.textContent = title || 'Diseño de carta';
+      preload(pages);
+
       if (book) {
         book.classList.remove(
           'is-flipping',
@@ -501,18 +497,59 @@
           'is-closing-cover',
           'is-cover-stowed'
         );
-        setMode('closed');
       }
-      var viewerOpen = document.body.classList.contains('pg-viewer-open');
-      var modalOpen = document.body.classList.contains('modal-open');
-      var figmaOpen = document.body.classList.contains('figma-proto-open');
-      if (!viewerOpen && !modalOpen && !figmaOpen) {
-        document.body.style.overflow = '';
-        document.documentElement.style.overflow = '';
-      }
-      closeTimer = null;
-    }, 280);
-  }
+      hardResetCoverStyles();
+      stowCover(false);
+      resetFlipper();
+      paintSpread(0);
+      setMode('closed');
+      buildDots();
+      updateChrome();
+      setOpen(true);
+      resetZoom();
+      setZoomEnabled(true);
+      if (closeBtn) closeBtn.focus({ preventScroll: true });
+    }
+
+    function closeCartaRevista() {
+      if (!open && !root.classList.contains('is-open')) return;
+      root.classList.add('is-closing');
+      root.classList.remove('is-open');
+      setZoomEnabled(false);
+      resetZoom();
+      closeTimer = setTimeout(function () {
+        setOpen(false);
+        root.classList.remove('is-closing');
+        if (imgCover) imgCover.removeAttribute('src');
+        if (imgLeft) imgLeft.removeAttribute('src');
+        if (imgRight) imgRight.removeAttribute('src');
+        if (flipFront) flipFront.removeAttribute('src');
+        if (flipBack) flipBack.removeAttribute('src');
+        pages = [];
+        state = 0;
+        busy = false;
+        hardResetCoverStyles();
+        stowCover(false);
+        resetFlipper();
+        if (book) {
+          book.classList.remove(
+            'is-flipping',
+            'is-opening-cover',
+            'is-closing-cover',
+            'is-cover-stowed'
+          );
+          setMode('closed');
+        }
+        var viewerOpen = document.body.classList.contains('pg-viewer-open');
+        var modalOpen = document.body.classList.contains('modal-open');
+        var figmaOpen = document.body.classList.contains('figma-proto-open');
+        if (!viewerOpen && !modalOpen && !figmaOpen) {
+          document.body.style.overflow = '';
+          document.documentElement.style.overflow = '';
+        }
+        closeTimer = null;
+      }, 280);
+    }
 
   if (closeBtn) closeBtn.addEventListener('click', closeCartaRevista);
   if (backdrop) backdrop.addEventListener('click', closeCartaRevista);
@@ -530,86 +567,110 @@
   }
 
   if (shell) {
-    shell.addEventListener('click', function (e) {
-      if (!open || busy) return;
-      // no navegar si click en controles externos
-      var rect = shell.getBoundingClientRect();
-      var ratio = (e.clientX - rect.left) / rect.width;
-      if (state === 0 || ratio > 0.52) nextPage();
-      else prevPage();
-    });
-  }
+      shell.addEventListener('click', function (e) {
+        if (!open || busy) return;
+        if (isZoomed()) return; // pan/zoom activo: no pasar página
+        if (e.target.closest && e.target.closest('.zoom-controls, button')) return;
+        var rect = shell.getBoundingClientRect();
+        var ratio = (e.clientX - rect.left) / rect.width;
+        if (state === 0 || ratio > 0.52) nextPage();
+        else prevPage();
+      });
+    }
 
-  if (cover) {
-    cover.addEventListener('click', function (e) {
-      if (!open || busy) return;
-      e.stopPropagation();
-      if (state === 0) nextPage();
-    });
-  }
+    if (cover) {
+      cover.addEventListener('click', function (e) {
+        if (!open || busy) return;
+        if (isZoomed()) return;
+        e.stopPropagation();
+        if (state === 0) nextPage();
+      });
+    }
 
-  function onPointerDown(e) {
-    if (!open || busy) return;
-    touchX = e.touches && e.touches[0] ? e.touches[0].clientX : e.clientX;
-  }
-  function onPointerUp(e) {
-    if (!open || touchX == null) return;
-    var endX =
-      e.changedTouches && e.changedTouches[0]
-        ? e.changedTouches[0].clientX
-        : e.clientX;
-    var dx = endX - touchX;
-    touchX = null;
-    if (Math.abs(dx) < 48) return;
-    if (dx < 0) nextPage();
-    else prevPage();
-  }
-  if (book) {
-    book.addEventListener('mousedown', onPointerDown);
-    book.addEventListener('mouseup', onPointerUp);
-    book.addEventListener('touchstart', onPointerDown, { passive: true });
-    book.addEventListener('touchend', onPointerUp, { passive: true });
-  }
-
-  root.addEventListener(
-    'wheel',
-    function (e) {
-      if (!open) return;
-      e.preventDefault();
-      if (busy) return;
-      if (e.deltaY > 10 || e.deltaX > 10) nextPage();
-      else if (e.deltaY < -10 || e.deltaX < -10) prevPage();
-    },
-    { passive: false }
-  );
-
-  document.addEventListener(
-    'keydown',
-    function (e) {
-      if (!open) return;
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        closeCartaRevista();
+    function onPointerDown(e) {
+      if (!open || busy || isZoomed()) return;
+      touchX = e.touches && e.touches[0] ? e.touches[0].clientX : e.clientX;
+    }
+    function onPointerUp(e) {
+      if (!open || touchX == null || isZoomed()) {
+        touchX = null;
         return;
       }
-      if (busy) return;
-      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
-        e.preventDefault();
-        nextPage();
-      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-        e.preventDefault();
-        prevPage();
-      } else if (e.key === 'Home') {
-        e.preventDefault();
-        goTo(0);
-      } else if (e.key === 'End') {
-        e.preventDefault();
-        goTo(maxState);
-      }
-    },
-    true
-  );
+      var endX =
+        e.changedTouches && e.changedTouches[0]
+          ? e.changedTouches[0].clientX
+          : e.clientX;
+      var dx = endX - touchX;
+      touchX = null;
+      if (Math.abs(dx) < 48) return;
+      if (dx < 0) nextPage();
+      else prevPage();
+    }
+    if (book) {
+      book.addEventListener('mousedown', onPointerDown);
+      book.addEventListener('mouseup', onPointerUp);
+      book.addEventListener('touchstart', onPointerDown, { passive: true });
+      book.addEventListener('touchend', onPointerUp, { passive: true });
+    }
+
+    // Rueda: zoom si ya hay zoom o Ctrl/Meta; si no, pasar página.
+        root.addEventListener(
+          'wheel',
+          function (e) {
+            if (!open) return;
+            e.preventDefault();
+            if (busy) return;
+
+            var wantZoom =
+              isZoomed() || e.ctrlKey || e.metaKey || e.altKey;
+            if (wantZoom && mediaZoom && mediaZoom.zoomBy) {
+              var dir = e.deltaY > 0 ? -1 : 1;
+              mediaZoom.zoomBy(dir, e.clientX, e.clientY);
+              return;
+            }
+            if (isZoomed()) return;
+            if (e.deltaY > 10 || e.deltaX > 10) nextPage();
+            else if (e.deltaY < -10 || e.deltaX < -10) prevPage();
+          },
+          { passive: false }
+        );
+
+    document.addEventListener(
+      'keydown',
+      function (e) {
+        if (!open) return;
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          if (isZoomed()) {
+            resetZoom();
+            return;
+          }
+          closeCartaRevista();
+          return;
+        }
+        if (busy) return;
+        if (e.key === '+' || e.key === '=' ) {
+          // leave to buttons; optional no-op
+        }
+        if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+          e.preventDefault();
+          nextPage();
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          prevPage();
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          if (isZoomed()) resetZoom();
+          goTo(0);
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          if (isZoomed()) resetZoom();
+          goTo(maxState);
+        }
+      },
+      true
+    );
 
   window.openCartaRevista = openCartaRevista;
   window.closeCartaRevista = closeCartaRevista;

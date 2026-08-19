@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=35">
+  <link rel="stylesheet" href="css/style.css?v=36">
 </head>
 <body>
 
@@ -619,7 +619,8 @@
         <span class="carta-revista__counter" id="cartaRevistaCounter">Portada</span>
       </div>
 
-      <div class="carta-book" id="cartaBook" data-mode="closed">
+      <div class="carta-revista__zoom-stage zoom-stage" id="cartaZoomStage">
+        <div class="carta-book zoom-target" id="cartaBook" data-mode="closed">
         <div class="carta-book__ambient" aria-hidden="true"></div>
         <div class="carta-book__scene">
           <div class="carta-book__shell" id="cartaBookShell">
@@ -665,6 +666,13 @@
           </div>
         </div>
       </div>
+        <div class="zoom-controls carta-revista__zoom-controls" id="cartaZoomControls" hidden>
+          <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Alejar">−</button>
+          <span class="zoom-level" id="cartaZoomLevel">100%</span>
+          <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar">+</button>
+          <button type="button" class="zoom-btn zoom-btn--reset" data-zoom="0" aria-label="Restablecer">Reset</button>
+        </div>
+      </div>
 
       <div class="carta-revista__controls">
         <button class="carta-revista__navbtn" id="cartaRevistaPrev" type="button" aria-label="Página anterior">
@@ -675,13 +683,13 @@
           <span aria-hidden="true">›</span>
         </button>
       </div>
-      <p class="carta-revista__hint">Arrastrá · click en el borde · rueda · flechas</p>
+      <p class="carta-revista__hint">Zoom +/− · rueda · doble click · arrastrá · bordes · flechas</p>
     </div>
   </div>
 
-<script src="js/zoom.js?v=2"></script>
+<script src="js/zoom.js?v=3"></script>
   <script src="js/particles.js?v=3"></script>
-  <script src="js/carta-revista.js?v=6"></script>
+  <script src="js/carta-revista.js?v=7"></script>
   <script src="js/figma-proto.js?v=4"></script>
   <script src="js/main.js?v=27"></script>
 </body>

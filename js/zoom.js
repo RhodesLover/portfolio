@@ -10,11 +10,15 @@
     const min = options.min || 1;
     const max = options.max || 4;
     const step = options.step || 0.25;
+    const enableWheel = options.enableWheel !== false;
 
     if (!stage || !target) {
       return {
         reset: function () {},
         setEnabled: function () {},
+        getScale: function () { return 1; },
+        isZoomed: function () { return false; },
+        zoomBy: function () {},
         destroy: function () {}
       };
     }
@@ -173,13 +177,21 @@
     stage.addEventListener('dblclick', onDblClick);
     if (controls) controls.addEventListener('click', onControlsClick);
 
+    // allow external callers to opt out of stage wheel (e.g. magazine page-turn)
+    if (!enableWheel) {
+      stage.removeEventListener('wheel', onWheel);
+    }
+
     render();
 
     return {
       reset: reset,
       setEnabled: setEnabled,
+      getScale: function () { return scale; },
+      isZoomed: function () { return scale > min + 0.001; },
+      zoomBy: zoomBy,
       destroy: function () {
-        stage.removeEventListener('wheel', onWheel);
+        if (enableWheel) stage.removeEventListener('wheel', onWheel);
         stage.removeEventListener('pointerdown', onPointerDown);
         stage.removeEventListener('pointermove', onPointerMove);
         stage.removeEventListener('pointerup', onPointerUp);
