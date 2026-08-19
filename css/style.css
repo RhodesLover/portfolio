@@ -2389,8 +2389,7 @@ body.pg-viewer-open #trailCanvas { display: none; }
 }
 
 /* ============================================================
-   FIGMA PROTO — overlay blur + iframe centrado (sin marco phone)
-   Por encima del viewer/modal (10000). Cursor se levanta a 11002.
+   FIGMA PROTO — minimal: blur + iframe centrado + close
    ============================================================ */
 .figma-proto {
   position: fixed;
@@ -2399,11 +2398,11 @@ body.pg-viewer-open #trailCanvas { display: none; }
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.25rem;
+  padding: 1rem;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.28s ease, visibility 0.28s ease;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
 }
 .figma-proto.is-open {
   opacity: 1;
@@ -2419,8 +2418,8 @@ body.pg-viewer-open #trailCanvas { display: none; }
 }
 .figma-proto__close {
   position: fixed;
-  top: 1.15rem;
-  right: 1.15rem;
+  top: 1rem;
+  right: 1rem;
   z-index: 2;
   width: 44px;
   height: 44px;
@@ -2439,55 +2438,23 @@ body.pg-viewer-open #trailCanvas { display: none; }
   border-color: rgba(255, 197, 211, 0.55);
   transform: scale(1.05);
 }
-.figma-proto__stage {
+/* El iframe ES la ventana — tamaño feed móvil, sin chrome extra */
+.figma-proto__frame {
   position: relative;
   z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-  width: min(420px, calc(100vw - 2rem));
-  max-height: calc(100vh - 2.5rem);
-  transform: translateY(14px) scale(0.96);
-  transition: transform 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-.figma-proto.is-open .figma-proto__stage {
-  transform: translateY(0) scale(1);
-}
-.figma-proto__label {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 2.2px;
-  text-transform: uppercase;
-  color: rgba(255, 245, 248, 0.72);
-  text-align: center;
-}
-/* Ventana simple: el proto de Figma YA es el celular */
-.figma-proto__window {
-  width: 100%;
-  /* alto tipo feed móvil, sin bezel/notch propios */
-  height: min(780px, calc(100vh - 7rem));
-  max-height: 86vh;
-  border-radius: 16px;
-  overflow: hidden;
+  width: min(390px, calc(100vw - 2rem));
+  height: min(780px, calc(100vh - 2rem));
+  max-height: 90vh;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
   background: #111;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
-}
-.figma-proto__frame {
-  width: 100%;
-  height: 100%;
-  border: 0;
   display: block;
-  background: #111;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  transform: translateY(10px) scale(0.98);
+  transition: transform 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
-.figma-proto__hint {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.7rem;
-  letter-spacing: 0.4px;
-  color: rgba(245, 245, 245, 0.42);
-  text-align: center;
+.figma-proto.is-open .figma-proto__frame {
+  transform: translateY(0) scale(1);
 }
 body.figma-proto-open .nav {
   opacity: 0;
@@ -2501,18 +2468,11 @@ body.figma-proto-open #trailCanvas {
   display: none;
 }
 @media (max-width: 480px) {
-  .figma-proto {
-    padding: 0.65rem;
+  .figma-proto { padding: 0.5rem; }
+  .figma-proto__frame {
+    width: min(100vw - 1rem, 390px);
+    height: min(100vh - 1rem, 780px);
+    border-radius: 10px;
   }
-  .figma-proto__stage {
-    width: min(100vw - 1.2rem, 420px);
-  }
-  .figma-proto__window {
-    height: min(100vh - 5.5rem, 780px);
-    border-radius: 12px;
-  }
-  .figma-proto__close {
-    top: 0.7rem;
-    right: 0.7rem;
-  }
+  .figma-proto__close { top: 0.65rem; right: 0.65rem; }
 }
