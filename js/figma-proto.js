@@ -1,5 +1,5 @@
 /* ============================================================
-   FIGMA PROTO — overlay blur + marco celular para prototipos
+   FIGMA PROTO — overlay blur + iframe centrado (sin marco phone)
    API: window.openFigmaProto(url, title?) / window.closeFigmaProto()
    ============================================================ */
 (function () {

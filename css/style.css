@@ -2389,7 +2389,7 @@ body.pg-viewer-open #trailCanvas { display: none; }
 }
 
 /* ============================================================
-   FIGMA PROTO — overlay blur + marco celular (Instagram)
+   FIGMA PROTO — overlay blur + iframe centrado (sin marco phone)
    Por encima del viewer/modal (10000). Cursor se levanta a 11002.
    ============================================================ */
 .figma-proto {
@@ -2445,7 +2445,9 @@ body.pg-viewer-open #trailCanvas { display: none; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.75rem;
+  width: min(420px, calc(100vw - 2rem));
+  max-height: calc(100vh - 2.5rem);
   transform: translateY(14px) scale(0.96);
   transition: transform 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
@@ -2461,49 +2463,17 @@ body.pg-viewer-open #trailCanvas { display: none; }
   color: rgba(255, 245, 248, 0.72);
   text-align: center;
 }
-/* Marco tipo celular (feed IG vertical) */
-.figma-proto__phone {
-  --phone-w: min(390px, calc(100vw - 2.5rem));
-  --phone-h: min(780px, calc(100vh - 6.5rem));
-  width: var(--phone-w);
-  height: var(--phone-h);
-  max-height: 86vh;
-  aspect-ratio: 9 / 19.5;
-  border-radius: 36px;
-  padding: 10px;
-  background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.02)),
-    #0a0a0a;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.55),
-    0 28px 80px rgba(0, 0, 0, 0.55),
-    0 0 40px rgba(255, 197, 211, 0.08);
-  position: relative;
-  overflow: hidden;
-}
-.figma-proto__phone::before {
-  /* notch / isla */
-  content: '';
-  position: absolute;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 92px;
-  height: 22px;
-  border-radius: 20px;
-  background: #050505;
-  z-index: 2;
-  pointer-events: none;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
-}
-.figma-proto__screen {
+/* Ventana simple: el proto de Figma YA es el celular */
+.figma-proto__window {
   width: 100%;
-  height: 100%;
-  border-radius: 28px;
+  /* alto tipo feed móvil, sin bezel/notch propios */
+  height: min(780px, calc(100vh - 7rem));
+  max-height: 86vh;
+  border-radius: 16px;
   overflow: hidden;
   background: #111;
-  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
 }
 .figma-proto__frame {
   width: 100%;
@@ -2518,8 +2488,6 @@ body.pg-viewer-open #trailCanvas { display: none; }
   letter-spacing: 0.4px;
   color: rgba(245, 245, 245, 0.42);
   text-align: center;
-  max-width: 22rem;
-  line-height: 1.45;
 }
 body.figma-proto-open .nav {
   opacity: 0;
@@ -2536,23 +2504,15 @@ body.figma-proto-open #trailCanvas {
   .figma-proto {
     padding: 0.65rem;
   }
-  .figma-proto__phone {
-    --phone-w: min(100vw - 1.2rem, 390px);
-    --phone-h: min(100vh - 5.5rem, 780px);
-    border-radius: 28px;
-    padding: 8px;
+  .figma-proto__stage {
+    width: min(100vw - 1.2rem, 420px);
   }
-  .figma-proto__screen {
-    border-radius: 22px;
+  .figma-proto__window {
+    height: min(100vh - 5.5rem, 780px);
+    border-radius: 12px;
   }
   .figma-proto__close {
     top: 0.7rem;
     right: 0.7rem;
   }
-  .figma-proto__phone::before {
-    width: 78px;
-    height: 18px;
-    top: 12px;
-  }
 }
-
