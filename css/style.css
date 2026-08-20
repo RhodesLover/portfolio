@@ -855,6 +855,13 @@ ul { list-style: none; }
   text-align: center;
   margin-top: 3rem;
   padding-top: 2rem;
+  position: relative;
+  z-index: 5;
+}
+.section__footer .btn {
+  position: relative;
+  z-index: 6;
+  pointer-events: auto;
 }
 
 /* ---------- ABOUT ---------- */
@@ -1955,6 +1962,10 @@ body.modal-open .nav {
   pointer-events: none;
   transition: opacity 0.28s ease;
 }
+.pg-viewer:not(.is-open),
+.pg-viewer:not(.is-open) * {
+  pointer-events: none !important;
+}
 .pg-viewer.is-open {
   opacity: 1;
   pointer-events: auto;
@@ -2404,6 +2415,10 @@ body.pg-viewer-open #trailCanvas { display: none; }
   pointer-events: none;
   transition: opacity 0.25s ease, visibility 0.25s ease;
 }
+.figma-proto:not(.is-open),
+.figma-proto:not(.is-open) * {
+  pointer-events: none !important;
+}
 .figma-proto.is-open {
   opacity: 1;
   visibility: visible;
@@ -2508,6 +2523,12 @@ body.figma-proto-open #trailCanvas {
   visibility: hidden;
   pointer-events: none;
   transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+/* Cerrado: NINGÚN hijo puede capturar clicks (evita que la tapa del libro
+   tape "Ver todos los trabajos" y otros botones de la página). */
+.carta-revista:not(.is-open),
+.carta-revista:not(.is-open) * {
+  pointer-events: none !important;
 }
 .carta-revista.is-open {
   opacity: 1;
