@@ -1358,29 +1358,39 @@ body.modal-open .nav {
   justify-content: center;
   gap: 0.75rem;
   overflow: visible;
+  background: transparent;
 }
 .modal__lightbox-img-wrap .zoom-stage {
-  height: 72vh;
-  width: min(100%, 920px);
-  min-height: 220px;
+  /* se adapta al media: sin rectángulo negro fijo */
+  width: fit-content;
+  max-width: min(100%, 920px);
+  height: auto;
+  max-height: 72vh;
+  min-height: 0;
+  background: transparent;
+  border: none;
 }
 .modal__project-left {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 0.65rem;
-  background: #000;
+  background: transparent;
   min-height: 0;
   min-width: 0;
   padding: 0.75rem 0.75rem 0.85rem;
 }
 .modal__project-left .zoom-stage {
-  width: 100%;
-  height: calc(56vh - 52px);
+  width: fit-content;
+  max-width: 100%;
+  height: auto;
+  max-height: calc(56vh - 52px);
   min-height: 0;
+  background: transparent;
+  border: none;
 }
 .modal__project-left .zoom-controls {
   position: static;
@@ -1388,12 +1398,14 @@ body.modal-open .nav {
 
 .modal__lightbox-img {
   max-width: 100%;
-  max-height: 100%;
+  max-height: 72vh;
   width: auto;
   height: auto;
   object-fit: contain;
   border-radius: 2px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  background: transparent;
+  display: block;
 }
 
 .modal__lightbox-title {
@@ -1410,14 +1422,17 @@ body.modal-open .nav {
   display: none;
   width: 100%;
   max-height: 56vh;
-  background: #0a0a0a;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 16px;
-  overflow: hidden;
+  /* panel solo en la columna de info — la media no vive en una caja negra */
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
   animation: modalIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   grid-template-columns: 1.618fr 1fr;
   grid-template-rows: minmax(0, 1fr);
   min-height: 320px;
+  gap: 1.25rem;
+  align-items: stretch;
 }
 
 .modal--project .modal__project {
@@ -1437,11 +1452,12 @@ body.modal-open .nav {
 .modal__project-img,
 .modal__project-video {
   max-width: 100%;
-  max-height: 100%;
+  max-height: calc(56vh - 52px);
   width: auto;
   height: auto;
   object-fit: contain;
-  background: #000;
+  background: transparent;
+  display: block;
 }
 
 .modal__project-video {
@@ -1458,6 +1474,11 @@ body.modal-open .nav {
   min-height: 0;
   min-width: 0;
   overflow-y: auto;
+  background: rgba(10, 10, 10, 0.72);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .modal__project-title {
@@ -2029,33 +2050,45 @@ body.modal-open .nav {
   overflow: visible;
 }
 .zoom-stage {
-  width: 100%;
-  height: calc(82vh - 56px);
-  min-height: 200px;
+  /* Contenedor funcional que ABRAZA al media (no impone rectángulo negro) */
+  width: fit-content;
+  max-width: 100%;
+  height: auto;
+  max-height: calc(82vh - 56px);
+  min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: hidden; /* solo recorta al hacer zoom/pan, no en 100% */
   touch-action: none;
   cursor: default;
-  background: #050505;
-  border: 1px solid rgba(255,255,255,0.06);
+  background: transparent;
+  border: none;
+}
+/* Si JS conoce el aspect ratio, el stage mantiene proporción sin letterbox visible */
+.zoom-stage.is-fitted {
+  width: min(100%, calc((82vh - 56px) * var(--media-ar, 1)));
+  aspect-ratio: var(--media-ar, auto);
+  height: auto;
+  max-height: calc(82vh - 56px);
 }
 .zoom-stage.is-zoomable { cursor: zoom-in; }
 .zoom-stage.is-panning { cursor: grabbing; }
+/* NUNCA crop: is-video-fill queda deprecado — contain siempre */
 .zoom-stage.is-video-fill .pg-viewer__video,
 .zoom-stage.is-video-fill video {
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  max-height: none;
-  object-fit: cover;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }
 .zoom-stage .zoom-target,
 .zoom-stage .pg-viewer__img,
 .zoom-stage .pg-viewer__video,
 .zoom-stage .modal__lightbox-img,
-.zoom-stage .modal__project-img {
+.zoom-stage .modal__project-img,
+.zoom-stage .modal__project-video {
   transform-origin: center center;
   transition: transform 0.12s ease-out;
   will-change: transform;
@@ -2123,11 +2156,17 @@ body.modal-open .nav {
 .pg-viewer__img,
 .pg-viewer__video {
   max-width: 100%;
-  max-height: 100%;
+  max-height: calc(82vh - 56px);
   width: auto;
   height: auto;
   object-fit: contain;
   display: none;
+  background: transparent;
+}
+.pg-viewer__img[src],
+.pg-viewer__video[src] {
+  /* display lo controla JS; sin fondo de caja */
+  background: transparent;
 }
 .pg-viewer__info {
   min-width: 0;
@@ -2244,9 +2283,19 @@ body.pg-viewer-open #trailCanvas { display: none; }
     .pg-grid--modelos { grid-template-columns: 1fr; }
     .pg-viewer__stage { grid-template-columns: 1fr; max-height: none; width: min(94vw, 900px); }
     .pg-viewer__media-wrap { max-height: 52vh; }
-    .pg-viewer__media-wrap .zoom-stage { height: calc(52vh - 56px); min-height: 160px; }
+    .pg-viewer__media-wrap .zoom-stage {
+      height: auto;
+      max-height: calc(52vh - 56px);
+      min-height: 0;
+      width: fit-content;
+      max-width: 100%;
+    }
+    .pg-viewer__media-wrap .zoom-stage.is-fitted {
+      width: min(100%, calc((52vh - 56px) * var(--media-ar, 1)));
+      max-height: calc(52vh - 56px);
+    }
     .pg-viewer__img,
-    .pg-viewer__video { max-height: 100%; }
+    .pg-viewer__video { max-height: calc(52vh - 56px); }
     .modal__gallery { grid-template-columns: 1fr; }
 
   /* Tablet: modal más compacto, related 3 columnas */
@@ -2322,7 +2371,14 @@ body.pg-viewer-open #trailCanvas { display: none; }
   .modal__close { top: -40px; right: 0; }
   .modal__project { grid-template-columns: 1fr; }
   .modal__project-left { max-height: 40vh; }
-  .modal__project-left .zoom-stage { height: calc(40vh - 52px); }
+  .modal__project-left .zoom-stage {
+    height: auto;
+    max-height: calc(40vh - 52px);
+    width: fit-content;
+    max-width: 100%;
+  }
+  .modal__project-img,
+  .modal__project-video { max-height: calc(40vh - 52px); }
   .modal__project-right { padding: var(--space-3) var(--space-3); }
   .modal__lightbox { gap: 1rem; }
   .modal__lightbox-title { font-size: 0.75rem; }
@@ -2368,7 +2424,14 @@ body.pg-viewer-open #trailCanvas { display: none; }
   .modal__container { width: 100%; gap: 1rem; }
   .modal__project { min-height: 0; }
   .modal__project-left { max-height: 34vh; }
-  .modal__project-left .zoom-stage { height: calc(34vh - 52px); }
+  .modal__project-left .zoom-stage {
+    height: auto;
+    max-height: calc(34vh - 52px);
+    width: fit-content;
+    max-width: 100%;
+  }
+  .modal__project-img,
+  .modal__project-video { max-height: calc(34vh - 52px); }
   .modal__project-right { padding: 1rem; }
   .modal__project-title { font-size: 1.25rem; }
   .modal__related-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
@@ -2621,6 +2684,7 @@ body.figma-proto-open #trailCanvas {
   max-width: calc(100vw - 3rem);
   height: auto;
   min-height: 0;
+  max-height: none;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2631,6 +2695,12 @@ body.figma-proto-open #trailCanvas {
   border: none;
   touch-action: none;
   padding: 0.25rem 0 0.15rem;
+}
+/* el libro no usa is-fitted del viewer de piezas */
+.carta-revista__zoom-stage.zoom-stage.is-fitted {
+  width: min(100%, calc(var(--page-w, 340px) * 2 + 4rem));
+  aspect-ratio: auto;
+  max-height: none;
 }
 .carta-revista__zoom-stage .carta-book.zoom-target {
   transform-origin: center center;
