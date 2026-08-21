@@ -2523,15 +2523,27 @@ body.pg-viewer-open #trailCanvas { display: none; }
   border-color: rgba(255, 197, 211, 0.7);
   transform: translateY(-50%) scale(1.08);
 }
-/* Iframe a pantalla completa — sin caja negra propia */
-.figma-proto__frame {
-  position: relative;
+/* Shell: el iframe llena el viewport; overflow hidden por si Figma deja un resto de chrome */
+.figma-proto__shell {
+  position: absolute;
+  inset: 0;
   z-index: 1;
-  flex: 1 1 auto;
+  overflow: hidden;
+  background: transparent;
+}
+/* Iframe a pantalla completa — sin caja negra propia.
+   Un poco más alto que el viewport empuja fuera cualquier footer residual de Figma
+   cuando hide-ui no alcanza (la barra inferior ~48–56px). Con hide-ui=1 el canvas
+   usa casi todo el alto y el recorte no se nota. */
+.figma-proto__frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
   width: 100%;
-  height: 100%;
+  height: calc(100% + 56px);
   min-width: 100%;
-  min-height: 100%;
+  min-height: calc(100% + 56px);
   border: 0;
   border-radius: 0;
   background: transparent;
