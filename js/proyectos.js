@@ -225,6 +225,28 @@
     io.observe(el);
   });
 
+  /* gif hover inside cells (only .pg-cell__media--gif-hover — MM) */
+  document.querySelectorAll('.pg-cell__media--gif-hover').forEach((img) => {
+    const still = img.getAttribute('data-still') || img.getAttribute('src');
+    const gif = img.getAttribute('data-gif');
+    if (!gif) return;
+    const cell = img.closest('.pg-cell');
+    if (!cell) return;
+    const showGif = () => {
+      const join = gif.indexOf('?') >= 0 ? '&' : '?';
+      img.src = gif + join + 't=' + Date.now();
+    };
+    const showStill = () => {
+      img.src = still;
+    };
+    cell.addEventListener('mouseenter', showGif);
+    cell.addEventListener('mouseleave', showStill);
+    cell.addEventListener('focusin', showGif);
+    cell.addEventListener('focusout', (e) => {
+      if (!cell.contains(e.relatedTarget)) showStill();
+    });
+  });
+
   /* video hover play inside cells */
   document.querySelectorAll('.pg-cell video').forEach((video) => {
     const cell = video.closest('.pg-cell');

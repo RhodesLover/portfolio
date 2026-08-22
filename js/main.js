@@ -227,6 +227,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  /* ---------- GIF HOVER (Mercado Montañés only via class) ---------- */
+  document.querySelectorAll('.project-card__img--gif-hover').forEach((img) => {
+    const still = img.getAttribute('data-still') || img.getAttribute('src');
+    const gif = img.getAttribute('data-gif');
+    if (!gif) return;
+    const card = img.closest('.project-card');
+    if (!card) return;
+    const showGif = () => {
+      // restart gif by cache-busting query on each enter
+      const join = gif.indexOf('?') >= 0 ? '&' : '?';
+      img.src = gif + join + 't=' + Date.now();
+    };
+    const showStill = () => {
+      img.src = still;
+    };
+    card.addEventListener('mouseenter', showGif);
+    card.addEventListener('mouseleave', showStill);
+    card.addEventListener('focusin', showGif);
+    card.addEventListener('focusout', (e) => {
+      if (!card.contains(e.relatedTarget)) showStill();
+    });
+  });
+
   /* ---------- VIDEO HOVER PLAY ---------- */
   document.querySelectorAll('.project-card video').forEach(video => {
     const card = video.closest('.project-card');
