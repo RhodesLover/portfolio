@@ -13,3 +13,6 @@ assets/carta-mm/*.pdf
 Thumbs.db
 *.log
 .hermes/
+
+.tmp-drive/
+assets/manual-nh/*.pdf

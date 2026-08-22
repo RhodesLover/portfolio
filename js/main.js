@@ -472,6 +472,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const figmaProto = card.dataset.figmaProto || '';
         const cartaDir = card.dataset.carta || '';
         const cartaPages = card.dataset.cartaPages || '';
+        const manualDir = card.dataset.manual || '';
+        const manualPages = card.dataset.manualPages || '';
         if (isSocial) {
           // Redes → botón "Ver Instagram" (abre prototipo Figma si data-figma-proto)
           const btn = document.createElement('button');
@@ -494,6 +496,17 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.title = 'Prototipo próximamente';
             btn.setAttribute('aria-disabled', 'true');
           }
+          projActions.appendChild(btn);
+        } else if (manualDir && typeof window.openBrandManual === 'function') {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'modal__behance-btn';
+          btn.textContent = 'Ver manual de marca →';
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            window.openBrandManual(manualDir, title || 'Manual de marca', manualPages);
+          });
           projActions.appendChild(btn);
         } else if (cartaDir && typeof window.openCartaRevista === 'function') {
           const btn = document.createElement('button');

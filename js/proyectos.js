@@ -332,6 +332,8 @@
     const figmaProto = cell.dataset.figmaProto || '';
     const cartaDir = cell.dataset.carta || '';
     const cartaPages = cell.dataset.cartaPages || '';
+    const manualDir = cell.dataset.manual || '';
+    const manualPages = cell.dataset.manualPages || '';
     if (isRedes) {
       // Redes → botón "Ver Instagram" (abre prototipo Figma si data-figma-proto)
       const b = document.createElement('button');
@@ -354,6 +356,17 @@
         b.title = 'Prototipo próximamente';
         b.setAttribute('aria-disabled', 'true');
       }
+      vActions.appendChild(b);
+    } else if (manualDir && typeof window.openBrandManual === 'function') {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pg-viewer__link';
+      b.textContent = 'Ver manual de marca →';
+      b.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        window.openBrandManual(manualDir, title || 'Manual de marca', manualPages);
+      });
       vActions.appendChild(b);
     } else if (cartaDir && typeof window.openCartaRevista === 'function') {
       const b = document.createElement('button');
