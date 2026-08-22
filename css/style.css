@@ -1590,7 +1590,7 @@ body.modal-open .nav {
   padding: 7.5rem clamp(1.25rem, 4vw, 3rem) 3.25rem;
   max-width: var(--pg-max);
   margin: 0 auto;
-  overflow: hidden;
+  overflow: visible;
 }
 .pg-hero__grid {
   position: absolute;
@@ -1631,7 +1631,8 @@ body.modal-open .nav {
   font-size: clamp(3.4rem, 10vw, 7.4rem);
   font-weight: 900;
   letter-spacing: -0.04em;
-  line-height: 0.92;
+  line-height: 1.02;
+  padding-bottom: 0.08em;
   text-transform: uppercase;
   margin: 0 0 var(--space-3);
   opacity: 0;
@@ -1643,8 +1644,11 @@ body.modal-open .nav {
   opacity: 1;
   transform: none;
 }
-.pg-hero__line { display: block; }
+.pg-hero__line { display: block; overflow: visible; line-height: inherit; }
 .pg-hero__line--accent {
+  padding-bottom: 0.12em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
   color: transparent;
   background: linear-gradient(105deg, #fff 10%, #FFC5D3 70%, #ffa8b9 100%);
   -webkit-background-clip: text;
