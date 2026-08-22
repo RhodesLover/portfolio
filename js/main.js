@@ -773,6 +773,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const figmaProto = card.dataset.figmaProto || '';
     const cartaDir = card.dataset.carta || '';
     const cartaPages = card.dataset.cartaPages || '';
+    const manualDir = card.dataset.manual || '';
+    const manualPages = card.dataset.manualPages || '';
     if (isSocial) {
       const b = document.createElement('button');
       b.type = 'button';
@@ -794,6 +796,17 @@ document.addEventListener('DOMContentLoaded', () => {
         b.title = 'Prototipo próximamente';
         b.setAttribute('aria-disabled', 'true');
       }
+      vActions.appendChild(b);
+    } else if (manualDir && typeof window.openBrandManual === 'function') {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pg-viewer__link';
+      b.textContent = 'Ver manual de marca →';
+      b.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        window.openBrandManual(manualDir, title || 'Manual de marca', manualPages);
+      });
       vActions.appendChild(b);
     } else if (cartaDir && typeof window.openCartaRevista === 'function') {
       const b = document.createElement('button');

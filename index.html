@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=42">
+  <link rel="stylesheet" href="css/style.css?v=43">
 </head>
 <body>
 
@@ -714,42 +714,63 @@
   </div>
 
 
-  <!-- BRAND MANUAL — spreads planos (diseño primero, sin flip 3D) -->
+    <!-- BRAND MANUAL — A4 landscape contain (diseño primero, sin crop / sin flip 3D) -->
   <div class="brand-manual" id="brandManual" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Manual de marca">
     <div class="brand-manual__backdrop" id="brandManualBackdrop"></div>
     <button class="brand-manual__close" id="brandManualClose" type="button" aria-label="Cerrar manual">✕</button>
-    <div class="brand-manual__stage" id="brandManualStage">
-      <div class="brand-manual__meta">
-        <span class="brand-manual__title" id="brandManualTitle">Manual de marca</span>
-        <span class="brand-manual__counter" id="brandManualCounter">Págs. 1–2</span>
-      </div>
-      <div class="brand-manual__zoom-stage zoom-stage" id="brandManualZoomStage">
-        <div class="brand-manual__spread zoom-target" id="brandManualSpread">
-          <img class="brand-manual__page brand-manual__page--left" id="brandManualImgLeft" alt="" draggable="false">
-          <img class="brand-manual__page brand-manual__page--right" id="brandManualImgRight" alt="" draggable="false">
+
+    <div class="brand-manual__shell" id="brandManualStage">
+      <header class="brand-manual__top">
+        <div class="brand-manual__brand">
+          <span class="brand-manual__kicker">Manual de marca</span>
+          <span class="brand-manual__title" id="brandManualTitle">Naturaleza Humana</span>
         </div>
-        <div class="zoom-controls brand-manual__zoom-controls" id="brandManualZoomControls" hidden>
-          <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Alejar">−</button>
-          <span class="zoom-level" id="brandManualZoomLevel">100%</span>
-          <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar">+</button>
-          <button type="button" class="zoom-btn zoom-btn--reset" data-zoom="0" aria-label="Restablecer">Reset</button>
+        <div class="brand-manual__top-tools">
+          <span class="brand-manual__counter" id="brandManualCounter">Págs. 1–2 · 18</span>
+          <div class="zoom-controls brand-manual__zoom-controls" id="brandManualZoomControls" hidden>
+            <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Alejar">−</button>
+            <span class="zoom-level" id="brandManualZoomLevel">100%</span>
+            <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar">+</button>
+            <button type="button" class="zoom-btn zoom-btn--reset" data-zoom="0" aria-label="Restablecer">Reset</button>
+          </div>
         </div>
+      </header>
+
+      <div class="brand-manual__workspace">
+        <button class="brand-manual__nav brand-manual__nav--prev" id="brandManualPrev" type="button" aria-label="Pliego anterior">
+          <span aria-hidden="true">‹</span>
+        </button>
+
+        <div class="brand-manual__frame" id="brandManualFrame">
+          <div class="brand-manual__zoom-stage zoom-stage" id="brandManualZoomStage">
+            <div class="brand-manual__spread zoom-target" id="brandManualSpread">
+              <img class="brand-manual__page brand-manual__page--left" id="brandManualImgLeft" alt="" draggable="false" decoding="async">
+              <img class="brand-manual__page brand-manual__page--right" id="brandManualImgRight" alt="" draggable="false" decoding="async">
+            </div>
+          </div>
+        </div>
+
+        <button class="brand-manual__nav brand-manual__nav--next" id="brandManualNext" type="button" aria-label="Pliego siguiente">
+          <span aria-hidden="true">›</span>
+        </button>
       </div>
-      <div class="brand-manual__controls">
-        <button class="brand-manual__navbtn" id="brandManualPrev" type="button" aria-label="Pliego anterior"><span aria-hidden="true">‹</span></button>
-        <div class="brand-manual__dots" id="brandManualDots" aria-hidden="true"></div>
-        <button class="brand-manual__navbtn" id="brandManualNext" type="button" aria-label="Pliego siguiente"><span aria-hidden="true">›</span></button>
-      </div>
-      <div class="brand-manual__strip" id="brandManualStrip" aria-label="Miniaturas del manual"></div>
-      <p class="brand-manual__hint">Zoom para el detalle · flechas · miniaturas · Esc</p>
+
+      <footer class="brand-manual__bottom">
+        <div class="brand-manual__progress-track" aria-hidden="true">
+          <div class="brand-manual__progress" id="brandManualProgress" role="progressbar" aria-valuemin="1" aria-valuenow="1" aria-valuemax="9"></div>
+        </div>
+        <div class="brand-manual__rail" id="brandManualRail" aria-label="Pliegos del manual"></div>
+        <p class="brand-manual__hint">A4 horizontal completo · rueda/pinch para detalle · flechas · Esc</p>
+      </footer>
     </div>
   </div>
+
 
 <script src="js/zoom.js?v=3"></script>
   <script src="js/particles.js?v=3"></script>
   <script src="js/carta-revista.js?v=8"></script>
-  <script src="js/brand-manual.js?v=1"></script>
+  <script src="js/brand-manual.js?v=2"></script>
   <script src="js/figma-proto.js?v=5"></script>
-  <script src="js/main.js?v=29"></script>
+  <script src="js/main.js?v=30"></script>
 </body>
 </html>
