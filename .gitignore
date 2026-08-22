@@ -1,0 +1,15 @@
+# Originals / working masters (site uses compressed web assets only)
+assets/Portfolio/
+assets/carta-mm/carta.pdf
+assets/carta-mm/*.pdf
+
+# Local optimization backups (never publish)
+*_preopt_bak.mp4
+*_opt_tmp.mp4
+*.preopt.bak
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+.hermes/
