@@ -16,8 +16,9 @@
   var stage = document.getElementById('brandManualStage');
   var frame = document.getElementById('brandManualFrame');
   var zoomStage = document.getElementById('brandManualZoomStage');
-  var zoomControls = document.getElementById('brandManualZoomControls');
-  var zoomLevel = document.getElementById('brandManualZoomLevel');
+  /* Zoom UI buttons removed — gesture/wheel/keyboard zoom only (no stacked controls). */
+  var zoomControls = null;
+  var zoomLevel = null;
   var spreadEl = document.getElementById('brandManualSpread');
   var imgLeft = document.getElementById('brandManualImgLeft');
   var imgRight = document.getElementById('brandManualImgRight');

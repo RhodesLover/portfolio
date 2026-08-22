@@ -3179,7 +3179,7 @@ body.carta-revista-open #trailCanvas {
   display: flex;
   align-items: stretch;
   justify-content: center;
-  padding: 0.7rem 4.4rem 0.7rem 0.9rem;
+  padding: 0.7rem 1rem 0.75rem;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -3203,19 +3203,19 @@ body.carta-revista-open #trailCanvas {
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
+/* Close lives in header top-tools only — never over nav arrows */
 .brand-manual__close {
-  position: absolute;
-  top: 50%;
-  right: 1rem;
-  transform: translateY(-50%);
-  z-index: 6;
-  width: 58px;
-  height: 58px;
+  position: static;
+  transform: none;
+  z-index: auto;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(10, 10, 10, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(10, 10, 10, 0.45);
   color: #fff;
-  font-size: 1.35rem;
+  font-size: 1.05rem;
   cursor: pointer;
   display: grid;
   place-items: center;
@@ -3224,7 +3224,7 @@ body.carta-revista-open #trailCanvas {
 .brand-manual__close:hover {
   background: rgba(255, 197, 211, 0.16);
   border-color: rgba(255, 197, 211, 0.45);
-  transform: translateY(-50%) scale(1.04);
+  transform: scale(1.04);
 }
 
 .brand-manual__shell {
@@ -3287,38 +3287,7 @@ body.carta-revista-open #trailCanvas {
   white-space: nowrap;
 }
 
-/* Zoom lives in TOP bar — never under prev/next */
-.brand-manual__zoom-controls.zoom-controls,
-.brand-manual .brand-manual__zoom-controls {
-  position: static !important;
-  margin: 0 !important;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.2rem;
-  padding: 0.22rem 0.35rem;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(8, 8, 8, 0.55);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  z-index: 5;
-}
-.brand-manual__zoom-controls[hidden] {
-  display: none !important;
-}
-.brand-manual__zoom-controls .zoom-btn {
-  width: 30px;
-  height: 30px;
-  min-width: 30px;
-  border-radius: 999px;
-  font-size: 0.95rem;
-}
-.brand-manual__zoom-controls .zoom-level {
-  min-width: 3.1em;
-  font-size: 0.68rem;
-  letter-spacing: 0.06em;
-  color: rgba(255, 255, 255, 0.78);
-}
+/* zoom buttons removed; wheel/pinch/keyboard still active via createMediaZoom */
 
 .brand-manual__workspace {
   position: relative;
@@ -3518,7 +3487,7 @@ body.brand-manual-open #trailCanvas {
 
 @media (max-width: 900px) {
   .brand-manual {
-    padding: 0.55rem 3.5rem 0.55rem 0.55rem;
+    padding: 0.55rem 0.7rem 0.55rem;
   }
   .brand-manual__workspace {
     grid-template-columns: 40px minmax(0, 1fr) 40px;
@@ -3533,22 +3502,28 @@ body.brand-manual-open #trailCanvas {
 }
 @media (max-width: 640px) {
   .brand-manual {
-    padding: 0.45rem 3.2rem 0.45rem 0.45rem;
+    padding: 0.45rem 0.55rem 0.5rem;
   }
+  /* Keep nav in own columns — never overlay the spread */
   .brand-manual__workspace {
-    grid-template-columns: 1fr;
-    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-columns: 36px minmax(0, 1fr) 36px;
+    gap: 0.2rem;
   }
   .brand-manual__nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 5;
+    position: static;
+    top: auto;
+    transform: none;
+    width: 34px;
+    height: 34px;
+    font-size: 1.25rem;
+    z-index: auto;
   }
-  .brand-manual__nav--prev { left: 0.15rem; }
-  .brand-manual__nav--next { right: 0.15rem; }
   .brand-manual__nav:hover:not(:disabled) {
-    transform: translateY(-50%) scale(1.04);
+    transform: scale(1.04);
+  }
+  .brand-manual__close {
+    width: 36px;
+    height: 36px;
   }
   .brand-manual__kicker { display: none; }
   .brand-manual__hint { display: none; }
@@ -3556,7 +3531,6 @@ body.brand-manual-open #trailCanvas {
     width: 64px;
     height: 40px;
   }
-  /* still landscape contain — never stack/crop pages */
   .brand-manual__spread {
     grid-template-columns: 1fr 1fr;
   }
