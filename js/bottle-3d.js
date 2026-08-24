@@ -1,7 +1,11 @@
 /* ============================================================
    BOTTLE 3D — packaging interactivo (Fernet Cordobita)
    API: window.openBottle3d(opts) / window.closeBottle3d()
-   Texturas: label-front / label-back (webp) en opts.dir
+   Forma: silueta tipo fernet (lisa, sin relieve de marca).
+   Vidrio: transparente tipo vino (no verde).
+   Líquido: marrón bien oscuro.
+   Pico: rosca / tapa negra.
+   Etiquetas: label-front / label-back (Cordobita) en opts.dir
    Three.js on-demand (misma CDN que cd-case).
    ============================================================ */
 (function () {
@@ -19,6 +23,15 @@
 
   var THREE_CDN = 'https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js';
   var DEFAULT_DIR = 'assets/fernet-bottle';
+
+  // Proporciones tipo botella fernet alta y delgada (H / diámetro ≈ 4.8–5)
+  var BODY_R = 0.27; // radio cuerpo
+  var NECK_R = 0.095;
+  var FINISH_R = 0.108;
+  var BODY_TOP = 1.52; // fin del cilindro del cuerpo
+  var SHOULDER_TOP = 1.9;
+  var NECK_TOP = 2.42;
+  var LIP_TOP = 2.56;
 
   var open = false;
   var ready = false;
@@ -39,19 +52,19 @@
   var dragging = false;
   var lastX = 0;
   var lastY = 0;
-  var rotY = 0.45;
-  var rotX = 0.12;
+  var rotY = 0.55;
+  var rotX = 0.08;
   var targetRotY = rotY;
   var targetRotX = rotX;
   var autoOrbit = true;
-  var autoOrbitSpeed = 0.42;
-  var autoTiltAmp = 0.04;
-  var autoTiltSpeed = 0.5;
+  var autoOrbitSpeed = 0.4;
+  var autoTiltAmp = 0.03;
+  var autoTiltSpeed = 0.45;
   var autoT = 0;
   var pointerId = null;
 
-  // liquid color from reference sample (dark fernet brown)
-  var LIQUID = { r: 42, g: 28, b: 18 };
+  // líquido fernet marrón bien oscuro (no el gris del sample anterior)
+  var LIQUID = { r: 26, g: 12, b: 6 };
 
   function setHint(t) {
     if (hintEl) hintEl.textContent = t || '';
@@ -102,163 +115,299 @@
     });
   }
 
-  function glassMat(opts) {
+  /** Vidrio transparente tipo vino (claro, sin tinte verde). Compatible iGPU. */
+  function clearGlassMat(opts) {
     opts = opts || {};
+    // Preferimos physical transmission; si el GPU no la rinde bien igual se ve vidrio claro.
     return new THREE.MeshPhysicalMaterial({
-      color: opts.color != null ? opts.color : 0x1a1210,
-      metalness: 0.05,
-      roughness: opts.roughness != null ? opts.roughness : 0.18,
-      transmission: opts.transmission != null ? opts.transmission : 0.55,
-      thickness: opts.thickness != null ? opts.thickness : 0.35,
-      ior: 1.5,
+      color: opts.color != null ? opts.color : 0xeef3f7,
+      metalness: 0.0,
+      roughness: opts.roughness != null ? opts.roughness : 0.04,
+      transmission: opts.transmission != null ? opts.transmission : 0.88,
+      thickness: opts.thickness != null ? opts.thickness : 0.22,
+      ior: 1.48,
       transparent: true,
-      opacity: opts.opacity != null ? opts.opacity : 0.92,
-      side: THREE.DoubleSide,
-      depthWrite: opts.depthWrite != null ? opts.depthWrite : false,
-      envMapIntensity: 0.9
+      opacity: opts.opacity != null ? opts.opacity : 0.55,
+      side: THREE.FrontSide,
+      depthWrite: false,
+      envMapIntensity: 1.25,
+      specularIntensity: 1.0,
+      clearcoat: 0.6,
+      clearcoatRoughness: 0.08
+    });
+  }
+
+  /** Segunda capa de vidrio (interior) para dar cuerpo sin tinte verde. */
+  function glassInnerMat() {
+    return new THREE.MeshPhysicalMaterial({
+      color: 0xf7fafc,
+      metalness: 0.0,
+      roughness: 0.12,
+      transparent: true,
+      opacity: 0.12,
+      side: THREE.BackSide,
+      depthWrite: false,
+      transmission: 0.2,
+      thickness: 0.5
+    });
+  }
+
+  function profilePoints() {
+    // Lathe: x = radio, y = altura. Cuerpo liso (sin relieve Branca).
+    return [
+      new THREE.Vector2(0.0, 0.0),
+      new THREE.Vector2(BODY_R * 0.92, 0.0),
+      new THREE.Vector2(BODY_R * 0.98, 0.035),
+      new THREE.Vector2(BODY_R, 0.1),
+      // cuerpo cilíndrico alto
+      new THREE.Vector2(BODY_R, BODY_TOP * 0.55),
+      new THREE.Vector2(BODY_R * 0.995, BODY_TOP),
+      // hombro suave
+      new THREE.Vector2(BODY_R * 0.88, BODY_TOP + 0.1),
+      new THREE.Vector2(BODY_R * 0.62, BODY_TOP + 0.22),
+      new THREE.Vector2(BODY_R * 0.42, SHOULDER_TOP - 0.08),
+      new THREE.Vector2(NECK_R * 1.15, SHOULDER_TOP),
+      // cuello
+      new THREE.Vector2(NECK_R, SHOULDER_TOP + 0.08),
+      new THREE.Vector2(NECK_R, NECK_TOP - 0.12),
+      // finish / zona de rosca
+      new THREE.Vector2(FINISH_R * 0.95, NECK_TOP - 0.06),
+      new THREE.Vector2(FINISH_R, NECK_TOP),
+      new THREE.Vector2(FINISH_R * 0.98, LIP_TOP - 0.04),
+      new THREE.Vector2(FINISH_R * 0.88, LIP_TOP),
+      new THREE.Vector2(0.0, LIP_TOP)
+    ];
+  }
+
+  function liquidPoints() {
+    var inset = 0.03;
+    var fillTop = BODY_TOP + 0.16; // nivel típico bajo el hombro
+    return [
+      new THREE.Vector2(0.0, 0.06),
+      new THREE.Vector2(BODY_R - inset - 0.015, 0.06),
+      new THREE.Vector2(BODY_R - inset, 0.12),
+      new THREE.Vector2(BODY_R - inset, BODY_TOP * 0.55),
+      new THREE.Vector2(BODY_R - inset - 0.002, BODY_TOP),
+      new THREE.Vector2(BODY_R * 0.8 - inset, BODY_TOP + 0.07),
+      new THREE.Vector2(BODY_R * 0.45, fillTop - 0.04),
+      new THREE.Vector2(0.0, fillTop)
+    ];
+  }
+
+  function buildScrewCap() {
+    var g = new THREE.Group();
+    var black = new THREE.MeshStandardMaterial({
+      color: 0x0c0c0e,
+      metalness: 0.18,
+      roughness: 0.42
+    });
+    var blackSoft = new THREE.MeshStandardMaterial({
+      color: 0x141416,
+      metalness: 0.12,
+      roughness: 0.5
+    });
+
+    // cuerpo de la tapa
+    var bodyH = 0.2;
+    var capR = FINISH_R + 0.012;
+    var body = new THREE.Mesh(
+      new THREE.CylinderGeometry(capR, capR * 1.02, bodyH, 48),
+      black
+    );
+    body.position.y = bodyH * 0.5;
+    body.castShadow = true;
+    g.add(body);
+
+    // roscas visibles (anillos)
+    for (var i = 0; i < 5; i++) {
+      var ring = new THREE.Mesh(
+        new THREE.TorusGeometry(capR + 0.004, 0.0065, 10, 40),
+        blackSoft
+      );
+      ring.rotation.x = Math.PI * 0.5;
+      ring.position.y = 0.03 + i * 0.032;
+      g.add(ring);
+    }
+
+    // tapa superior
+    var top = new THREE.Mesh(
+      new THREE.CylinderGeometry(capR * 0.96, capR * 0.96, 0.03, 48),
+      black
+    );
+    top.position.y = bodyH + 0.01;
+    g.add(top);
+
+    // knurl sutil en el borde superior
+    var rim = new THREE.Mesh(
+      new THREE.TorusGeometry(capR * 0.92, 0.008, 8, 48),
+      blackSoft
+    );
+    rim.rotation.x = Math.PI * 0.5;
+    rim.position.y = bodyH + 0.02;
+    g.add(rim);
+
+    g.position.y = LIP_TOP - 0.02;
+    return g;
+  }
+
+  function makeLabel(tex, yRot, labelH, labelY, labelR, labelArc) {
+    var segs = 64;
+    var geo = new THREE.CylinderGeometry(
+      labelR,
+      labelR,
+      labelH,
+      segs,
+      1,
+      true,
+      -labelArc * 0.5,
+      labelArc
+    );
+    // etiquetas Cordobita (front 1280x1600, back 959x1600) — cover vertical
+    if (tex && tex.image) {
+      var img = tex.image;
+      var iw = img.width || 1;
+      var ih = img.height || 1;
+      var targetAspect = (labelArc * labelR) / labelH; // ancho arco / alto
+      var imgAspect = iw / ih;
+      // ajustar UV para que la etiqueta no se estire de más
+      if (imgAspect > targetAspect) {
+        // imagen más ancha: crop horizontal
+        var ux = targetAspect / imgAspect;
+        tex.repeat.set(ux, 1);
+        tex.offset.set((1 - ux) * 0.5, 0);
+      } else {
+        var uy = imgAspect / targetAspect;
+        tex.repeat.set(1, uy);
+        tex.offset.set(0, (1 - uy) * 0.5);
+      }
+      tex.needsUpdate = true;
+    }
+    var mat = new THREE.MeshStandardMaterial({
+      map: tex,
+      roughness: 0.42,
+      metalness: 0.0,
+      transparent: true,
+      alphaTest: 0.08,
+      side: THREE.FrontSide,
+      depthTest: true,
+      depthWrite: true,
+      polygonOffset: true,
+      polygonOffsetFactor: -2,
+      polygonOffsetUnits: -2
+    });
+    var m = new THREE.Mesh(geo, mat);
+    m.position.y = labelY;
+    m.rotation.y = yRot;
+    m.renderOrder = 3;
+    m.castShadow = true;
+    return m;
+  }
+
+  function disposeObject(obj) {
+    if (!obj) return;
+    obj.traverse(function (c) {
+      if (c.geometry) c.geometry.dispose();
+      if (c.material) {
+        var mats = Array.isArray(c.material) ? c.material : [c.material];
+        mats.forEach(function (m) {
+          if (m.map) {
+            /* keep shared textures */
+          }
+          m.dispose();
+        });
+      }
     });
   }
 
   function buildBottle() {
+    if (rootGroup) {
+      scene.remove(rootGroup);
+      disposeObject(rootGroup);
+      rootGroup = null;
+    }
     rootGroup = new THREE.Group();
     scene.add(rootGroup);
 
-    // Profile points for LatheGeometry (x = radius, y = height). Units ~ bottle height 2.2
-    // Classic tall liquor bottle: base → body → shoulder → neck → lip
-    var pts = [
-      new THREE.Vector2(0.0, 0.0),
-      new THREE.Vector2(0.38, 0.0),
-      new THREE.Vector2(0.42, 0.04),
-      new THREE.Vector2(0.44, 0.12),
-      new THREE.Vector2(0.45, 0.55),
-      new THREE.Vector2(0.44, 1.05),
-      new THREE.Vector2(0.42, 1.25),
-      new THREE.Vector2(0.32, 1.42),
-      new THREE.Vector2(0.2, 1.55),
-      new THREE.Vector2(0.16, 1.62),
-      new THREE.Vector2(0.15, 1.85),
-      new THREE.Vector2(0.16, 1.95),
-      new THREE.Vector2(0.18, 2.0),
-      new THREE.Vector2(0.17, 2.02),
-      new THREE.Vector2(0.14, 2.04),
-      new THREE.Vector2(0.0, 2.04)
-    ];
-    var bodyGeo = new THREE.LatheGeometry(pts, 64);
+    var pts = profilePoints();
+    var bodyGeo = new THREE.LatheGeometry(pts, 96);
     bodyGeo.computeVertexNormals();
 
-    // dark glass shell
-    var shell = new THREE.Mesh(
-      bodyGeo,
-      glassMat({
-        color: 0x14100e,
-        transmission: 0.42,
-        roughness: 0.22,
-        thickness: 0.55,
-        opacity: 0.95,
-        depthWrite: true
-      })
-    );
+    // shell vidrio claro (capa exterior) — labels van por encima con renderOrder
+    var shell = new THREE.Mesh(bodyGeo, clearGlassMat({ thickness: 0.22, roughness: 0.05, opacity: 0.28, transmission: 0.55 }));
     shell.castShadow = true;
     shell.receiveShadow = true;
+    shell.renderOrder = 1;
     rootGroup.add(shell);
 
-    // inner liquid (slightly smaller lathe, lower fill)
-    var liquidPts = [
-      new THREE.Vector2(0.0, 0.06),
-      new THREE.Vector2(0.34, 0.06),
-      new THREE.Vector2(0.38, 0.1),
-      new THREE.Vector2(0.4, 0.18),
-      new THREE.Vector2(0.41, 0.55),
-      new THREE.Vector2(0.4, 1.0),
-      new THREE.Vector2(0.36, 1.18),
-      new THREE.Vector2(0.22, 1.32),
-      new THREE.Vector2(0.0, 1.32)
-    ];
-    var liquidGeo = new THREE.LatheGeometry(liquidPts, 48);
+    // capa interior suave (volumen de vidrio)
+    var innerPts = profilePoints().map(function (v) {
+      return new THREE.Vector2(Math.max(0, v.x * 0.94), v.y);
+    });
+    var innerGeo = new THREE.LatheGeometry(innerPts, 64);
+    var inner = new THREE.Mesh(innerGeo, glassInnerMat());
+    inner.renderOrder = 0;
+    rootGroup.add(inner);
+
+    // líquido marrón oscuro interior
+    var liquidGeo = new THREE.LatheGeometry(liquidPoints(), 64);
     var liquidCol = new THREE.Color(LIQUID.r / 255, LIQUID.g / 255, LIQUID.b / 255);
     var liquid = new THREE.Mesh(
       liquidGeo,
-      new THREE.MeshPhysicalMaterial({
+      new THREE.MeshStandardMaterial({
         color: liquidCol,
         metalness: 0.05,
-        roughness: 0.35,
-        transmission: 0.15,
-        thickness: 0.8,
-        transparent: true,
-        opacity: 0.92,
+        roughness: 0.32,
+        transparent: false,
         side: THREE.DoubleSide
       })
     );
-    liquid.position.y = 0.02;
+    liquid.renderOrder = 0;
     rootGroup.add(liquid);
 
-    // front + back labels as curved cylinder bands on the body
-    var labelH = 0.78;
-    var labelY = 0.62;
-    var labelR = 0.452;
-    var labelArc = Math.PI * 0.92; // wrap most of front/back faces
-
-    function makeLabel(tex, yRot) {
-      var segs = 48;
-      var geo = new THREE.CylinderGeometry(
-        labelR,
-        labelR,
-        labelH,
-        segs,
-        1,
-        true,
-        -labelArc * 0.5,
-        labelArc
-      );
-      var mat = new THREE.MeshStandardMaterial({
-        map: tex,
-        roughness: 0.55,
-        metalness: 0.02,
-        transparent: true,
-        alphaTest: 0.02,
-        side: THREE.FrontSide
-      });
-      var m = new THREE.Mesh(geo, mat);
-      m.position.y = labelY;
-      m.rotation.y = yRot;
-      m.castShadow = true;
-      return m;
-    }
-
-    if (textures.front) rootGroup.add(makeLabel(textures.front, 0));
-    if (textures.back) rootGroup.add(makeLabel(textures.back, Math.PI));
-
-    // foil/cap
-    var cap = new THREE.Group();
-    cap.position.y = 2.0;
-    var foil = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.165, 0.17, 0.14, 32),
+    // menisco / superficie del líquido
+    var meniscusR = BODY_R - 0.045;
+    var meniscus = new THREE.Mesh(
+      new THREE.CircleGeometry(meniscusR, 48),
       new THREE.MeshStandardMaterial({
-        color: 0x2a1810,
-        metalness: 0.65,
-        roughness: 0.28
+        color: liquidCol,
+        metalness: 0.12,
+        roughness: 0.2,
+        side: THREE.DoubleSide
       })
     );
-    foil.position.y = 0.05;
-    cap.add(foil);
-    var top = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.155, 0.155, 0.04, 32),
-      new THREE.MeshStandardMaterial({ color: 0x1a100c, metalness: 0.5, roughness: 0.35 })
-    );
-    top.position.y = 0.13;
-    cap.add(top);
-    // thin gold ring
-    var ring = new THREE.Mesh(
-      new THREE.TorusGeometry(0.168, 0.008, 8, 40),
-      new THREE.MeshStandardMaterial({ color: 0xc4a35a, metalness: 0.85, roughness: 0.25 })
-    );
-    ring.rotation.x = Math.PI * 0.5;
-    ring.position.y = 0.0;
-    cap.add(ring);
+    meniscus.rotation.x = -Math.PI * 0.5;
+    meniscus.position.y = BODY_TOP + 0.16;
+    rootGroup.add(meniscus);
+
+    // etiquetas Cordobita en el cuerpo cilíndrico (no se estiran al hombro)
+    // ligeramente fuera del vidrio para legibilidad
+    var labelH = 0.98;
+    var labelY = 0.22 + labelH * 0.5; // centrada en cuerpo
+    var labelR = BODY_R + 0.012;
+    var labelArc = Math.PI * 0.86;
+
+    function texForLabel(src) {
+      // clonar textura para UV independientes front/back
+      if (!src) return null;
+      var t = src.clone();
+      t.needsUpdate = true;
+      return t;
+    }
+
+    if (textures.front) {
+      rootGroup.add(makeLabel(texForLabel(textures.front), 0, labelH, labelY, labelR, labelArc));
+    }
+    if (textures.back) {
+      rootGroup.add(makeLabel(texForLabel(textures.back), Math.PI, labelH, labelY, labelR, labelArc));
+    }
+
+    // tapa rosca negra (sin foil dorado)
+    var cap = buildScrewCap();
+    cap.renderOrder = 4;
     rootGroup.add(cap);
 
-    // center bottle on origin (lathe sits on y=0)
-    rootGroup.position.y = -1.05;
+    // centrar visualmente
+    rootGroup.position.y = -LIP_TOP * 0.48;
     rootGroup.rotation.order = 'YXZ';
     rootGroup.rotation.y = rotY;
     rootGroup.rotation.x = rotX;
@@ -298,7 +447,7 @@
     lastY = e.clientY;
     targetRotY += dx * 0.01;
     targetRotX += dy * 0.006;
-    targetRotX = Math.max(-0.35, Math.min(0.45, targetRotX));
+    targetRotX = Math.max(-0.28, Math.min(0.38, targetRotX));
     rotY = targetRotY;
     rotX = targetRotX;
     e.preventDefault();
@@ -318,7 +467,7 @@
     if (!open || !ready) return;
     e.preventDefault();
     var z = camera.position.z + e.deltaY * 0.0025;
-    camera.position.z = Math.max(2.4, Math.min(5.2, z));
+    camera.position.z = Math.max(2.6, Math.min(5.6, z));
   }
 
   function animate() {
@@ -329,7 +478,7 @@
 
     if (autoOrbit && !dragging) {
       targetRotY += autoOrbitSpeed * dt;
-      targetRotX = 0.12 + Math.sin(autoT * autoTiltSpeed) * autoTiltAmp;
+      targetRotX = 0.08 + Math.sin(autoT * autoTiltSpeed) * autoTiltAmp;
       rotY = targetRotY;
       rotX += (targetRotX - rotX) * Math.min(1, dt * 4);
     } else {
@@ -363,6 +512,7 @@
 
   async function ensureScene() {
     if (ready) {
+      // rebuild geometry if labels dir changed or to apply latest profile after hot reload
       resize();
       return;
     }
@@ -379,7 +529,7 @@
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.08;
+      renderer.toneMappingExposure = 1.12;
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       canvasHost.innerHTML = '';
@@ -391,42 +541,54 @@
       renderer.domElement.setAttribute('aria-label', 'Mockup 3D de botella');
 
       scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(32, 1, 0.1, 40);
-      camera.position.set(0, 0.05, 3.4);
-      camera.lookAt(0, 0, 0);
+      camera = new THREE.PerspectiveCamera(28, 1, 0.1, 40);
+      camera.position.set(0, 0.05, 3.85);
+      camera.lookAt(0, 0.02, 0);
       clock = new THREE.Clock();
 
-      scene.add(new THREE.AmbientLight(0xfff2e6, 0.55));
-      var key = new THREE.DirectionalLight(0xffffff, 1.2);
-      key.position.set(2.4, 3.5, 3.5);
+      // iluminación limpia para vidrio claro + etiquetas legibles
+      scene.add(new THREE.AmbientLight(0xffffff, 0.62));
+      var key = new THREE.DirectionalLight(0xffffff, 1.45);
+      key.position.set(2.6, 4.0, 3.2);
       key.castShadow = true;
       key.shadow.mapSize.set(1024, 1024);
       scene.add(key);
-      var fill = new THREE.DirectionalLight(0xb8d0ff, 0.35);
-      fill.position.set(-3, 1.5, 2);
+      var fill = new THREE.DirectionalLight(0xe8f0ff, 0.7);
+      fill.position.set(-3.2, 1.8, 2.2);
       scene.add(fill);
-      var rim = new THREE.DirectionalLight(0xffc8a0, 0.4);
-      rim.position.set(-1.5, 1.2, -3);
+      var rim = new THREE.DirectionalLight(0xffe8d2, 0.65);
+      rim.position.set(-1.2, 2.0, -3.2);
       scene.add(rim);
+      var front = new THREE.DirectionalLight(0xffffff, 0.55);
+      front.position.set(0.2, 1.2, 4.5);
+      scene.add(front);
+      var hemi = new THREE.HemisphereLight(0xf0f4ff, 0x2a2218, 0.4);
+      scene.add(hemi);
 
       var ground = new THREE.Mesh(
-        new THREE.CircleGeometry(1.4, 48),
-        new THREE.ShadowMaterial({ opacity: 0.32 })
+        new THREE.CircleGeometry(1.2, 48),
+        new THREE.ShadowMaterial({ opacity: 0.28 })
       );
       ground.rotation.x = -Math.PI * 0.5;
-      ground.position.y = -1.08;
+      ground.position.y = -LIP_TOP * 0.48 - 0.01;
       ground.receiveShadow = true;
       scene.add(ground);
 
-      // try load liquid color hint
+      // color de líquido: preferir marrón oscuro fijo; txt solo si es razonablemente oscuro
       try {
         var colRes = await fetch(texDir.replace(/\/+$/, '') + '/liquid-color.txt');
         if (colRes.ok) {
           var txt = (await colRes.text()).trim().split(',');
           if (txt.length >= 3) {
-            LIQUID.r = +txt[0] || LIQUID.r;
-            LIQUID.g = +txt[1] || LIQUID.g;
-            LIQUID.b = +txt[2] || LIQUID.b;
+            var rr = +txt[0];
+            var gg = +txt[1];
+            var bb = +txt[2];
+            // ignorar samples grises/claros (deformaban el fernet)
+            if (rr < 55 && gg < 45 && bb < 45 && rr + gg + bb < 120) {
+              LIQUID.r = rr;
+              LIQUID.g = gg;
+              LIQUID.b = bb;
+            }
           }
         }
       } catch (e) {}
@@ -483,8 +645,8 @@
     opts = opts || {};
     if (opts.dir) texDir = String(opts.dir);
     if (titleEl) titleEl.textContent = opts.title || 'Fernet Cordobita';
-    rotY = 0.45;
-    rotX = 0.12;
+    rotY = 0.55;
+    rotX = 0.08;
     targetRotY = rotY;
     targetRotX = rotX;
     autoOrbit = true;
