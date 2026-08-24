@@ -355,10 +355,11 @@
     const cartaDir = cell.dataset.carta || '';
         const cartaPages = cell.dataset.cartaPages || '';
         const revistaDir = cell.dataset.revista || '';
-        const revistaPages = cell.dataset.revistaPages || '';
-        const manualDir = cell.dataset.manual || '';
-        const manualPages = cell.dataset.manualPages || '';
-        if (isRedes) {
+                const revistaPages = cell.dataset.revistaPages || '';
+                const manualDir = cell.dataset.manual || '';
+                const manualPages = cell.dataset.manualPages || '';
+                const cdDir = cell.dataset.cd || '';
+                if (isRedes) {
           // Redes → botón "Ver Instagram" (abre prototipo Figma si data-figma-proto)
           const b = document.createElement('button');
           b.type = 'button';
@@ -382,23 +383,34 @@
           }
           vActions.appendChild(b);
         } else if (revistaDir && (typeof window.openRevista === 'function' || typeof window.openCartaRevista === 'function')) {
-          const b = document.createElement('button');
-          b.type = 'button';
-          b.className = 'pg-viewer__link';
-          b.textContent = 'Ver revista →';
-          b.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const open =
-              typeof window.openRevista === 'function'
-                ? window.openRevista
-                : function (dir, t, n) {
-                    window.openCartaRevista(dir, t, n, { kind: 'revista', size: 'large' });
-                  };
-            open(revistaDir, title || 'Revista', revistaPages);
-          });
-          vActions.appendChild(b);
-        } else if (manualDir && typeof window.openBrandManual === 'function') {
+                  const b = document.createElement('button');
+                  b.type = 'button';
+                  b.className = 'pg-viewer__link';
+                  b.textContent = 'Ver revista →';
+                  b.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const open =
+                      typeof window.openRevista === 'function'
+                        ? window.openRevista
+                        : function (dir, t, n) {
+                            window.openCartaRevista(dir, t, n, { kind: 'revista', size: 'large' });
+                          };
+                    open(revistaDir, title || 'Revista', revistaPages);
+                  });
+                  vActions.appendChild(b);
+                } else if (cdDir && typeof window.openCdCase === 'function') {
+                  const b = document.createElement('button');
+                  b.type = 'button';
+                  b.className = 'pg-viewer__link';
+                  b.textContent = 'Ver caja de CD →';
+                  b.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.openCdCase({ dir: cdDir, title: title || 'Desembarco — CD' });
+                  });
+                  vActions.appendChild(b);
+                } else if (manualDir && typeof window.openBrandManual === 'function') {
           const b = document.createElement('button');
           b.type = 'button';
           b.className = 'pg-viewer__link';

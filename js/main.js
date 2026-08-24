@@ -495,11 +495,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const figmaProto = card.dataset.figmaProto || '';
         const cartaDir = card.dataset.carta || '';
                 const cartaPages = card.dataset.cartaPages || '';
-                const revistaDir = card.dataset.revista || '';
-                const revistaPages = card.dataset.revistaPages || '';
-                const manualDir = card.dataset.manual || '';
-                const manualPages = card.dataset.manualPages || '';
-                if (isSocial) {
+                                const revistaDir = card.dataset.revista || '';
+                                const revistaPages = card.dataset.revistaPages || '';
+                                const manualDir = card.dataset.manual || '';
+                                const manualPages = card.dataset.manualPages || '';
+                                const cdDir = card.dataset.cd || '';
+                                if (isSocial) {
                   // Redes → botón "Ver Instagram" (abre prototipo Figma si data-figma-proto)
                   const btn = document.createElement('button');
                   btn.type = 'button';
@@ -539,18 +540,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     open(revistaDir, title || 'Revista', revistaPages);
                   });
                   projActions.appendChild(btn);
-                } else if (manualDir && typeof window.openBrandManual === 'function') {
-                  const btn = document.createElement('button');
-                  btn.type = 'button';
-                  btn.className = 'modal__behance-btn';
-                  btn.textContent = 'Ver manual de marca →';
-                  btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    window.openBrandManual(manualDir, title || 'Manual de marca', manualPages);
-                  });
-                  projActions.appendChild(btn);
-                } else if (cartaDir && typeof window.openCartaRevista === 'function') {
+                                  } else if (cdDir && typeof window.openCdCase === 'function') {
+                                    const btn = document.createElement('button');
+                                    btn.type = 'button';
+                                    btn.className = 'modal__behance-btn';
+                                    btn.textContent = 'Ver caja de CD →';
+                                    btn.addEventListener('click', (e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      window.openCdCase({ dir: cdDir, title: title || 'Desembarco — CD' });
+                                    });
+                                    projActions.appendChild(btn);
+                                  } else if (manualDir && typeof window.openBrandManual === 'function') {
+                                    const btn = document.createElement('button');
+                                    btn.type = 'button';
+                                    btn.className = 'modal__behance-btn';
+                                    btn.textContent = 'Ver manual de marca →';
+                                    btn.addEventListener('click', (e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      window.openBrandManual(manualDir, title || 'Manual de marca', manualPages);
+                                    });
+                                    projActions.appendChild(btn);
+                                  } else if (cartaDir && typeof window.openCartaRevista === 'function') {
                   const btn = document.createElement('button');
                   btn.type = 'button';
                   btn.className = 'modal__behance-btn';
@@ -813,11 +825,14 @@ document.addEventListener('DOMContentLoaded', () => {
     vActions.innerHTML = '';
     const isSocial = (category || '').indexOf('Social') === 0;
     const figmaProto = card.dataset.figmaProto || '';
-    const cartaDir = card.dataset.carta || '';
-    const cartaPages = card.dataset.cartaPages || '';
-    const manualDir = card.dataset.manual || '';
-    const manualPages = card.dataset.manualPages || '';
-    if (isSocial) {
+        const cartaDir = card.dataset.carta || '';
+        const cartaPages = card.dataset.cartaPages || '';
+        const manualDir = card.dataset.manual || '';
+        const manualPages = card.dataset.manualPages || '';
+        const cdDir = card.dataset.cd || '';
+        const revistaDir = card.dataset.revista || '';
+        const revistaPages = card.dataset.revistaPages || '';
+        if (isSocial) {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'pg-viewer__link';
@@ -839,18 +854,46 @@ document.addEventListener('DOMContentLoaded', () => {
         b.setAttribute('aria-disabled', 'true');
       }
       vActions.appendChild(b);
-    } else if (manualDir && typeof window.openBrandManual === 'function') {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'pg-viewer__link';
-      b.textContent = 'Ver manual de marca →';
-      b.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        window.openBrandManual(manualDir, title || 'Manual de marca', manualPages);
-      });
-      vActions.appendChild(b);
-    } else if (cartaDir && typeof window.openCartaRevista === 'function') {
+          } else if (revistaDir && (typeof window.openRevista === 'function' || typeof window.openCartaRevista === 'function')) {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'pg-viewer__link';
+            b.textContent = 'Ver revista →';
+            b.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              const open =
+                typeof window.openRevista === 'function'
+                  ? window.openRevista
+                  : function (dir, t, n) {
+                      window.openCartaRevista(dir, t, n, { kind: 'revista', size: 'large' });
+                    };
+              open(revistaDir, title || 'Revista', revistaPages);
+            });
+            vActions.appendChild(b);
+          } else if (cdDir && typeof window.openCdCase === 'function') {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'pg-viewer__link';
+            b.textContent = 'Ver caja de CD →';
+            b.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              window.openCdCase({ dir: cdDir, title: title || 'Desembarco — CD' });
+            });
+            vActions.appendChild(b);
+          } else if (manualDir && typeof window.openBrandManual === 'function') {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'pg-viewer__link';
+            b.textContent = 'Ver manual de marca →';
+            b.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              window.openBrandManual(manualDir, title || 'Manual de marca', manualPages);
+            });
+            vActions.appendChild(b);
+          } else if (cartaDir && typeof window.openCartaRevista === 'function') {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'pg-viewer__link';

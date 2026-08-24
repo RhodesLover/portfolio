@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=50">
+  <link rel="stylesheet" href="css/style.css?v=51">
 </head>
 <body>
 
@@ -354,7 +354,8 @@
         <div class="project-card project-card--tilt"
              data-title="Desembarco"
              data-category="Proyecto · 2024"
-             data-description="Portada editorial para Desembarco. Diagramación y tratamiento de imagen.">
+             data-description="Portada editorial y packaging de CD para Desembarco. Mockup 3D interactivo de la caja."
+             data-cd="assets/desembarco-cd">
           <div class="project-card__media">
             <div class="project-card__media-bg" style="background:#0a0a0a;">
               <img class="project-card__img" src="assets/images/proyectos/desembarco-tapa.jpg" alt="Desembarco" loading="lazy">
@@ -763,11 +764,37 @@
   </div>
 
 
+
+  <!-- CD CASE 3D — Desembarco -->
+  <div class="cd-case" id="cdCase" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Mockup 3D de caja de CD">
+    <div class="cd-case__backdrop" id="cdCaseBackdrop"></div>
+    <button class="cd-case__close" id="cdCaseClose" type="button" aria-label="Cerrar mockup">✕</button>
+    <div class="cd-case__shell">
+      <header class="cd-case__top">
+        <div class="cd-case__brand">
+          <span class="cd-case__kicker">Mockup 3D</span>
+          <span class="cd-case__title" id="cdCaseTitle">Desembarco — CD</span>
+        </div>
+        <div class="cd-case__tools">
+          <span class="cd-case__status" id="cdCaseStatus">Caja cerrada</span>
+        </div>
+      </header>
+      <div class="cd-case__stage">
+        <div class="cd-case__canvas" id="cdCaseCanvas"></div>
+      </div>
+      <footer class="cd-case__bottom">
+        <p class="cd-case__hint" id="cdCaseHint">Arrastrá para girar la caja · Abrir caja</p>
+        <button class="cd-case__toggle" id="cdCaseToggle" type="button" aria-pressed="false">Abrir caja</button>
+      </footer>
+    </div>
+  </div>
+
 <script src="js/zoom.js?v=4"></script>
   <script src="js/particles.js?v=3"></script>
   <script src="js/carta-revista.js?v=12"></script>
   <script src="js/brand-manual.js?v=3"></script>
   <script src="js/figma-proto.js?v=5"></script>
-  <script src="js/main.js?v=33"></script>
+  <script src="js/cd-case.js?v=1"></script>
+  <script src="js/main.js?v=34"></script>
 </body>
 </html>
