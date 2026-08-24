@@ -1,8 +1,11 @@
 /* ============================================================
    CARTA / REVISTA — libro 3D (portada + spreads N páginas)
-   pages[0] = tapa
+   pages[0] = tapa (cerrada)
+   pages[n-1] puede ser contratapa (PDF: 2ª hoja al inicio → al final)
    state 0  = cerrada
-   state k  = pliego pages[2k-1] | pages[2k]  (1-based: 2k | 2k+1)
+   state k  = pliego openLeafIndices(k)
+     pares normales: left=2k-1 | right=2k  (0-based)
+     si sobra 1 hoja al final (contratapa): left=blank | right=última
    maxState = ceil((n-1)/2)
 
    opts.size = 'large' → mockup más grande (revistas)
@@ -83,18 +86,23 @@
       var vh = window.innerHeight || document.documentElement.clientHeight || 768;
 
       // aire del overlay: padding simétrico + chrome (meta/controls/hint)
-            // el ✕ es fixed y no resta ancho al libro
+            // + barras fijas de zoom (izq) y close (der) arriba — no tapar libro
             var padX = large
               ? Math.max(36, Math.min(72, vw * 0.05))
               : Math.max(32, Math.min(64, vw * 0.05));
-            var chromeY = large
-              ? Math.max(120, Math.min(168, vh * 0.22))
-              : Math.max(112, Math.min(156, vh * 0.22));
-            // en mobile el chrome pesa menos (hint oculto)
+            // top chrome (zoom/close) + bottom chrome (nav/dots/hint/meta)
+            var chromeTop = large
+              ? Math.max(64, Math.min(88, vh * 0.12))
+              : Math.max(58, Math.min(80, vh * 0.11));
+            var chromeBottom = large
+              ? Math.max(100, Math.min(140, vh * 0.18))
+              : Math.max(92, Math.min(128, vh * 0.18));
             if (vw <= 720) {
               padX = Math.max(20, Math.min(40, vw * 0.06));
-              chromeY = Math.max(96, Math.min(128, vh * 0.2));
+              chromeTop = Math.max(52, Math.min(72, vh * 0.12));
+              chromeBottom = Math.max(84, Math.min(112, vh * 0.18));
             }
+            var chromeY = chromeTop + chromeBottom;
 
             var availW = Math.max(160, vw - padX * 2);
             var availH = Math.max(180, vh - chromeY);
@@ -249,26 +257,54 @@
     }
   }
 
-  /** 1-based page numbers of current spread; cover = right only */
-  function spreadPages() {
-    if (state === 0) return { left: null, right: 1 };
-    var L = 2 * state; // state1 → 2
-    var R = 2 * state + 1;
-    if (L > pages.length) L = null;
-    if (R > pages.length) R = null;
-    return { left: L, right: R };
-  }
-
-  function stateLabel() {
-    if (state === 0) return 'Portada';
-    var sp = spreadPages();
-    if (sp.left != null && sp.right != null) {
-      return 'Págs. ' + sp.left + '–' + sp.right;
+  /**
+     * Índices 0-based del pliego abierto (s >= 1).
+     * null = hoja en blanco.
+     * Si el total de interiores es impar, la última hoja (contratapa)
+     * va SIEMPRE a la derecha del último pliego.
+     */
+    function openLeafIndices(s) {
+      if (s <= 0) return { li: null, ri: null };
+      var li = 2 * s - 1;
+      var ri = 2 * s;
+      // última hoja suelta → derecha (contratapa al cerrar)
+      if (li < pages.length && ri >= pages.length) {
+        return { li: null, ri: li };
+      }
+      return {
+        li: li < pages.length ? li : null,
+        ri: ri < pages.length ? ri : null
+      };
     }
-    if (sp.left != null) return 'Pág. ' + sp.left;
-    if (sp.right != null) return 'Pág. ' + sp.right;
-    return String(state);
-  }
+
+    /** 1-based page numbers of current spread; cover = right only */
+    function spreadPages() {
+      if (state === 0) return { left: null, right: 1 };
+      var idx = openLeafIndices(state);
+      return {
+        left: idx.li == null ? null : idx.li + 1,
+        right: idx.ri == null ? null : idx.ri + 1
+      };
+    }
+
+    function stateLabel() {
+      if (state === 0) return 'Portada';
+      var sp = spreadPages();
+      // última página sola a la derecha = contratapa
+      if (
+        sp.left == null &&
+        sp.right != null &&
+        sp.right === pages.length
+      ) {
+        return 'Contratapa';
+      }
+      if (sp.left != null && sp.right != null) {
+        return 'Págs. ' + sp.left + '–' + sp.right;
+      }
+      if (sp.left != null) return 'Pág. ' + sp.left;
+      if (sp.right != null) return 'Pág. ' + sp.right;
+      return String(state);
+    }
 
   function buildDots() {
     if (!dotsEl) return;
@@ -388,30 +424,38 @@
     }
 
   /**
-   * Pinta el pliego base.
-   * pages 0-based: cover=0, interior starts at 1
-   * state s>=1 → left=2s-1, right=2s
-   */
-  function paintSpread(s) {
-    if (!pages.length) return;
-    setSrc(imgCover, pageSrc(0));
+     * Pinta el pliego base.
+     * pages 0-based: cover=0, interior starts at 1
+     * state s>=1 → openLeafIndices(s); contratapa final a la derecha
+     */
+    function paintSpread(s) {
+      if (!pages.length) return;
+      setSrc(imgCover, pageSrc(0));
 
-    if (s <= 0) {
-      setSrc(imgLeft, blank());
-      setSrc(imgRight, pageSrc(1));
-      if (imgLeft) imgLeft.alt = '';
-      if (imgRight) imgRight.alt = pages[1] ? 'Página 2' : '';
-      if (imgCover) imgCover.alt = 'Portada';
-      return;
+      if (s <= 0) {
+        setSrc(imgLeft, blank());
+        setSrc(imgRight, blank());
+        if (imgLeft) imgLeft.alt = '';
+        if (imgRight) imgRight.alt = '';
+        if (imgCover) imgCover.alt = 'Portada';
+        return;
+      }
+
+      var idx = openLeafIndices(s);
+      var li = idx.li;
+      var ri = idx.ri;
+      setSrc(imgLeft, li == null ? blank() : pageSrc(li));
+      setSrc(imgRight, ri == null ? blank() : pageSrc(ri));
+      if (imgLeft) {
+        imgLeft.alt =
+          li == null ? '' : 'Página ' + (li + 1);
+      }
+      if (imgRight) {
+        if (ri == null) imgRight.alt = '';
+        else if (ri === pages.length - 1 && li == null) imgRight.alt = 'Contratapa';
+        else imgRight.alt = 'Página ' + (ri + 1);
+      }
     }
-
-    var li = 2 * s - 1;
-    var ri = 2 * s;
-    setSrc(imgLeft, pageSrc(li));
-    setSrc(imgRight, pageSrc(ri));
-    if (imgLeft) imgLeft.alt = pages[li] ? 'Página ' + (li + 1) : '';
-    if (imgRight) imgRight.alt = pages[ri] ? 'Página ' + (ri + 1) : '';
-  }
 
   async function openCover() {
     if (!book || !cover) return;
@@ -479,78 +523,76 @@
   }
 
   /** s → s+1 con s >= 1 */
-  async function flipForwardInterior() {
-    if (!flipper || !book || state < 1 || state >= maxState) return;
+    async function flipForwardInterior() {
+      if (!flipper || !book || state < 1 || state >= maxState) return;
 
-    var s = state;
-    var curL = 2 * s - 1;
-    var curR = 2 * s;
-    var nextL = 2 * (s + 1) - 1;
-    var nextR = 2 * (s + 1);
+      var s = state;
+      var cur = openLeafIndices(s);
+      var nxt = openLeafIndices(s + 1);
 
-    book.classList.add('is-flipping');
-    flipper.setAttribute('aria-hidden', 'false');
-    flipper.style.opacity = '1';
+      book.classList.add('is-flipping');
+      flipper.setAttribute('aria-hidden', 'false');
+      flipper.style.opacity = '1';
 
-    setSrc(flipFront, pageSrc(curR));
-    setSrc(flipBack, pageSrc(nextL));
-    setSrc(imgRight, pageSrc(nextR));
-    setSrc(imgLeft, pageSrc(curL));
+      // anverso del flip = hoja derecha actual (o blank); dorso = hoja izq del siguiente
+      setSrc(flipFront, cur.ri == null ? blank() : pageSrc(cur.ri));
+      setSrc(flipBack, nxt.li == null ? blank() : pageSrc(nxt.li));
+      setSrc(imgRight, nxt.ri == null ? blank() : pageSrc(nxt.ri));
+      setSrc(imgLeft, cur.li == null ? blank() : pageSrc(cur.li));
 
-    flipper.style.transition = 'none';
-    flipper.style.transform = 'rotateY(0deg)';
-    void flipper.offsetWidth;
-    flipper.style.transition =
-      'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
-    flipper.style.transform = 'rotateY(-180deg)';
+      flipper.style.transition = 'none';
+      flipper.style.transform = 'rotateY(0deg)';
+      void flipper.offsetWidth;
+      flipper.style.transition =
+        'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
+      flipper.style.transform = 'rotateY(-180deg)';
 
-    await wait(FLIP_MS * 0.5);
-    setSrc(imgLeft, pageSrc(nextL));
-    await wait(FLIP_MS * 0.5 + 40);
+      await wait(FLIP_MS * 0.5);
+      setSrc(imgLeft, nxt.li == null ? blank() : pageSrc(nxt.li));
+      await wait(FLIP_MS * 0.5 + 40);
 
-    state = s + 1;
-    paintSpread(state);
-    resetFlipper();
-    stowCover(true);
-    setMode('open');
-    updateChrome();
-  }
+      state = s + 1;
+      paintSpread(state);
+      resetFlipper();
+      stowCover(true);
+      setMode('open');
+      updateChrome();
+    }
 
-  /** s → s-1 con s >= 2 */
-  async function flipBackInterior() {
-    if (!flipper || !book || state < 2) return;
+    /** s → s-1 con s >= 2 */
+    async function flipBackInterior() {
+      if (!flipper || !book || state < 2) return;
 
-    var s = state;
-    var prev = s - 1;
-    var prevL = 2 * prev - 1;
-    var prevR = 2 * prev;
-    var curL = 2 * s - 1;
+      var s = state;
+      var prev = s - 1;
+      var cur = openLeafIndices(s);
+      var prv = openLeafIndices(prev);
 
-    book.classList.add('is-flipping');
-    flipper.setAttribute('aria-hidden', 'false');
-    flipper.style.opacity = '1';
+      book.classList.add('is-flipping');
+      flipper.setAttribute('aria-hidden', 'false');
+      flipper.style.opacity = '1';
 
-    setSrc(flipFront, pageSrc(prevR));
-    setSrc(flipBack, pageSrc(curL));
-    setSrc(imgLeft, pageSrc(prevL));
-    setSrc(imgRight, pageSrc(prevR));
+      setSrc(flipFront, prv.ri == null ? blank() : pageSrc(prv.ri));
+      setSrc(flipBack, cur.li == null ? blank() : pageSrc(cur.li));
+      setSrc(imgLeft, prv.li == null ? blank() : pageSrc(prv.li));
+      setSrc(imgRight, prv.ri == null ? blank() : pageSrc(prv.ri));
 
-    flipper.style.transition = 'none';
-    flipper.style.transform = 'rotateY(-180deg)';
-    void flipper.offsetWidth;
-    flipper.style.transition =
-      'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
-    flipper.style.transform = 'rotateY(0deg)';
+      flipper.style.transition = 'none';
+      flipper.style.transform = 'rotateY(-180deg)';
+      void flipper.offsetWidth;
+      flipper.style.transition =
+        'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
+      flipper.style.transform = 'rotateY(0deg)';
 
-    await wait(FLIP_MS + 40);
+      await wait(FLIP_MS + 40);
 
-    state = prev;
-    paintSpread(state);
-    resetFlipper();
-    stowCover(true);
-    setMode('open');
-    updateChrome();
-  }
+      state = prev;
+      paintSpread(state);
+      resetFlipper();
+      stowCover(true);
+      setMode('open');
+      updateChrome();
+    }
 
   async function goTo(target) {
     if (!open || busy) return;

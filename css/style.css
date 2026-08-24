@@ -2743,11 +2743,19 @@ body.figma-proto-open #trailCanvas {
   flex: 0 0 auto;
   margin-inline: auto;
 }
+/* Zoom en esquina superior izquierda (espejo del ✕).
+   Nunca debajo del libro ni sobre nav/dots. */
 .carta-revista__zoom-controls.zoom-controls {
-  position: relative;
-  margin: 0 auto;
-  z-index: 12;
+  position: fixed;
+  top: clamp(0.75rem, 2.2vh, 1.35rem);
+  left: clamp(0.85rem, 2.4vw, 1.75rem);
+  right: auto;
+  bottom: auto;
+  z-index: 6;
+  margin: 0;
   flex-shrink: 0;
+  /* no empujar layout del stage */
+  pointer-events: auto;
 }
 
 .carta-book {
@@ -3176,6 +3184,24 @@ body.carta-revista-open #trailCanvas {
     height: 42px;
     font-size: 1.05rem;
   }
+  .carta-revista__zoom-controls.zoom-controls {
+    top: clamp(0.55rem, 1.8vh, 0.9rem);
+    left: clamp(0.55rem, 2vw, 0.9rem);
+    padding: 0.3rem 0.35rem;
+    gap: 0.25rem;
+  }
+  .carta-revista__zoom-controls .zoom-btn {
+    width: 30px;
+    height: 30px;
+  }
+  .carta-revista__zoom-controls .zoom-btn--reset {
+    padding: 0 0.5rem;
+    font-size: 0.55rem;
+  }
+  .carta-revista__zoom-controls .zoom-level {
+    min-width: 2.6rem;
+    font-size: 0.55rem;
+  }
   .carta-revista__hint { display: none; }
   .carta-revista__navbtn {
     width: 42px;
@@ -3189,6 +3215,10 @@ body.carta-revista-open #trailCanvas {
   .carta-revista__close {
     width: 38px;
     height: 38px;
+  }
+  /* en mobile chico: ocultar label Reset para no invadir el libro */
+  .carta-revista__zoom-controls .zoom-btn--reset {
+    display: none;
   }
   .carta-revista__dots {
     max-width: min(48vw, 180px);
@@ -3215,19 +3245,16 @@ body.carta-revista-open #trailCanvas {
 }
 .carta-revista.is-large .carta-revista__dots::-webkit-scrollbar { display: none; }
 
-/* Revistas grid en archivo */
+/* Revistas grid en archivo — 2 columnas iguales, tapa vertical */
 .pg-grid--revistas {
-  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.4fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(0.85rem, 1.6vw, 1.35rem);
   align-items: stretch;
 }
+.pg-grid--revistas .pg-cell .pg-cell__frame,
 .pg-grid--revistas .pg-cell--feature .pg-cell__frame {
   aspect-ratio: 3 / 4;
-  min-height: min(52vh, 520px);
-}
-@media (max-width: 1024px) {
-  .pg-grid--revistas { grid-template-columns: 1fr 1fr; }
-  .pg-grid--revistas .pg-cell--feature { grid-column: 1 / -1; }
+  min-height: min(42vh, 460px);
 }
 @media (max-width: 768px) {
   .pg-grid--revistas { grid-template-columns: 1fr; }
