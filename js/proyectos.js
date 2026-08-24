@@ -359,6 +359,7 @@
                 const manualDir = cell.dataset.manual || '';
                 const manualPages = cell.dataset.manualPages || '';
                 const cdDir = cell.dataset.cd || '';
+                const bottleDir = cell.dataset.bottle || '';
                 if (isRedes) {
           // Redes → botón "Ver Instagram" (abre prototipo Figma si data-figma-proto)
           const b = document.createElement('button');
@@ -408,6 +409,17 @@
                     e.preventDefault();
                     e.stopPropagation();
                     window.openCdCase({ dir: cdDir, title: title || 'Desembarco — CD' });
+                  });
+                  vActions.appendChild(b);
+                } else if (bottleDir && typeof window.openBottle3d === 'function') {
+                  const b = document.createElement('button');
+                  b.type = 'button';
+                  b.className = 'pg-viewer__link';
+                  b.textContent = 'Ver botella →';
+                  b.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.openBottle3d({ dir: bottleDir, title: title || 'Fernet Cordobita' });
                   });
                   vActions.appendChild(b);
                 } else if (manualDir && typeof window.openBrandManual === 'function') {

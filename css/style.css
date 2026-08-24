@@ -1374,7 +1374,7 @@ body.modal-open .nav {
   position: relative;
   overflow: visible;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 0.65rem;
@@ -2045,7 +2045,7 @@ body.modal-open .nav {
   min-height: 0;
   max-height: 82vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
@@ -2105,17 +2105,20 @@ body.modal-open .nav {
   bottom: auto;
   z-index: 5;
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
-  padding: 0.4rem 0.45rem;
+  gap: 0.4rem;
+  padding: 0.45rem 0.4rem;
   border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(10px);
+  background: rgba(0,0,0,0.62);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: 999px;
   flex: 0 0 auto;
-  margin: 0 auto;
+  margin: 0;
   pointer-events: auto;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
 }
 .zoom-controls[hidden] { display: none !important; }
 .zoom-btn {
@@ -2123,33 +2126,38 @@ body.modal-open .nav {
   border: 1px solid rgba(255,255,255,0.14);
   background: rgba(255,255,255,0.04);
   color: #fff;
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: grid;
   place-items: center;
   cursor: pointer;
-  font-size: 1rem;
-  line-height: 1;
-  transition: border-color 0.2s, background 0.2s, color 0.2s;
+  font-size: 0;
+  line-height: 0;
+  padding: 0;
+  transition: border-color 0.2s, background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.zoom-btn svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  pointer-events: none;
 }
 .zoom-btn:hover {
-  border-color: #FFC5D3;
-  color: #FFC5D3;
-  background: rgba(255,197,211,0.08);
+  border-color: #fb650e;
+  color: #fb650e;
+  background: rgba(251,101,14,0.1);
+  box-shadow: 0 0 12px rgba(251,101,14,0.25);
 }
 .zoom-btn--reset {
-  width: auto;
-  padding: 0 0.7rem;
-  border-radius: 999px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 0;
 }
 .zoom-level {
-  min-width: 3.2rem;
+  min-width: 2.6rem;
   text-align: center;
   font-family: 'DM Sans', sans-serif;
   font-size: 0.62rem;
@@ -2747,18 +2755,17 @@ body.figma-proto-open #trailCanvas {
   flex: 0 0 auto;
   margin-inline: auto;
 }
-/* Zoom en esquina superior izquierda (espejo del ✕).
-   Nunca debajo del libro ni sobre nav/dots. */
+/* Zoom rail al lado del libro — fácil de encontrar, no tapa nav/dots */
 .carta-revista__zoom-controls.zoom-controls {
   position: fixed;
-  top: clamp(0.75rem, 2.2vh, 1.35rem);
-  left: clamp(0.85rem, 2.4vw, 1.75rem);
+  top: 50%;
+  left: clamp(0.65rem, 2vw, 1.25rem);
   right: auto;
   bottom: auto;
+  transform: translateY(-50%);
   z-index: 6;
   margin: 0;
   flex-shrink: 0;
-  /* no empujar layout del stage */
   pointer-events: auto;
 }
 
@@ -3189,18 +3196,21 @@ body.carta-revista-open #trailCanvas {
     font-size: 1.05rem;
   }
   .carta-revista__zoom-controls.zoom-controls {
-    top: clamp(0.55rem, 1.8vh, 0.9rem);
+    top: 50%;
     left: clamp(0.55rem, 2vw, 0.9rem);
+    transform: translateY(-50%);
     padding: 0.3rem 0.35rem;
     gap: 0.25rem;
   }
   .carta-revista__zoom-controls .zoom-btn {
-    width: 30px;
-    height: 30px;
+    width: 34px;
+    height: 34px;
   }
   .carta-revista__zoom-controls .zoom-btn--reset {
-    padding: 0 0.5rem;
-    font-size: 0.55rem;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    font-size: 0;
   }
   .carta-revista__zoom-controls .zoom-level {
     min-width: 2.6rem;
@@ -3787,7 +3797,7 @@ body.brand-manual-open #trailCanvas {
   text-align: center;
   width: 100%;
 }
-/* CTA grande flotando sobre el stage 3D (siempre a la vista) */
+/* CTA neon — fondo negro, borde/texto #fb650e (tipografía botones portfolio) */
 .cd-case__stage > .cd-case__toggle {
   position: absolute;
   left: 50%;
@@ -3795,61 +3805,65 @@ body.brand-manual-open #trailCanvas {
   transform: translateX(-50%);
   z-index: 6;
   appearance: none;
-  border: 1px solid rgba(255, 210, 170, 0.8);
-  background: linear-gradient(180deg, rgba(255, 145, 75, 0.98), rgba(220, 90, 35, 1));
-  color: #fff;
-  font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: clamp(0.95rem, 1.8vw, 1.08rem);
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  -webkit-appearance: none;
+  border: 1.5px solid #fb650e;
+  background: #000;
+  color: #fb650e;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  padding: 0.9rem 1.65rem;
-  min-width: min(86vw, 250px);
-  border-radius: 999px;
+  padding: 0.85rem 1.8rem;
+  min-width: min(86vw, 220px);
+  border-radius: 50px;
   cursor: pointer;
   box-shadow:
-    0 12px 32px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.14) inset,
-    0 0 28px rgba(255, 120, 50, 0.4);
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    0 0 0 1px rgba(251, 101, 14, 0.15),
+    0 0 18px rgba(251, 101, 14, 0.35),
+    0 8px 24px rgba(0, 0, 0, 0.55);
+  transition: background 0.25s, color 0.25s, border-color 0.25s, box-shadow 0.25s, transform 0.2s;
   pointer-events: auto;
 }
 .cd-case.is-open .cd-case__stage > .cd-case__toggle {
-  animation: cd-case-cta-pulse 2.4s ease-in-out infinite;
+  animation: cd-case-neon-pulse 2.6s ease-in-out infinite;
 }
-@keyframes cd-case-cta-pulse {
+@keyframes cd-case-neon-pulse {
   0%, 100% {
     box-shadow:
-      0 12px 32px rgba(0, 0, 0, 0.5),
-      0 0 0 1px rgba(255, 255, 255, 0.14) inset,
-      0 0 22px rgba(255, 120, 50, 0.35);
+      0 0 0 1px rgba(251, 101, 14, 0.18),
+      0 0 14px rgba(251, 101, 14, 0.3),
+      0 8px 24px rgba(0, 0, 0, 0.55);
   }
   50% {
     box-shadow:
-      0 14px 38px rgba(0, 0, 0, 0.55),
-      0 0 0 1px rgba(255, 255, 255, 0.2) inset,
-      0 0 36px rgba(255, 145, 60, 0.6);
+      0 0 0 1px rgba(251, 101, 14, 0.35),
+      0 0 28px rgba(251, 101, 14, 0.55),
+      0 10px 28px rgba(0, 0, 0, 0.6);
   }
 }
 .cd-case__stage > .cd-case__toggle:hover {
-  background: linear-gradient(180deg, rgba(255, 165, 95, 1), rgba(235, 105, 40, 1));
-  border-color: rgba(255, 230, 200, 0.95);
-  transform: translateX(-50%) translateY(-2px) scale(1.03);
+  background: #fb650e;
+  color: #000;
+  border-color: #fb650e;
+  transform: translateX(-50%) translateY(-2px);
   box-shadow:
-    0 16px 40px rgba(0, 0, 0, 0.55),
-    0 0 0 1px rgba(255, 255, 255, 0.22) inset,
-    0 0 40px rgba(255, 140, 60, 0.6);
+    0 0 0 1px rgba(251, 101, 14, 0.4),
+    0 0 32px rgba(251, 101, 14, 0.55),
+    0 12px 30px rgba(0, 0, 0, 0.55);
   animation: none;
 }
 .cd-case__stage > .cd-case__toggle:active {
-  transform: translateX(-50%) translateY(0) scale(0.99);
+  transform: translateX(-50%) translateY(0);
 }
 .cd-case__stage > .cd-case__toggle[aria-pressed="true"] {
-  background: linear-gradient(180deg, rgba(78, 78, 88, 0.96), rgba(34, 34, 40, 0.98));
-  border-color: rgba(255, 255, 255, 0.38);
+  background: #000;
+  color: #fb650e;
+  border-color: #fb650e;
   box-shadow:
-    0 10px 26px rgba(0, 0, 0, 0.45),
-    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    0 0 0 1px rgba(251, 101, 14, 0.2),
+    0 0 16px rgba(251, 101, 14, 0.28),
+    0 8px 22px rgba(0, 0, 0, 0.55);
   animation: none;
 }
 body.cd-case-open .pg-viewer,
@@ -3871,8 +3885,149 @@ body.cd-case-open .nav {
   }
   .cd-case__stage > .cd-case__toggle {
     min-width: min(92vw, 280px);
-    font-size: 0.95rem;
-    padding: 0.92rem 1.3rem;
+    font-size: 0.82rem;
+    letter-spacing: 1px;
+    padding: 0.85rem 1.4rem;
     bottom: 0.85rem;
   }
+}
+
+/* ============================================================
+   BOTTLE 3D — Fernet Cordobita
+   ============================================================ */
+.bottle-3d {
+  position: fixed;
+  inset: 0;
+  z-index: 10030;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  padding: clamp(0.55rem, 1.6vh, 0.95rem) clamp(0.65rem, 2vw, 1.15rem);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.28s ease, visibility 0.28s ease;
+}
+.bottle-3d.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.bottle-3d:not(.is-open),
+.bottle-3d:not(.is-open) * {
+  pointer-events: none !important;
+}
+.bottle-3d__backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(100% 70% at 50% 30%, rgba(60, 28, 12, 0.4), transparent 55%),
+    rgba(0, 0, 0, 0.74);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.bottle-3d__shell {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 980px);
+  height: 100%;
+  max-height: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 0.55rem;
+  min-height: 0;
+}
+.bottle-3d__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  min-height: 44px;
+}
+.bottle-3d__kicker {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.48);
+  display: block;
+}
+.bottle-3d__title {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: clamp(1rem, 2.2vw, 1.2rem);
+  color: #fff;
+}
+.bottle-3d__status {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+.bottle-3d__close {
+  position: fixed;
+  top: clamp(0.75rem, 2.2vh, 1.35rem);
+  right: clamp(0.85rem, 2.4vw, 1.75rem);
+  z-index: 5;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(10, 10, 10, 0.5);
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.bottle-3d__close:hover {
+  border-color: #fb650e;
+  color: #fb650e;
+  background: rgba(251, 101, 14, 0.1);
+}
+.bottle-3d__stage {
+  position: relative;
+  min-height: 0;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(70% 60% at 50% 40%, rgba(251, 101, 14, 0.07), transparent 60%),
+    rgba(8, 8, 10, 0.55);
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+}
+.bottle-3d__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.bottle-3d__canvas canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  touch-action: none;
+  cursor: grab;
+}
+.bottle-3d__canvas canvas:active { cursor: grabbing; }
+.bottle-3d__bottom {
+  display: flex;
+  justify-content: center;
+  padding: 0.15rem 0.1rem 0.2rem;
+}
+.bottle-3d__hint {
+  margin: 0;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+}
+body.bottle-3d-open .pg-viewer,
+body.bottle-3d-open .modal {
+  filter: blur(6px);
+  pointer-events: none !important;
+}
+body.bottle-3d-open .nav {
+  opacity: 0.25;
+  pointer-events: none;
 }

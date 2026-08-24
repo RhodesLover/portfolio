@@ -500,6 +500,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 const manualDir = card.dataset.manual || '';
                                 const manualPages = card.dataset.manualPages || '';
                                 const cdDir = card.dataset.cd || '';
+                                const bottleDir = card.dataset.bottle || '';
                                 if (isSocial) {
                   // Redes → botón "Ver Instagram" (abre prototipo Figma si data-figma-proto)
                   const btn = document.createElement('button');
@@ -549,6 +550,17 @@ document.addEventListener('DOMContentLoaded', () => {
                                       e.preventDefault();
                                       e.stopPropagation();
                                       window.openCdCase({ dir: cdDir, title: title || 'Desembarco — CD' });
+                                    });
+                                    projActions.appendChild(btn);
+                                  } else if (bottleDir && typeof window.openBottle3d === 'function') {
+                                    const btn = document.createElement('button');
+                                    btn.type = 'button';
+                                    btn.className = 'modal__behance-btn';
+                                    btn.textContent = 'Ver botella →';
+                                    btn.addEventListener('click', (e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      window.openBottle3d({ dir: bottleDir, title: title || 'Fernet Cordobita' });
                                     });
                                     projActions.appendChild(btn);
                                   } else if (manualDir && typeof window.openBrandManual === 'function') {
@@ -830,6 +842,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const manualDir = card.dataset.manual || '';
         const manualPages = card.dataset.manualPages || '';
         const cdDir = card.dataset.cd || '';
+        const bottleDir = card.dataset.bottle || '';
         const revistaDir = card.dataset.revista || '';
         const revistaPages = card.dataset.revistaPages || '';
         if (isSocial) {
@@ -880,6 +893,17 @@ document.addEventListener('DOMContentLoaded', () => {
               e.preventDefault();
               e.stopPropagation();
               window.openCdCase({ dir: cdDir, title: title || 'Desembarco — CD' });
+            });
+            vActions.appendChild(b);
+          } else if (bottleDir && typeof window.openBottle3d === 'function') {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'pg-viewer__link';
+            b.textContent = 'Ver botella →';
+            b.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              window.openBottle3d({ dir: bottleDir, title: title || 'Fernet Cordobita' });
             });
             vActions.appendChild(b);
           } else if (manualDir && typeof window.openBrandManual === 'function') {

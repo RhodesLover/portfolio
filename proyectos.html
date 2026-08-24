@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=52">
+  <link rel="stylesheet" href="css/style.css?v=53">
     </head>
     <body class="page-projects">
     <canvas id="particlesCanvas" aria-hidden="true"></canvas>
@@ -170,9 +170,10 @@
         </article>
         <article class="pg-cell" tabindex="0" role="button"
           data-title="Fernet Cordobita" data-cat="Branding · 2025" data-section="branding"
-          data-desc="Diseño de etiquetas y packaging con identidad regional."
+          data-desc="Diseño de etiquetas y packaging con identidad regional. Mockup 3D de la botella."
           data-behance="https://www.behance.net/rhodeslover"
-          data-media="assets/images/branding/fernet-cordobita.jpg" data-type="image">
+          data-media="assets/images/branding/fernet-cordobita.jpg" data-type="image"
+          data-bottle="assets/fernet-bottle">
           <div class="pg-cell__frame" style="--bg:#1a0a0a">
             <img class="pg-cell__media" src="assets/images/branding/fernet-cordobita.jpg" alt="Fernet Cordobita" loading="lazy">
           </div>
@@ -755,10 +756,10 @@
             <video class="pg-viewer__video" id="pgViewerVideo" controls playsinline muted loop></video>
           </div>
           <div class="zoom-controls" id="pgZoomControls" hidden>
-            <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Alejar">−</button>
+            <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Alejar"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M21 21l-4.3-4.3"/></svg></button>
             <span class="zoom-level" id="pgZoomLevel">100%</span>
-            <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar">+</button>
-            <button type="button" class="zoom-btn zoom-btn--reset" data-zoom="0" aria-label="Restablecer">Reset</button>
+            <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M11 8v6M8 11h6M21 21l-4.3-4.3"/></svg></button>
+            <button type="button" class="zoom-btn zoom-btn--reset" data-zoom="0" aria-label="Restablecer"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
           </div>
         </div>
         <div class="pg-viewer__info">
@@ -786,10 +787,10 @@
       <!-- Close top-right · Zoom top-left: corners, nunca encima de nav/dots/libro -->
       <button class="carta-revista__close" id="cartaRevistaClose" type="button" aria-label="Cerrar carta">✕</button>
       <div class="zoom-controls carta-revista__zoom-controls" id="cartaZoomControls" hidden>
-        <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Alejar">−</button>
+        <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Alejar"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M21 21l-4.3-4.3"/></svg></button>
         <span class="zoom-level" id="cartaZoomLevel">100%</span>
-        <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar">+</button>
-        <button type="button" class="zoom-btn zoom-btn--reset" data-zoom="0" aria-label="Restablecer">Reset</button>
+        <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M11 8v6M8 11h6M21 21l-4.3-4.3"/></svg></button>
+        <button type="button" class="zoom-btn zoom-btn--reset" data-zoom="0" aria-label="Restablecer"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
       </div>
 
       <div class="carta-revista__stage" id="cartaRevistaStage">
@@ -932,12 +933,35 @@
     </div>
   </div>
 
-<script src="js/zoom.js?v=4"></script>
+
+  <!-- BOTTLE 3D — Fernet Cordobita -->
+  <div class="bottle-3d" id="bottle3d" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Mockup 3D de botella">
+    <div class="bottle-3d__backdrop" id="bottle3dBackdrop"></div>
+    <button class="bottle-3d__close" id="bottle3dClose" type="button" aria-label="Cerrar mockup">✕</button>
+    <div class="bottle-3d__shell">
+      <header class="bottle-3d__top">
+        <div>
+          <span class="bottle-3d__kicker">Mockup 3D</span>
+          <span class="bottle-3d__title" id="bottle3dTitle">Fernet Cordobita</span>
+        </div>
+        <span class="bottle-3d__status" id="bottle3dStatus">Rotando</span>
+      </header>
+      <div class="bottle-3d__stage">
+        <div class="bottle-3d__canvas" id="bottle3dCanvas"></div>
+      </div>
+      <footer class="bottle-3d__bottom">
+        <p class="bottle-3d__hint" id="bottle3dHint">Gira sola · mantené el mouse para frenar y rotar</p>
+      </footer>
+    </div>
+  </div>
+
+<script src="js/zoom.js?v=5"></script>
   <script src="js/particles.js?v=3"></script>
   <script src="js/carta-revista.js?v=12"></script>
   <script src="js/brand-manual.js?v=3"></script>
   <script src="js/figma-proto.js?v=5"></script>
-  <script src="js/cd-case.js?v=2"></script>
-  <script src="js/proyectos.js?v=20"></script>
+  <script src="js/cd-case.js?v=3"></script>
+  <script src="js/bottle-3d.js?v=1"></script>
+  <script src="js/proyectos.js?v=21"></script>
 </body>
 </html>
