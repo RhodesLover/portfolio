@@ -36,43 +36,129 @@
   const FLIP_MS = 880;
 
   let open = false;
-  let busy = false;
-  let pages = [];
-  let state = 0;
-  let maxState = 0;
-  let touchX = null;
-  let closeTimer = null;
-  let kind = 'carta'; // 'carta' | 'revista'
+    let busy = false;
+    let pages = [];
+    let state = 0;
+    let maxState = 0;
+    let touchX = null;
+    let closeTimer = null;
+    let kind = 'carta'; // 'carta' | 'revista'
+    let pageRatio = 1.414; // h/w de una hoja
+    let resizeTimer = null;
 
-  const mediaZoom =
-    typeof window.createMediaZoom === 'function' && zoomStage && book
-      ? window.createMediaZoom({
-          stage: zoomStage,
-          target: book,
-          controls: zoomControls,
-          levelEl: zoomLevel,
-          min: 1,
-          max: 3.5,
-          step: 0.25,
-          enableWheel: false
-        })
-      : null;
+    const mediaZoom =
+      typeof window.createMediaZoom === 'function' && zoomStage && book
+        ? window.createMediaZoom({
+            stage: zoomStage,
+            target: book,
+            controls: zoomControls,
+            levelEl: zoomLevel,
+            min: 1,
+            max: 3.5,
+            step: 0.25,
+            enableWheel: false
+          })
+        : null;
 
-  function isZoomed() {
-    return !!(mediaZoom && mediaZoom.isZoomed && mediaZoom.isZoomed());
-  }
+    function isZoomed() {
+      return !!(mediaZoom && mediaZoom.isZoomed && mediaZoom.isZoomed());
+    }
 
-  function resetZoom() {
-    if (mediaZoom) mediaZoom.reset();
-  }
+    function resetZoom() {
+      if (mediaZoom) mediaZoom.reset();
+    }
 
-  function setZoomEnabled(on) {
-    if (mediaZoom) mediaZoom.setEnabled(!!on);
-  }
+    function setZoomEnabled(on) {
+      if (mediaZoom) mediaZoom.setEnabled(!!on);
+    }
 
-  function blank() {
-    return 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
-  }
+    /**
+     * Calcula --page-w / --page-h para que el libro (1 hoja o 2) quepa
+     * centrado sin max-height que deforme el aspect y deje bandas.
+     */
+    function fitBook() {
+      if (!book || !root) return;
+      var large = root.classList.contains('is-large');
+      var vw = window.innerWidth || document.documentElement.clientWidth || 1024;
+      var vh = window.innerHeight || document.documentElement.clientHeight || 768;
+
+      // aire del overlay: padding simétrico + chrome (meta/controls/hint)
+            // el ✕ es fixed y no resta ancho al libro
+            var padX = large
+              ? Math.max(36, Math.min(72, vw * 0.05))
+              : Math.max(32, Math.min(64, vw * 0.05));
+            var chromeY = large
+              ? Math.max(120, Math.min(168, vh * 0.22))
+              : Math.max(112, Math.min(156, vh * 0.22));
+            // en mobile el chrome pesa menos (hint oculto)
+            if (vw <= 720) {
+              padX = Math.max(20, Math.min(40, vw * 0.06));
+              chromeY = Math.max(96, Math.min(128, vh * 0.2));
+            }
+
+            var availW = Math.max(160, vw - padX * 2);
+            var availH = Math.max(180, vh - chromeY);
+
+      // preferimos dimensionar para el pliego abierto (2 hojas)
+      var openW = availW;
+      var openH = openW / 2 * pageRatio;
+      if (openH > availH) {
+        openH = availH;
+        openW = (openH / pageRatio) * 2;
+      }
+
+      var pageW = openW / 2;
+      // techos cómodos por modo (sigue siendo grande en revista)
+      var maxPage = large
+        ? (vw >= 1400 ? 520 : vw >= 1100 ? 470 : vw >= 900 ? 400 : 360)
+        : (vw >= 1200 ? 360 : vw >= 900 ? 320 : 280);
+      if (vw <= 720) maxPage = large ? 250 : 210;
+      if (vw <= 480) maxPage = large ? 200 : 170;
+      if (pageW > maxPage) {
+        pageW = maxPage;
+        openW = pageW * 2;
+        openH = pageW * pageRatio;
+      }
+
+      // piso legible
+      var minPage = vw <= 480 ? 120 : vw <= 720 ? 140 : 160;
+      if (pageW < minPage) {
+        pageW = minPage;
+        openW = pageW * 2;
+        openH = pageW * pageRatio;
+      }
+
+      pageW = Math.round(pageW * 10) / 10;
+      var pageH = Math.round(pageW * pageRatio * 10) / 10;
+
+      book.style.setProperty('--page-w', pageW + 'px');
+      book.style.setProperty('--page-h', pageH + 'px');
+      book.style.setProperty('--page-ratio', String(pageRatio));
+      root.style.setProperty('--page-w', pageW + 'px');
+      root.style.setProperty('--page-h', pageH + 'px');
+
+      // meta alineada al ancho del libro actual (cerrado = 1 hoja)
+      var meta = root.querySelector('.carta-revista__meta');
+      if (meta) {
+        var metaW = state === 0 ? pageW : pageW * 2;
+        meta.style.maxWidth = Math.round(metaW) + 'px';
+      }
+    }
+
+    function scheduleFit() {
+      if (resizeTimer) window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(function () {
+        resizeTimer = null;
+        if (!open) return;
+        var wasZoomed = isZoomed();
+        if (wasZoomed) resetZoom();
+        fitBook();
+      }, 80);
+    }
+
+    function blank() {
+      return 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+    }
 
   function wait(ms) {
     return new Promise(function (resolve) {
@@ -121,13 +207,35 @@
   }
 
   function setSrc(el, src) {
-    if (!el) return;
-    var next = src || blank();
-    if (el.getAttribute('src') !== next) {
-      el.src = next;
-      el.style.imageRendering = 'auto';
+      if (!el) return;
+      var next = src || blank();
+      if (el.getAttribute('src') !== next) {
+        el.src = next;
+        el.style.imageRendering = 'auto';
+      }
     }
-  }
+
+    /** Lee ratio real de la tapa / primera página interior para matchear el mockup. */
+    function learnRatioFrom(src, fallback) {
+      return new Promise(function (resolve) {
+        if (!src) {
+          resolve(fallback || 1.414);
+          return;
+        }
+        var im = new Image();
+        im.onload = function () {
+          if (im.naturalWidth > 0 && im.naturalHeight > 0) {
+            resolve(im.naturalHeight / im.naturalWidth);
+          } else {
+            resolve(fallback || 1.414);
+          }
+        };
+        im.onerror = function () {
+          resolve(fallback || 1.414);
+        };
+        im.src = src;
+      });
+    }
 
   function setOpen(on) {
     open = !!on;
@@ -254,24 +362,30 @@
   }
 
   function updateChrome() {
-    if (counter) counter.textContent = stateLabel();
-    if (prevBtn) prevBtn.disabled = state <= 0 || busy;
-    if (nextBtn) nextBtn.disabled = state >= maxState || busy;
-    updateDots();
-    root.setAttribute('data-state', String(state));
-    var sp = spreadPages();
-    root.setAttribute('data-left', sp.left == null ? '' : String(sp.left));
-    root.setAttribute('data-right', sp.right == null ? '' : String(sp.right));
-    if (!busy && book) {
-      if (state === 0) {
-        setMode('closed');
-        stowCover(false);
-      } else {
-        setMode('open');
-        stowCover(true);
+      if (counter) counter.textContent = stateLabel();
+      if (prevBtn) prevBtn.disabled = state <= 0 || busy;
+      if (nextBtn) nextBtn.disabled = state >= maxState || busy;
+      updateDots();
+      root.setAttribute('data-state', String(state));
+      var sp = spreadPages();
+      root.setAttribute('data-left', sp.left == null ? '' : String(sp.left));
+      root.setAttribute('data-right', sp.right == null ? '' : String(sp.right));
+      if (!busy && book) {
+        if (state === 0) {
+          setMode('closed');
+          stowCover(false);
+        } else {
+          setMode('open');
+          stowCover(true);
+        }
+      }
+      // meta width sigue al libro (1 hoja / pliego)
+      var meta = root.querySelector('.carta-revista__meta');
+      if (meta && book) {
+        var pw = parseFloat(getComputedStyle(book).getPropertyValue('--page-w')) || 320;
+        meta.style.maxWidth = Math.round(state === 0 ? pw : pw * 2) + 'px';
       }
     }
-  }
 
   /**
    * Pinta el pliego base.
@@ -517,48 +631,62 @@
       }
 
       // portada + pliegos de a 2
-      if (pages.length <= 1) maxState = 0;
-      else maxState = Math.ceil((pages.length - 1) / 2);
+            if (pages.length <= 1) maxState = 0;
+            else maxState = Math.ceil((pages.length - 1) / 2);
 
-    state = 0;
-    busy = false;
+          state = 0;
+          busy = false;
 
-    if (titleEl) {
-      titleEl.textContent =
-        title || (kind === 'revista' ? 'Revista' : 'Diseño de carta');
-    }
-    // precarga tapa + primeros pliegos; el resto en idle
-    preload(pages.slice(0, Math.min(pages.length, 7)));
-    if (pages.length > 7 && window.requestIdleCallback) {
-      window.requestIdleCallback(function () {
-        preload(pages.slice(7));
-      });
-    } else if (pages.length > 7) {
-      setTimeout(function () {
-        preload(pages.slice(7));
-      }, 600);
-    }
+          if (titleEl) {
+            titleEl.textContent =
+              title || (kind === 'revista' ? 'Revista' : 'Diseño de carta');
+          }
+          // precarga tapa + primeros pliegos; el resto en idle
+          preload(pages.slice(0, Math.min(pages.length, 7)));
+          if (pages.length > 7 && window.requestIdleCallback) {
+            window.requestIdleCallback(function () {
+              preload(pages.slice(7));
+            });
+          } else if (pages.length > 7) {
+            setTimeout(function () {
+              preload(pages.slice(7));
+            }, 600);
+          }
 
-    if (book) {
-      book.classList.remove(
-        'is-flipping',
-        'is-opening-cover',
-        'is-closing-cover',
-        'is-cover-stowed'
-      );
-    }
-    hardResetCoverStyles();
-    stowCover(false);
-    resetFlipper();
-    paintSpread(0);
-    setMode('closed');
-    buildDots();
-    updateChrome();
-    setOpen(true);
-    resetZoom();
-    setZoomEnabled(true);
-    if (closeBtn) closeBtn.focus({ preventScroll: true });
-  }
+          if (book) {
+            book.classList.remove(
+              'is-flipping',
+              'is-opening-cover',
+              'is-closing-cover',
+              'is-cover-stowed'
+            );
+          }
+          hardResetCoverStyles();
+          stowCover(false);
+          resetFlipper();
+          paintSpread(0);
+          setMode('closed');
+          buildDots();
+
+          // ratio real de la portada → sizing sin bandas; fallback A4
+          pageRatio = 1.414;
+          fitBook();
+          setOpen(true);
+          updateChrome();
+          resetZoom();
+          setZoomEnabled(true);
+          if (closeBtn) closeBtn.focus({ preventScroll: true });
+
+          learnRatioFrom(pages[0], 1.414).then(function (r) {
+            if (!open) return;
+            // clamp sensato (evita hojas ridículas si un asset sale mal)
+            if (r > 1.05 && r < 1.9) {
+              pageRatio = r;
+              fitBook();
+              updateChrome();
+            }
+          });
+        }
 
   function closeCartaRevista() {
     if (!open && !root.classList.contains('is-open')) return;
@@ -567,41 +695,51 @@
     setZoomEnabled(false);
     resetZoom();
     closeTimer = setTimeout(function () {
-      setOpen(false);
-      root.classList.remove('is-closing');
-      root.classList.remove('is-large', 'is-revista');
-      if (imgCover) imgCover.removeAttribute('src');
-      if (imgLeft) imgLeft.removeAttribute('src');
-      if (imgRight) imgRight.removeAttribute('src');
-      if (flipFront) flipFront.removeAttribute('src');
-      if (flipBack) flipBack.removeAttribute('src');
-      pages = [];
-      state = 0;
-      busy = false;
-      kind = 'carta';
-      hardResetCoverStyles();
-      stowCover(false);
-      resetFlipper();
-      if (book) {
-        book.classList.remove(
-          'is-flipping',
-          'is-opening-cover',
-          'is-closing-cover',
-          'is-cover-stowed'
-        );
-        setMode('closed');
+          setOpen(false);
+          root.classList.remove('is-closing');
+          root.classList.remove('is-large', 'is-revista');
+          if (book) {
+            book.style.removeProperty('--page-w');
+            book.style.removeProperty('--page-h');
+            book.style.removeProperty('--page-ratio');
+          }
+          root.style.removeProperty('--page-w');
+          root.style.removeProperty('--page-h');
+          var meta = root.querySelector('.carta-revista__meta');
+          if (meta) meta.style.maxWidth = '';
+          if (imgCover) imgCover.removeAttribute('src');
+          if (imgLeft) imgLeft.removeAttribute('src');
+          if (imgRight) imgRight.removeAttribute('src');
+          if (flipFront) flipFront.removeAttribute('src');
+          if (flipBack) flipBack.removeAttribute('src');
+          pages = [];
+          state = 0;
+          busy = false;
+          kind = 'carta';
+          pageRatio = 1.414;
+          hardResetCoverStyles();
+          stowCover(false);
+          resetFlipper();
+          if (book) {
+            book.classList.remove(
+              'is-flipping',
+              'is-opening-cover',
+              'is-closing-cover',
+              'is-cover-stowed'
+            );
+            setMode('closed');
+          }
+          var viewerOpen = document.body.classList.contains('pg-viewer-open');
+          var modalOpen = document.body.classList.contains('modal-open');
+          var figmaOpen = document.body.classList.contains('figma-proto-open');
+          var manualOpen = document.body.classList.contains('brand-manual-open');
+          if (!viewerOpen && !modalOpen && !figmaOpen && !manualOpen) {
+            document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
+          }
+          closeTimer = null;
+        }, 280);
       }
-      var viewerOpen = document.body.classList.contains('pg-viewer-open');
-      var modalOpen = document.body.classList.contains('modal-open');
-      var figmaOpen = document.body.classList.contains('figma-proto-open');
-      var manualOpen = document.body.classList.contains('brand-manual-open');
-      if (!viewerOpen && !modalOpen && !figmaOpen && !manualOpen) {
-        document.body.style.overflow = '';
-        document.documentElement.style.overflow = '';
-      }
-      closeTimer = null;
-    }, 280);
-  }
 
   if (closeBtn) closeBtn.addEventListener('click', closeCartaRevista);
   if (backdrop) backdrop.addEventListener('click', closeCartaRevista);
@@ -720,10 +858,13 @@
   );
 
   window.openCartaRevista = openCartaRevista;
-  window.closeCartaRevista = closeCartaRevista;
-  /** Atajo semántico para revistas (siempre large) */
-  window.openRevista = function (input, title, pageCount, opts) {
-    opts = Object.assign({}, opts || {}, { kind: 'revista', size: 'large' });
-    openCartaRevista(input, title, pageCount, opts);
-  };
-})();
+    window.closeCartaRevista = closeCartaRevista;
+    /** Atajo semántico para revistas (siempre large) */
+    window.openRevista = function (input, title, pageCount, opts) {
+      opts = Object.assign({}, opts || {}, { kind: 'revista', size: 'large' });
+      openCartaRevista(input, title, pageCount, opts);
+    };
+
+    window.addEventListener('resize', scheduleFit);
+    window.addEventListener('orientationchange', scheduleFit);
+  })();

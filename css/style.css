@@ -2589,6 +2589,8 @@ body.figma-proto-open #trailCanvas {
 
 /* ============================================================
    CARTA REVISTA — libro 3D real (portada + spreads + flip)
+   Layout: siempre centrado, padding simétrico, sizing por JS
+   (--page-w / --page-h) para no dejar bandas ni pegar a bordes.
    ============================================================ */
 .carta-revista {
   position: fixed;
@@ -2597,7 +2599,9 @@ body.figma-proto-open #trailCanvas {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem 4.25rem 1.25rem 1.25rem;
+  /* padding simétrico: el ✕ vive DENTRO del stage, no come un lado */
+  padding: clamp(0.75rem, 2.2vh, 1.35rem) clamp(0.85rem, 2.4vw, 1.75rem);
+  box-sizing: border-box;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -2624,28 +2628,30 @@ body.figma-proto-open #trailCanvas {
   -webkit-backdrop-filter: blur(22px) saturate(1.08);
 }
 .carta-revista__close {
+  /* fixed al viewport: no desplaza el libro hacia la izquierda */
   position: fixed;
-  top: 50%;
-  right: 1.25rem;
-  z-index: 5;
-  width: 58px;
-  height: 58px;
+  top: clamp(0.75rem, 2.2vh, 1.35rem);
+  right: clamp(0.85rem, 2.4vw, 1.75rem);
+  z-index: 6;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.28);
   background: rgba(12, 12, 12, 0.48);
   color: #fff;
-  font-size: 1.35rem;
+  font-size: 1.15rem;
   line-height: 1;
   cursor: pointer;
   display: grid;
   place-items: center;
-  transform: translateY(-50%);
+  transform: none;
   transition: background 0.25s, border-color 0.25s, transform 0.25s;
+  flex-shrink: 0;
 }
 .carta-revista__close:hover {
   background: rgba(255, 197, 211, 0.26);
   border-color: rgba(255, 197, 211, 0.7);
-  transform: translateY(-50%) scale(1.08);
+  transform: scale(1.06);
 }
 
 .carta-revista__stage {
@@ -2654,8 +2660,15 @@ body.figma-proto-open #trailCanvas {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.9rem;
-  width: min(980px, calc(100vw - 5.5rem));
+  justify-content: center;
+  gap: clamp(0.55rem, 1.4vh, 0.95rem);
+  width: min(100%, 1100px);
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  /* padding simétrico: el libro queda en el eje óptico del viewport */
+  padding: 0.2rem 0.35rem;
   transform: translateY(18px) scale(0.94);
   opacity: 0;
   transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
@@ -2675,19 +2688,23 @@ body.figma-proto-open #trailCanvas {
   align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
-  width: min(100%, 920px);
+  width: 100%;
+  max-width: min(100%, calc(var(--page-w, 340px) * 2));
   font-family: 'DM Sans', sans-serif;
-  padding: 0 0.25rem;
+  padding: 0 0.15rem;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  margin-inline: auto;
 }
 .carta-revista__title {
-  font-size: 0.7rem;
+  font-size: clamp(0.62rem, 1.4vw, 0.72rem);
   font-weight: 600;
   letter-spacing: 2.4px;
   text-transform: uppercase;
   color: rgba(255, 245, 248, 0.78);
 }
 .carta-revista__counter {
-  font-size: 0.72rem;
+  font-size: clamp(0.64rem, 1.3vw, 0.74rem);
   letter-spacing: 0.8px;
   color: rgba(245, 245, 245, 0.55);
   font-variant-numeric: tabular-nums;
@@ -2696,8 +2713,8 @@ body.figma-proto-open #trailCanvas {
 /* --- BOOK --- */
 .carta-revista__zoom-stage.zoom-stage {
   position: relative;
-  width: min(100%, calc(var(--page-w, 340px) * 2 + 4rem));
-  max-width: calc(100vw - 3rem);
+  width: auto;
+  max-width: 100%;
   height: auto;
   min-height: 0;
   max-height: none;
@@ -2705,42 +2722,48 @@ body.figma-proto-open #trailCanvas {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.85rem;
-  overflow: hidden;
+  gap: 0.65rem;
+  overflow: visible;
   background: transparent;
   border: none;
   touch-action: none;
-  padding: 0.25rem 0 0.15rem;
+  padding: 0.15rem 0 0.05rem;
+  flex: 0 1 auto;
 }
 /* el libro no usa is-fitted del viewer de piezas */
 .carta-revista__zoom-stage.zoom-stage.is-fitted {
-  width: min(100%, calc(var(--page-w, 340px) * 2 + 4rem));
+  width: auto;
   aspect-ratio: auto;
   max-height: none;
 }
 .carta-revista__zoom-stage .carta-book.zoom-target {
   transform-origin: center center;
-  transition: transform 0.12s ease-out;
+  transition: transform 0.12s ease-out, width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
   flex: 0 0 auto;
+  margin-inline: auto;
 }
 .carta-revista__zoom-controls.zoom-controls {
   position: relative;
   margin: 0 auto;
   z-index: 12;
+  flex-shrink: 0;
 }
 
 .carta-book {
-  --page-w: min(340px, 38vw);
-  --page-h: calc(var(--page-w) * 1.414);
+  /* defaults; JS fitBook() pisa --page-w / --page-h en px reales */
+  --page-w: 320px;
+  --page-h: 452px;
+  --page-ratio: 1.414;
   --flip-ms: 880ms;
   position: relative;
   width: calc(var(--page-w) * 2);
   height: var(--page-h);
-  max-width: calc(100vw - 5.5rem);
-  max-height: min(78vh, 860px);
+  max-width: none;
+  max-height: none;
   perspective: 2200px;
   user-select: none;
+  margin-inline: auto;
 }
 .carta-book[data-mode="closed"] {
   width: var(--page-w);
@@ -2836,18 +2859,19 @@ body.figma-proto-open #trailCanvas {
 .carta-book__img {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* no recortar contenido del PDF */
+  /* cover: llena la hoja sin bandas beige (ratio del libro = ratio del PDF) */
+  object-fit: cover;
   object-position: center;
   display: block;
   pointer-events: none;
   -webkit-user-drag: none;
   background: #f3eee4;
-  /* SVG vectorial del PDF: nítido al zoom (no pixelar como webp) */
   image-rendering: auto;
   -ms-interpolation-mode: bicubic;
 }
 img.carta-book__img[src$=".svg"] {
-  /* fuerza rasterización a escala de pantalla, no bitmap fijo */
+  /* SVG de carta: contain para no recortar vectores nítidos */
+  object-fit: contain;
   image-rendering: auto;
 }
 .carta-book__spine {
@@ -3136,90 +3160,60 @@ body.carta-revista-open #trailCanvas {
   display: none;
 }
 
-@media (max-width: 900px) {
-  .carta-book {
-    --page-w: min(300px, 42vw);
-  }
-}
 @media (max-width: 720px) {
   .carta-revista {
-    padding: 0.75rem 3.3rem 0.85rem 0.75rem;
+    padding: clamp(0.55rem, 1.8vh, 0.9rem) clamp(0.55rem, 2vw, 0.9rem);
   }
-  .carta-book {
-    --page-w: min(46vw, 210px);
-    --page-h: calc(var(--page-w) * 1.414);
-    max-height: 72vh;
+  .carta-revista__stage {
+    width: 100%;
+    padding: 0.1rem 0.2rem;
+    gap: 0.45rem;
   }
   .carta-revista__close {
-    right: 0.65rem;
-    width: 52px;
-    height: 52px;
-    font-size: 1.2rem;
+    top: clamp(0.55rem, 1.8vh, 0.9rem);
+    right: clamp(0.55rem, 2vw, 0.9rem);
+    width: 42px;
+    height: 42px;
+    font-size: 1.05rem;
   }
   .carta-revista__hint { display: none; }
   .carta-revista__navbtn {
     width: 42px;
     height: 42px;
   }
-}
-@media (max-width: 480px) {
-  /* en mobile muy chico: aún spreads, más compacto */
-  .carta-book {
-    --page-w: min(44vw, 170px);
+  .carta-revista__controls {
+    gap: 0.55rem;
   }
 }
+@media (max-width: 480px) {
+  .carta-revista__close {
+    width: 38px;
+    height: 38px;
+  }
+  .carta-revista__dots {
+    max-width: min(48vw, 180px);
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+  }
+  .carta-revista__dots::-webkit-scrollbar { display: none; }
+}
 
-/* --- Revista grande (misma máquina 3D, más viewport) --- */
-.carta-revista.is-large {
-  padding: 0.65rem 4.5rem 0.85rem 1rem;
-}
+/* --- Revista grande: más viewport, mismo centrado --- */
 .carta-revista.is-large .carta-revista__stage {
-  width: min(1280px, calc(100vw - 5rem));
-}
-.carta-revista.is-large .carta-revista__meta {
-  width: min(100%, 1180px);
-}
-.carta-revista.is-large .carta-revista__zoom-stage.zoom-stage,
-.carta-revista.is-large .carta-revista__zoom-stage.zoom-stage.is-fitted {
-  width: min(100%, calc(var(--page-w, 460px) * 2 + 3rem));
+  width: min(100%, 1320px);
 }
 .carta-revista.is-large .carta-book {
-  --page-w: min(460px, 42vw);
-  --page-h: calc(var(--page-w) * 1.414);
-  max-height: min(88vh, 980px);
   perspective: 2600px;
 }
-.carta-revista.is-large .carta-book[data-mode="closed"] {
-  /* tapa un poco más generosa al cerrar */
-  --page-w: min(480px, 46vw);
-}
 .carta-revista.is-large .carta-revista__dots {
-  max-width: min(52vw, 420px);
+  max-width: min(56vw, 440px);
   overflow-x: auto;
   flex-wrap: nowrap;
-  justify-content: flex-start;
+  justify-content: center;
   scrollbar-width: none;
 }
 .carta-revista.is-large .carta-revista__dots::-webkit-scrollbar { display: none; }
-@media (max-width: 1100px) {
-  .carta-revista.is-large .carta-book {
-    --page-w: min(400px, 40vw);
-  }
-}
-@media (max-width: 900px) {
-  .carta-revista.is-large .carta-book {
-    --page-w: min(340px, 42vw);
-  }
-}
-@media (max-width: 720px) {
-  .carta-revista.is-large {
-    padding: 0.55rem 3.1rem 0.7rem 0.65rem;
-  }
-  .carta-revista.is-large .carta-book {
-    --page-w: min(46vw, 230px);
-    max-height: 78vh;
-  }
-}
 
 /* Revistas grid en archivo */
 .pg-grid--revistas {
