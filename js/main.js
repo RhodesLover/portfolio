@@ -494,55 +494,74 @@ document.addEventListener('DOMContentLoaded', () => {
         const isSocial = (category || '').indexOf('Social') === 0;
         const figmaProto = card.dataset.figmaProto || '';
         const cartaDir = card.dataset.carta || '';
-        const cartaPages = card.dataset.cartaPages || '';
-        const manualDir = card.dataset.manual || '';
-        const manualPages = card.dataset.manualPages || '';
-        if (isSocial) {
-          // Redes → botón "Ver Instagram" (abre prototipo Figma si data-figma-proto)
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'modal__behance-btn modal__behance-btn--insta';
-          btn.textContent = 'Ver Instagram →';
-          if (figmaProto && typeof window.openFigmaProto === 'function') {
-            btn.addEventListener('click', (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              window.openFigmaProto(figmaProto, title);
-            });
-          } else if (figmaProto) {
-            btn.addEventListener('click', (e) => {
-              e.preventDefault();
-              window.open(figmaProto, '_blank', 'noopener');
-            });
-          } else {
-            btn.disabled = true;
-            btn.title = 'Prototipo próximamente';
-            btn.setAttribute('aria-disabled', 'true');
-          }
-          projActions.appendChild(btn);
-        } else if (manualDir && typeof window.openBrandManual === 'function') {
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'modal__behance-btn';
-          btn.textContent = 'Ver manual de marca →';
-          btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            window.openBrandManual(manualDir, title || 'Manual de marca', manualPages);
-          });
-          projActions.appendChild(btn);
-        } else if (cartaDir && typeof window.openCartaRevista === 'function') {
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'modal__behance-btn';
-          btn.textContent = 'Diseño de carta →';
-          btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            window.openCartaRevista(cartaDir, title || 'Diseño de carta', cartaPages);
-          });
-          projActions.appendChild(btn);
-        } else if (behance) {
+                const cartaPages = card.dataset.cartaPages || '';
+                const revistaDir = card.dataset.revista || '';
+                const revistaPages = card.dataset.revistaPages || '';
+                const manualDir = card.dataset.manual || '';
+                const manualPages = card.dataset.manualPages || '';
+                if (isSocial) {
+                  // Redes → botón "Ver Instagram" (abre prototipo Figma si data-figma-proto)
+                  const btn = document.createElement('button');
+                  btn.type = 'button';
+                  btn.className = 'modal__behance-btn modal__behance-btn--insta';
+                  btn.textContent = 'Ver Instagram →';
+                  if (figmaProto && typeof window.openFigmaProto === 'function') {
+                    btn.addEventListener('click', (e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      window.openFigmaProto(figmaProto, title);
+                    });
+                  } else if (figmaProto) {
+                    btn.addEventListener('click', (e) => {
+                      e.preventDefault();
+                      window.open(figmaProto, '_blank', 'noopener');
+                    });
+                  } else {
+                    btn.disabled = true;
+                    btn.title = 'Prototipo próximamente';
+                    btn.setAttribute('aria-disabled', 'true');
+                  }
+                  projActions.appendChild(btn);
+                } else if (revistaDir && (typeof window.openRevista === 'function' || typeof window.openCartaRevista === 'function')) {
+                  const btn = document.createElement('button');
+                  btn.type = 'button';
+                  btn.className = 'modal__behance-btn';
+                  btn.textContent = 'Ver revista →';
+                  btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const open =
+                      typeof window.openRevista === 'function'
+                        ? window.openRevista
+                        : function (dir, t, n) {
+                            window.openCartaRevista(dir, t, n, { kind: 'revista', size: 'large' });
+                          };
+                    open(revistaDir, title || 'Revista', revistaPages);
+                  });
+                  projActions.appendChild(btn);
+                } else if (manualDir && typeof window.openBrandManual === 'function') {
+                  const btn = document.createElement('button');
+                  btn.type = 'button';
+                  btn.className = 'modal__behance-btn';
+                  btn.textContent = 'Ver manual de marca →';
+                  btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.openBrandManual(manualDir, title || 'Manual de marca', manualPages);
+                  });
+                  projActions.appendChild(btn);
+                } else if (cartaDir && typeof window.openCartaRevista === 'function') {
+                  const btn = document.createElement('button');
+                  btn.type = 'button';
+                  btn.className = 'modal__behance-btn';
+                  btn.textContent = 'Diseño de carta →';
+                  btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.openCartaRevista(cartaDir, title || 'Diseño de carta', cartaPages);
+                  });
+                  projActions.appendChild(btn);
+                } else if (behance) {
           const btn = document.createElement('a');
           btn.href = behance;
           btn.target = '_blank';

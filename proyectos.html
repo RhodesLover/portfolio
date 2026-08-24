@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=46">
+  <link rel="stylesheet" href="css/style.css?v=47">
     </head>
     <body class="page-projects">
     <canvas id="particlesCanvas" aria-hidden="true"></canvas>
@@ -57,9 +57,10 @@
         <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="posters" type="button">Posters</button>
         <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="ilustraciones" type="button">Ilustraciones</button>
         <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="infografias" type="button">Infografías</button>
-        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="modelos" type="button">Modelos 3D</button>
-      </div>
-    </div>
+                <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="modelos" type="button">Modelos 3D</button>
+                <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="revistas" type="button">Revistas</button>
+              </div>
+            </div>
 
   <main class="pg-main" id="pgMain">
 
@@ -678,12 +679,44 @@
             <span class="pg-cell__idx">07.1</span>
             <h3 class="pg-cell__name">NOGA Joystick</h3>
             <span class="pg-cell__tag">3D · 2025</span>
-          </div>
-        </article>
-      </div>
-            </section>
+                      </div>
+                    </article>
+                  </div>
+                </section>
 
-  </main>
+                <!-- 08 REVISTAS -->
+                <section class="pg-section" id="sec-revistas" data-section="revistas">
+                  <header class="pg-section__head">
+                    <span class="pg-section__num">08</span>
+                    <div class="pg-section__titles">
+                      <h2 class="pg-section__title">Revistas</h2>
+                      <p class="pg-section__desc">Editorial · tipografía · pliegos</p>
+                    </div>
+                    <span class="pg-section__qty" data-qty-for="revistas">1</span>
+                  </header>
+                  <div class="pg-grid pg-grid--revistas">
+                    <article class="pg-cell pg-cell--feature" tabindex="0" role="button"
+                      data-title="Historia de Gotham"
+                      data-cat="Revista · Tipográfica"
+                      data-section="revistas"
+                      data-desc="Revista tipográfica sobre la historia de Gotham. Portada dedicada + pliegos interiores en mockup 3D de lectura grande."
+                      data-revista="assets/revistas/gotham"
+                      data-revista-pages="21"
+                      data-media="assets/revistas/gotham/cover-card.jpg"
+                      data-type="image">
+                      <div class="pg-cell__frame" style="--bg:#14120f">
+                        <img class="pg-cell__media" src="assets/revistas/gotham/cover-card.jpg" alt="Historia de Gotham — portada" loading="lazy">
+                      </div>
+                      <div class="pg-cell__meta">
+                        <span class="pg-cell__idx">08.1</span>
+                        <h3 class="pg-cell__name">Historia de Gotham</h3>
+                        <span class="pg-cell__tag">Revista · tipográfica</span>
+                      </div>
+                    </article>
+                  </div>
+                </section>
+
+              </main>
 
   <footer class="footer pg-footer">
     <p>© 2026 Tomi Zárate</p>
@@ -856,9 +889,9 @@
 
 <script src="js/zoom.js?v=3"></script>
   <script src="js/particles.js?v=3"></script>
-  <script src="js/carta-revista.js?v=8"></script>
+  <script src="js/carta-revista.js?v=9"></script>
   <script src="js/brand-manual.js?v=3"></script>
   <script src="js/figma-proto.js?v=5"></script>
-  <script src="js/proyectos.js?v=18"></script>
+  <script src="js/proyectos.js?v=19"></script>
 </body>
 </html>

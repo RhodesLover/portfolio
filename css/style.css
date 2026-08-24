@@ -3169,6 +3169,76 @@ body.carta-revista-open #trailCanvas {
   }
 }
 
+/* --- Revista grande (misma máquina 3D, más viewport) --- */
+.carta-revista.is-large {
+  padding: 0.65rem 4.5rem 0.85rem 1rem;
+}
+.carta-revista.is-large .carta-revista__stage {
+  width: min(1280px, calc(100vw - 5rem));
+}
+.carta-revista.is-large .carta-revista__meta {
+  width: min(100%, 1180px);
+}
+.carta-revista.is-large .carta-revista__zoom-stage.zoom-stage,
+.carta-revista.is-large .carta-revista__zoom-stage.zoom-stage.is-fitted {
+  width: min(100%, calc(var(--page-w, 460px) * 2 + 3rem));
+}
+.carta-revista.is-large .carta-book {
+  --page-w: min(460px, 42vw);
+  --page-h: calc(var(--page-w) * 1.414);
+  max-height: min(88vh, 980px);
+  perspective: 2600px;
+}
+.carta-revista.is-large .carta-book[data-mode="closed"] {
+  /* tapa un poco más generosa al cerrar */
+  --page-w: min(480px, 46vw);
+}
+.carta-revista.is-large .carta-revista__dots {
+  max-width: min(52vw, 420px);
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  scrollbar-width: none;
+}
+.carta-revista.is-large .carta-revista__dots::-webkit-scrollbar { display: none; }
+@media (max-width: 1100px) {
+  .carta-revista.is-large .carta-book {
+    --page-w: min(400px, 40vw);
+  }
+}
+@media (max-width: 900px) {
+  .carta-revista.is-large .carta-book {
+    --page-w: min(340px, 42vw);
+  }
+}
+@media (max-width: 720px) {
+  .carta-revista.is-large {
+    padding: 0.55rem 3.1rem 0.7rem 0.65rem;
+  }
+  .carta-revista.is-large .carta-book {
+    --page-w: min(46vw, 230px);
+    max-height: 78vh;
+  }
+}
+
+/* Revistas grid en archivo */
+.pg-grid--revistas {
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.4fr);
+  gap: clamp(0.85rem, 1.6vw, 1.35rem);
+  align-items: stretch;
+}
+.pg-grid--revistas .pg-cell--feature .pg-cell__frame {
+  aspect-ratio: 3 / 4;
+  min-height: min(52vh, 520px);
+}
+@media (max-width: 1024px) {
+  .pg-grid--revistas { grid-template-columns: 1fr 1fr; }
+  .pg-grid--revistas .pg-cell--feature { grid-column: 1 / -1; }
+}
+@media (max-width: 768px) {
+  .pg-grid--revistas { grid-template-columns: 1fr; }
+}
+
 /* ============================================================
    BRAND MANUAL — A4 landscape contain, no crop, zoom out of nav
    ============================================================ */
