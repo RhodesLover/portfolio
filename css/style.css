@@ -2723,12 +2723,16 @@ body.figma-proto-open #trailCanvas {
   align-items: center;
   justify-content: center;
   gap: 0.65rem;
+  /* visible en 100% (sombras 3D); al panear se recorta para no “escapar” */
   overflow: visible;
   background: transparent;
   border: none;
   touch-action: none;
   padding: 0.15rem 0 0.05rem;
   flex: 0 1 auto;
+}
+.carta-revista__zoom-stage.zoom-stage.is-panning {
+  overflow: hidden;
 }
 /* el libro no usa is-fitted del viewer de piezas */
 .carta-revista__zoom-stage.zoom-stage.is-fitted {

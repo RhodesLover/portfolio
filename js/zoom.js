@@ -38,8 +38,47 @@
       return Math.max(a, Math.min(b, n));
     }
 
+    /**
+     * Limita el pan para que el target escalado no se salga del stage.
+     * transform-origin: center + translate(tx,ty) scale(s)
+     * → exceso por eje = max(0, (size*s - stage)/2)
+     * offsetWidth/Height ignoran transform (a diferencia de getBoundingClientRect).
+     */
+    function clampPan() {
+      if (scale <= min + 0.001) {
+        tx = 0;
+        ty = 0;
+        return;
+      }
+
+      var sw = stage.clientWidth || 0;
+      var sh = stage.clientHeight || 0;
+      var tw = target.offsetWidth || 0;
+      var th = target.offsetHeight || 0;
+
+      // fallback si el layout aún no midió
+      if (sw < 1 || sh < 1 || tw < 1 || th < 1) {
+        var sr = stage.getBoundingClientRect();
+        sw = sr.width || sw;
+        sh = sr.height || sh;
+        var prev = target.style.transform;
+        target.style.transform = 'none';
+        var tr = target.getBoundingClientRect();
+        target.style.transform = prev;
+        tw = tr.width || tw;
+        th = tr.height || th;
+      }
+
+      var maxX = Math.max(0, (tw * scale - sw) / 2);
+      var maxY = Math.max(0, (th * scale - sh) / 2);
+      tx = clamp(tx, -maxX, maxX);
+      ty = clamp(ty, -maxY, maxY);
+    }
+
     function render() {
-      target.style.transform = 'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) scale(' + scale.toFixed(3) + ')';
+      clampPan();
+      target.style.transform =
+        'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) scale(' + scale.toFixed(3) + ')';
       if (levelEl) levelEl.textContent = Math.round(scale * 100) + '%';
       stage.classList.toggle('is-zoomable', enabled && scale <= min + 0.001);
       stage.classList.toggle('is-panning', enabled && scale > min + 0.001);
@@ -105,6 +144,8 @@
         dragging = true;
         lastX = e.clientX;
         lastY = e.clientY;
+        // sin transición mientras se arrastra (evita lag + overshoot visual)
+        target.style.transition = 'none';
       } else if (pointers.size === 2) {
         dragging = false;
         const pts = Array.from(pointers.values());
@@ -143,13 +184,18 @@
       lastY = e.clientY;
       tx += dx;
       ty += dy;
-      render();
+      render(); // clampPan dentro de render
     }
 
     function onPointerUp(e) {
       if (pointers.has(e.pointerId)) pointers.delete(e.pointerId);
       if (pointers.size < 2) pinchStartDist = 0;
-      if (pointers.size === 0) dragging = false;
+      if (pointers.size === 0) {
+        dragging = false;
+        // restaurar transición suave del CSS
+        target.style.transition = '';
+        render();
+      }
     }
 
     function onDblClick(e) {
@@ -167,6 +213,16 @@
       const val = Number(btn.getAttribute('data-zoom'));
       if (val === 0) reset();
       else zoomBy(val);
+    }
+
+    // si el stage cambia de tamaño (resize / fitBook), re-clampear
+    var ro = null;
+    if (typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(function () {
+        if (enabled) render();
+      });
+      ro.observe(stage);
+      ro.observe(target);
     }
 
     stage.addEventListener('wheel', onWheel, { passive: false });
@@ -190,7 +246,11 @@
       getScale: function () { return scale; },
       isZoomed: function () { return scale > min + 0.001; },
       zoomBy: zoomBy,
+      /** expuesto para tests / debug */
+      _clampPan: clampPan,
+      _getPan: function () { return { tx: tx, ty: ty, scale: scale }; },
       destroy: function () {
+        if (ro) ro.disconnect();
         if (enableWheel) stage.removeEventListener('wheel', onWheel);
         stage.removeEventListener('pointerdown', onPointerDown);
         stage.removeEventListener('pointermove', onPointerMove);
