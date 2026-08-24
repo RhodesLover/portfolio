@@ -1,6 +1,94 @@
 /* ============================================================
+
    TOMI ZÁRATE — PORTFOLIO JS
    ============================================================ */
+
+/* gallery-helpers-bootstrap */
+(function (w) {
+  if (w.parseGallery) return;
+  w.parseGallery = function (el) {
+    if (!el) return [];
+    var raw = el.dataset.gallery || el.getAttribute('data-gallery') || '';
+    var list = raw.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+    if (!list.length) {
+      var one = el.dataset.media || el.getAttribute('data-media') || '';
+      if (one) list = [one];
+    }
+    return list;
+  };
+  w.galleryLabel = function (src, idx, total) {
+    var s = String(src || '').toLowerCase();
+    if (s.indexOf('label-front') !== -1 || s.indexOf('frente') !== -1) return 'Etiqueta frente';
+    if (s.indexOf('label-back') !== -1 || s.indexOf('trasera') !== -1 || s.indexOf('dorso') !== -1) return 'Etiqueta dorso';
+    return 'Imagen ' + (idx + 1) + ' / ' + total;
+  };
+  w.ensureGalleryChrome = function (host, ids) {
+    if (!host) return null;
+    var nav = document.getElementById(ids.nav);
+    if (!nav) {
+      nav = document.createElement('div');
+      nav.className = 'viewer-gallery-nav';
+      nav.id = ids.nav;
+      nav.innerHTML =
+        '<button type="button" class="viewer-gallery-nav__btn" data-gal="-1" aria-label="Anterior">‹</button>' +
+        '<span class="viewer-gallery-nav__label" id="' + ids.label + '"></span>' +
+        '<button type="button" class="viewer-gallery-nav__btn" data-gal="1" aria-label="Siguiente">›</button>';
+      host.appendChild(nav);
+    }
+    var dots = document.getElementById(ids.dots);
+    if (!dots) {
+      dots = document.createElement('div');
+      dots.className = 'viewer-gallery-dots';
+      dots.id = ids.dots;
+      host.appendChild(dots);
+    }
+    return { nav: nav, label: document.getElementById(ids.label), dots: dots };
+  };
+  w.setGallery = function (state, list, onShow) {
+    state.list = list || [];
+    state.idx = 0;
+    state.onShow = onShow;
+    if (!state._bound && state.chrome && state.chrome.nav) {
+      state._bound = true;
+      state.chrome.nav.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-gal]');
+        if (!btn || !state.list || state.list.length < 2) return;
+        var d = parseInt(btn.getAttribute('data-gal'), 10) || 0;
+        if (!d) return;
+        state.idx = (state.idx + d + state.list.length) % state.list.length;
+        state.render();
+      });
+    }
+    state.render = function () {
+      var list = state.list || [];
+      var multi = list.length > 1;
+      if (state.chrome && state.chrome.nav) state.chrome.nav.classList.toggle('is-on', multi);
+      if (state.chrome && state.chrome.dots) {
+        state.chrome.dots.classList.toggle('is-on', multi);
+        state.chrome.dots.innerHTML = '';
+        if (multi) {
+          list.forEach(function (_, i) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.setAttribute('aria-label', 'Ir a imagen ' + (i + 1));
+            if (i === state.idx) b.classList.add('is-active');
+            b.addEventListener('click', function () {
+              state.idx = i;
+              state.render();
+            });
+            state.chrome.dots.appendChild(b);
+          });
+        }
+      }
+      if (state.chrome && state.chrome.label) {
+        var src = list[state.idx] || '';
+        state.chrome.label.textContent = multi ? w.galleryLabel(src, state.idx, list.length) : '';
+      }
+      if (typeof state.onShow === 'function') state.onShow(list[state.idx] || '', state.idx, list);
+    };
+    state.render();
+  };
+})(window);
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -339,10 +427,32 @@ document.addEventListener('DOMContentLoaded', () => {
     // Estado de navegación: todas las cards + índice actual
     const allCards = Array.from(document.querySelectorAll('.project-card'));
     let currentIndex = -1;
+    let projGalleryState = { list: [], idx: 0, chrome: null, _bound: false };
+    let lbGalleryState = { list: [], idx: 0, chrome: null, _bound: false };
+    (function initModalGalleryChrome() {
+      try {
+        var hostP = document.getElementById('modalProjectActions') || document.querySelector('.modal__project-right') || document.getElementById('modalProject');
+        var hostL = document.querySelector('.modal__lightbox') || document.getElementById('modalLightbox');
+        if (window.ensureGalleryChrome) {
+          projGalleryState.chrome = window.ensureGalleryChrome(hostP, { nav: 'modalProjGalleryNav', label: 'modalProjGalleryLabel', dots: 'modalProjGalleryDots' });
+          lbGalleryState.chrome = window.ensureGalleryChrome(hostL, { nav: 'modalLbGalleryNav', label: 'modalLbGalleryLabel', dots: 'modalLbGalleryDots' });
+        }
+      } catch (e) {}
+    })();
+
 
     function getMediaSrc(card, forThumb = false) {
+      // Prefer explicit data-media / first gallery item when present
+      if (!forThumb) {
+        const g = (card.dataset.gallery || '').split(',').map(s => s.trim()).filter(Boolean);
+        if (g.length) return { src: g[0], isVideo: false };
+        if (card.dataset.media) return { src: card.dataset.media, isVideo: (card.dataset.type === 'video') };
+      }
       const imgEl = card.querySelector('.project-card__img, .project-card__video');
-      if (!imgEl) return { src: '', isVideo: false };
+      if (!imgEl) {
+        if (card.dataset.media) return { src: card.dataset.media, isVideo: (card.dataset.type === 'video') };
+        return { src: '', isVideo: false };
+      }
       const src = imgEl.src || '';
       if (imgEl.tagName === 'VIDEO') {
         // Para thumbnails siempre usar el poster (un <img> no renderiza un .mp4)
@@ -412,6 +522,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Get the media source from the card (image or video)
       const { src: mediaSrc, isVideo } = getMediaSrc(card);
+      const galleryList = window.parseGallery(card);
+      const media0 = (galleryList[0] || mediaSrc || '');
       
       // Reset previous modal state
       modal.classList.remove('modal--lightbox', 'modal--project');
@@ -432,8 +544,21 @@ document.addEventListener('DOMContentLoaded', () => {
         // LIGHTBOX mode: image + title + X
         modal.classList.add('modal--lightbox');
         modalLightbox.style.display = 'flex';
-        lightboxImg.src = mediaSrc || '';
+        window.setGallery(lbGalleryState, galleryList.length ? galleryList : [media0 || mediaSrc || ''], function (src) {
+        if (!src) { lightboxImg.removeAttribute('src'); return; }
+        lightboxImg.src = src;
         lightboxImg.alt = title;
+        const onLb = function () {
+          if (typeof fitModalStage === 'function') fitModalStage(lightboxStage, lightboxImg);
+          lightboxImg.removeEventListener('load', onLb);
+        };
+        lightboxImg.addEventListener('load', onLb);
+        if (lightboxImg.complete && lightboxImg.naturalWidth && typeof fitModalStage === 'function') fitModalStage(lightboxStage, lightboxImg);
+        if (lightboxZoom) {
+          try { if (lightboxZoom.reset) lightboxZoom.reset(); } catch (e) {}
+          try { if (lightboxZoom.setEnabled) lightboxZoom.setEnabled(true); } catch (e) {}
+        }
+      });
         lightboxTitle.textContent = title;
         var onLb = function () {
           fitModalStage(lightboxStage, lightboxImg);
@@ -477,9 +602,26 @@ document.addEventListener('DOMContentLoaded', () => {
           if (projectZoom) projectZoom.setEnabled(false);
         } else {
           projVideo.style.display = 'none';
+          window.setGallery(projGalleryState, galleryList.length ? galleryList : [media0 || mediaSrc || ''], function (src) {
+          if (!src) {
+            projImg.removeAttribute('src');
+            projImg.style.display = 'none';
+            return;
+          }
           projImg.style.display = 'block';
-          projImg.src = mediaSrc || '';
+          projImg.src = src;
           projImg.alt = title;
+          const onPi = function () {
+            if (typeof fitModalStage === 'function') fitModalStage(projectStage, projImg);
+            projImg.removeEventListener('load', onPi);
+          };
+          projImg.addEventListener('load', onPi);
+          if (projImg.complete && projImg.naturalWidth && typeof fitModalStage === 'function') fitModalStage(projectStage, projImg);
+          if (projectZoom) {
+            try { if (projectZoom.reset) projectZoom.reset(); } catch (e) {}
+            try { if (projectZoom.setEnabled) projectZoom.setEnabled(true); } catch (e) {}
+          }
+        });
           var onPi = function () {
             fitModalStage(projectStage, projImg);
             projImg.removeEventListener('load', onPi);
@@ -603,6 +745,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function closeModal() {
+      if (projGalleryState) {
+        projGalleryState.list = [];
+        if (projGalleryState.chrome && projGalleryState.chrome.nav) projGalleryState.chrome.nav.classList.remove('is-on');
+        if (projGalleryState.chrome && projGalleryState.chrome.dots) { projGalleryState.chrome.dots.classList.remove('is-on'); projGalleryState.chrome.dots.innerHTML=''; }
+        if (projGalleryState.chrome && projGalleryState.chrome.label) projGalleryState.chrome.label.textContent = '';
+      }
+      if (lbGalleryState) {
+        lbGalleryState.list = [];
+        if (lbGalleryState.chrome && lbGalleryState.chrome.nav) lbGalleryState.chrome.nav.classList.remove('is-on');
+        if (lbGalleryState.chrome && lbGalleryState.chrome.dots) { lbGalleryState.chrome.dots.classList.remove('is-on'); lbGalleryState.chrome.dots.innerHTML=''; }
+        if (lbGalleryState.chrome && lbGalleryState.chrome.label) lbGalleryState.chrome.label.textContent = '';
+      }
       modal.classList.remove('modal--open', 'modal--lightbox', 'modal--project');
       document.body.classList.remove('modal-open');
       document.body.style.overflow = '';
@@ -738,6 +892,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const viewerCards = Array.from(document.querySelectorAll('.project-card'))
     .filter((c) => c.dataset.modal !== 'lightbox');
   let currentIndex = -1;
+  let pageGalleryState = { list: [], idx: 0, chrome: null, _bound: false };
+  (function(){ var host=document.getElementById('pgViewerActions')||document.querySelector('.pg-viewer__info'); pageGalleryState.chrome=(window.ensureGalleryChrome)(host,{nav:'mainPgGalleryNav',label:'mainPgGalleryLabel',dots:'mainPgGalleryDots'}); })();
+
 
   function getCardMedia(card) {
     const vid = card.querySelector('.project-card__video');
@@ -788,6 +945,111 @@ document.addEventListener('DOMContentLoaded', () => {
       zoomStage.classList.remove('is-fitted', 'is-video-fill');
     }
   }
+
+
+  function parseGallery(el) {
+    // also exposed for multi-scope usage
+    if (!el) return [];
+    var raw = el.dataset.gallery || el.getAttribute('data-gallery') || '';
+    var list = raw
+      .split(',')
+      .map(function (s) { return s.trim(); })
+      .filter(Boolean);
+    if (!list.length) {
+      var one = el.dataset.media || el.getAttribute('data-media') || '';
+      if (one) list = [one];
+    }
+    return list;
+  }
+
+  function galleryLabel(src, idx, total) {
+    var s = String(src || '').toLowerCase();
+    if (s.indexOf('label-front') !== -1 || s.indexOf('frente') !== -1) return 'Etiqueta frente';
+    if (s.indexOf('label-back') !== -1 || s.indexOf('trasera') !== -1 || s.indexOf('dorso') !== -1) return 'Etiqueta dorso';
+    return 'Imagen ' + (idx + 1) + ' / ' + total;
+  }
+
+  function ensureGalleryChrome(host, ids) {
+    if (!host) return null;
+    var navId = ids.nav;
+    var labelId = ids.label;
+    var dotsId = ids.dots;
+    var nav = document.getElementById(navId);
+    if (!nav) {
+      nav = document.createElement('div');
+      nav.className = 'viewer-gallery-nav';
+      nav.id = navId;
+      nav.innerHTML =
+        '<button type="button" class="viewer-gallery-nav__btn" data-gal="-1" aria-label="Anterior">‹</button>' +
+        '<span class="viewer-gallery-nav__label" id="' + labelId + '"></span>' +
+        '<button type="button" class="viewer-gallery-nav__btn" data-gal="1" aria-label="Siguiente">›</button>';
+      host.appendChild(nav);
+    }
+    var dots = document.getElementById(dotsId);
+    if (!dots) {
+      dots = document.createElement('div');
+      dots.className = 'viewer-gallery-dots';
+      dots.id = dotsId;
+      host.appendChild(dots);
+    }
+    return { nav: nav, label: document.getElementById(labelId), dots: dots };
+  }
+
+  function bindGallery(state) {
+    if (state._bound) return;
+    state._bound = true;
+    var nav = state.chrome && state.chrome.nav;
+    if (nav) {
+      nav.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-gal]');
+        if (!btn || !state.list || state.list.length < 2) return;
+        var d = parseInt(btn.getAttribute('data-gal'), 10) || 0;
+        if (!d) return;
+        state.idx = (state.idx + d + state.list.length) % state.list.length;
+        state.render();
+      });
+    }
+  }
+
+  function setGallery(state, list, onShow) {
+    state.list = list || [];
+    state.idx = 0;
+    state.onShow = onShow;
+    state.render = function () {
+      var list = state.list || [];
+      var multi = list.length > 1;
+      if (state.chrome && state.chrome.nav) state.chrome.nav.classList.toggle('is-on', multi);
+      if (state.chrome && state.chrome.dots) {
+        state.chrome.dots.classList.toggle('is-on', multi);
+        state.chrome.dots.innerHTML = '';
+        if (multi) {
+          list.forEach(function (_, i) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.setAttribute('aria-label', 'Ir a imagen ' + (i + 1));
+            if (i === state.idx) b.classList.add('is-active');
+            b.addEventListener('click', function () {
+              state.idx = i;
+              state.render();
+            });
+            state.chrome.dots.appendChild(b);
+          });
+        }
+      }
+      if (state.chrome && state.chrome.label) {
+        var src = list[state.idx] || '';
+        state.chrome.label.textContent = multi ? galleryLabel(src, state.idx, list.length) : '';
+      }
+      if (typeof state.onShow === 'function') state.onShow(list[state.idx] || '', state.idx, list);
+    };
+    bindGallery(state);
+    state.render();
+  }
+
+  window.parseGallery = parseGallery;
+  window.setGallery = setGallery;
+  window.ensureGalleryChrome = ensureGalleryChrome;
+  window.galleryLabel = galleryLabel;
 
   function openViewer(card) {
     if (!viewer || !card) return;

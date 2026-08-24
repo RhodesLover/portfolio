@@ -1353,10 +1353,10 @@ body.modal-open .nav {
   max-width: 100%;
   max-height: none;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
   overflow: visible;
   background: transparent;
 }
@@ -4030,4 +4030,76 @@ body.bottle-3d-open .modal {
 body.bottle-3d-open .nav {
   opacity: 0.25;
   pointer-events: none;
+}
+
+
+/* viewer gallery carousel (multi-image pieces) */
+.viewer-gallery-nav {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  margin-top: 0.55rem;
+  flex-wrap: wrap;
+}
+.viewer-gallery-nav.is-on { display: inline-flex; }
+.viewer-gallery-nav__btn {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 1.05rem;
+  line-height: 1;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.viewer-gallery-nav__btn:hover:not(:disabled) {
+  border-color: #fb650e;
+  color: #fb650e;
+  background: rgba(251,101,14,0.1);
+}
+.viewer-gallery-nav__btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.viewer-gallery-nav__label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(245,245,245,0.72);
+  min-width: 7.5rem;
+  text-align: center;
+}
+.viewer-gallery-dots {
+  display: none;
+  gap: 0.35rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.35rem;
+}
+.viewer-gallery-dots.is-on { display: inline-flex; }
+.viewer-gallery-dots button {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 0;
+  padding: 0;
+  background: rgba(255,255,255,0.28);
+  cursor: pointer;
+}
+.viewer-gallery-dots button.is-active {
+  background: #fb650e;
+  box-shadow: 0 0 10px rgba(251,101,14,0.45);
+}
+.pg-viewer__info .viewer-gallery-nav,
+.modal__project-right .viewer-gallery-nav,
+.modal__lightbox .viewer-gallery-nav {
+  margin-bottom: 0.25rem;
 }

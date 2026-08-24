@@ -2,9 +2,9 @@
    BOTTLE 3D — packaging interactivo (Fernet Cordobita)
    API: window.openBottle3d(opts) / window.closeBottle3d()
    Forma: silueta tipo fernet (lisa, sin relieve de marca).
-   Vidrio: transparente tipo vino (no verde).
-   Líquido: marrón bien oscuro.
+   Vidrio: negro opaco (packaging; el líquido no se ve).
    Pico: rosca / tapa negra.
+   Cuello corto.
    Etiquetas: label-front / label-back (Cordobita) en opts.dir
    Three.js on-demand (misma CDN que cd-case).
    ============================================================ */
@@ -24,14 +24,14 @@
   var THREE_CDN = 'https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js';
   var DEFAULT_DIR = 'assets/fernet-bottle';
 
-  // Proporciones tipo botella fernet alta y delgada (H / diámetro ≈ 4.8–5)
-  var BODY_R = 0.27; // radio cuerpo
-  var NECK_R = 0.095;
-  var FINISH_R = 0.108;
-  var BODY_TOP = 1.52; // fin del cilindro del cuerpo
-  var SHOULDER_TOP = 1.9;
-  var NECK_TOP = 2.42;
-  var LIP_TOP = 2.56;
+  // Proporciones tipo botella fernet (cuerpo alto, cuello corto)
+  var BODY_R = 0.285; // radio cuerpo
+  var NECK_R = 0.098;
+  var FINISH_R = 0.112;
+  var BODY_TOP = 1.58; // fin del cilindro del cuerpo
+  var SHOULDER_TOP = 1.88; // hombro mas bajo
+  var NECK_TOP = 2.12; // cuello menos alto
+  var LIP_TOP = 2.24;
 
   var open = false;
   var ready = false;
@@ -115,40 +115,28 @@
     });
   }
 
-  /** Vidrio transparente tipo vino (claro, sin tinte verde). Compatible iGPU. */
-  function clearGlassMat(opts) {
+  /** Vidrio negro opaco (packaging). Brillo de botella de vidrio oscuro. */
+  function blackGlassMat(opts) {
     opts = opts || {};
-    // Preferimos physical transmission; si el GPU no la rinde bien igual se ve vidrio claro.
     return new THREE.MeshPhysicalMaterial({
-      color: opts.color != null ? opts.color : 0xeef3f7,
-      metalness: 0.0,
-      roughness: opts.roughness != null ? opts.roughness : 0.04,
-      transmission: opts.transmission != null ? opts.transmission : 0.88,
-      thickness: opts.thickness != null ? opts.thickness : 0.22,
-      ior: 1.48,
-      transparent: true,
-      opacity: opts.opacity != null ? opts.opacity : 0.55,
-      side: THREE.FrontSide,
-      depthWrite: false,
-      envMapIntensity: 1.25,
-      specularIntensity: 1.0,
-      clearcoat: 0.6,
-      clearcoatRoughness: 0.08
+      color: opts.color != null ? opts.color : 0x050506,
+      metalness: 0.35,
+      roughness: opts.roughness != null ? opts.roughness : 0.18,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.08,
+      reflectivity: 0.55,
+      envMapIntensity: 1.35,
+      side: THREE.FrontSide
     });
   }
 
-  /** Segunda capa de vidrio (interior) para dar cuerpo sin tinte verde. */
+  /** Capa interior oscura para volumen (sin transmision rara en iGPU). */
   function glassInnerMat() {
-    return new THREE.MeshPhysicalMaterial({
-      color: 0xf7fafc,
-      metalness: 0.0,
-      roughness: 0.12,
-      transparent: true,
-      opacity: 0.12,
-      side: THREE.BackSide,
-      depthWrite: false,
-      transmission: 0.2,
-      thickness: 0.5
+    return new THREE.MeshStandardMaterial({
+      color: 0x0a0a0c,
+      metalness: 0.15,
+      roughness: 0.45,
+      side: THREE.BackSide
     });
   }
 
@@ -251,7 +239,23 @@
   }
 
   function makeLabel(tex, yRot, labelH, labelY, labelR, labelArc) {
-    var segs = 64;
+    var segs = 72;
+    // fit arc to image aspect so wider/taller labels are not cropped badly
+    var arc = labelArc;
+    if (tex && tex.image) {
+      var img = tex.image;
+      var iw = img.width || 1;
+      var ih = img.height || 1;
+      var imgAspect = iw / ih;
+      var desiredArc = (imgAspect * labelH) / Math.max(0.001, labelR);
+      var minA = Math.PI * 0.72;
+      var maxA = Math.PI * 1.08;
+      arc = Math.max(minA, Math.min(maxA, desiredArc));
+      // full image UV — no crop
+      tex.repeat.set(1, 1);
+      tex.offset.set(0, 0);
+      tex.needsUpdate = true;
+    }
     var geo = new THREE.CylinderGeometry(
       labelR,
       labelR,
@@ -259,35 +263,15 @@
       segs,
       1,
       true,
-      -labelArc * 0.5,
-      labelArc
+      -arc * 0.5,
+      arc
     );
-    // etiquetas Cordobita (front 1280x1600, back 959x1600) — cover vertical
-    if (tex && tex.image) {
-      var img = tex.image;
-      var iw = img.width || 1;
-      var ih = img.height || 1;
-      var targetAspect = (labelArc * labelR) / labelH; // ancho arco / alto
-      var imgAspect = iw / ih;
-      // ajustar UV para que la etiqueta no se estire de más
-      if (imgAspect > targetAspect) {
-        // imagen más ancha: crop horizontal
-        var ux = targetAspect / imgAspect;
-        tex.repeat.set(ux, 1);
-        tex.offset.set((1 - ux) * 0.5, 0);
-      } else {
-        var uy = imgAspect / targetAspect;
-        tex.repeat.set(1, uy);
-        tex.offset.set(0, (1 - uy) * 0.5);
-      }
-      tex.needsUpdate = true;
-    }
     var mat = new THREE.MeshStandardMaterial({
       map: tex,
       roughness: 0.42,
       metalness: 0.0,
       transparent: true,
-      alphaTest: 0.08,
+      alphaTest: 0.05,
       side: THREE.FrontSide,
       depthTest: true,
       depthWrite: true,
@@ -332,14 +316,17 @@
     var bodyGeo = new THREE.LatheGeometry(pts, 96);
     bodyGeo.computeVertexNormals();
 
-    // shell vidrio claro (capa exterior) — labels van por encima con renderOrder
-    var shell = new THREE.Mesh(bodyGeo, clearGlassMat({ thickness: 0.22, roughness: 0.05, opacity: 0.28, transmission: 0.55 }));
+    // shell vidrio negro opaco
+    var shell = new THREE.Mesh(
+      bodyGeo,
+      blackGlassMat({ roughness: 0.16 })
+    );
     shell.castShadow = true;
     shell.receiveShadow = true;
     shell.renderOrder = 1;
     rootGroup.add(shell);
 
-    // capa interior suave (volumen de vidrio)
+    // capa interior oscura (volumen)
     var innerPts = profilePoints().map(function (v) {
       return new THREE.Vector2(Math.max(0, v.x * 0.94), v.y);
     });
@@ -348,43 +335,11 @@
     inner.renderOrder = 0;
     rootGroup.add(inner);
 
-    // líquido marrón oscuro interior
-    var liquidGeo = new THREE.LatheGeometry(liquidPoints(), 64);
-    var liquidCol = new THREE.Color(LIQUID.r / 255, LIQUID.g / 255, LIQUID.b / 255);
-    var liquid = new THREE.Mesh(
-      liquidGeo,
-      new THREE.MeshStandardMaterial({
-        color: liquidCol,
-        metalness: 0.05,
-        roughness: 0.32,
-        transparent: false,
-        side: THREE.DoubleSide
-      })
-    );
-    liquid.renderOrder = 0;
-    rootGroup.add(liquid);
-
-    // menisco / superficie del líquido
-    var meniscusR = BODY_R - 0.045;
-    var meniscus = new THREE.Mesh(
-      new THREE.CircleGeometry(meniscusR, 48),
-      new THREE.MeshStandardMaterial({
-        color: liquidCol,
-        metalness: 0.12,
-        roughness: 0.2,
-        side: THREE.DoubleSide
-      })
-    );
-    meniscus.rotation.x = -Math.PI * 0.5;
-    meniscus.position.y = BODY_TOP + 0.16;
-    rootGroup.add(meniscus);
-
-    // etiquetas Cordobita en el cuerpo cilíndrico (no se estiran al hombro)
-    // ligeramente fuera del vidrio para legibilidad
-    var labelH = 0.98;
-    var labelY = 0.22 + labelH * 0.5; // centrada en cuerpo
-    var labelR = BODY_R + 0.012;
-    var labelArc = Math.PI * 0.86;
+    // etiquetas Cordobita en el cuerpo (arco se ajusta al aspect de cada arte)
+    var labelH = 1.05;
+    var labelY = 0.2 + labelH * 0.5;
+    var labelR = BODY_R + 0.014;
+    var labelArc = Math.PI * 0.9; // base; makeLabel reajusta por imagen
 
     function texForLabel(src) {
       // clonar textura para UV independientes front/back
@@ -529,7 +484,7 @@
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.12;
+      renderer.toneMappingExposure = 1.2;
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       canvasHost.innerHTML = '';
@@ -546,7 +501,7 @@
       camera.lookAt(0, 0.02, 0);
       clock = new THREE.Clock();
 
-      // iluminación limpia para vidrio claro + etiquetas legibles
+      // iluminación para vidrio negro + etiquetas legibles
       scene.add(new THREE.AmbientLight(0xffffff, 0.62));
       var key = new THREE.DirectionalLight(0xffffff, 1.45);
       key.position.set(2.6, 4.0, 3.2);
@@ -573,25 +528,6 @@
       ground.position.y = -LIP_TOP * 0.48 - 0.01;
       ground.receiveShadow = true;
       scene.add(ground);
-
-      // color de líquido: preferir marrón oscuro fijo; txt solo si es razonablemente oscuro
-      try {
-        var colRes = await fetch(texDir.replace(/\/+$/, '') + '/liquid-color.txt');
-        if (colRes.ok) {
-          var txt = (await colRes.text()).trim().split(',');
-          if (txt.length >= 3) {
-            var rr = +txt[0];
-            var gg = +txt[1];
-            var bb = +txt[2];
-            // ignorar samples grises/claros (deformaban el fernet)
-            if (rr < 55 && gg < 45 && bb < 45 && rr + gg + bb < 120) {
-              LIQUID.r = rr;
-              LIQUID.g = gg;
-              LIQUID.b = bb;
-            }
-          }
-        }
-      } catch (e) {}
 
       var loader = new THREE.TextureLoader();
       var base = texDir.replace(/\/+$/, '') + '/';

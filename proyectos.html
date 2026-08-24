@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=53">
+  <link rel="stylesheet" href="css/style.css?v=54">
     </head>
     <body class="page-projects">
     <canvas id="particlesCanvas" aria-hidden="true"></canvas>
@@ -20,7 +20,7 @@
         <div class="nav__inner nav__inner--projects">
           <a href="index.html" class="nav__logo">TZ</a>
           <ul class="nav__links">
-            <li><a href="index.html#work" class="nav__link">Trabajo</a></li>
+            <li><a href="proyectos.html" class="nav__link">Trabajo</a></li>
             <li><a href="index.html#about" class="nav__link">Sobre mí</a></li>
             <li><a href="index.html#contact" class="nav__link">Contacto</a></li>
           </ul>
@@ -172,7 +172,8 @@
           data-title="Fernet Cordobita" data-cat="Branding · 2025" data-section="branding"
           data-desc="Diseño de etiquetas y packaging con identidad regional. Mockup 3D de la botella."
           data-behance="https://www.behance.net/rhodeslover"
-          data-media="assets/images/branding/fernet-cordobita.jpg" data-type="image"
+          data-media="assets/fernet-bottle/label-front.webp" data-type="image"
+          data-gallery="assets/fernet-bottle/label-front.webp,assets/fernet-bottle/label-back.webp"
           data-bottle="assets/fernet-bottle">
           <div class="pg-cell__frame" style="--bg:#1a0a0a">
             <img class="pg-cell__media" src="assets/images/branding/fernet-cordobita.jpg" alt="Fernet Cordobita" loading="lazy">
@@ -756,11 +757,11 @@
             <video class="pg-viewer__video" id="pgViewerVideo" controls playsinline muted loop></video>
           </div>
           <div class="zoom-controls" id="pgZoomControls" hidden>
-            <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Alejar"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M21 21l-4.3-4.3"/></svg></button>
-            <span class="zoom-level" id="pgZoomLevel">100%</span>
-            <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M11 8v6M8 11h6M21 21l-4.3-4.3"/></svg></button>
-            <button type="button" class="zoom-btn zoom-btn--reset" data-zoom="0" aria-label="Restablecer"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
-          </div>
+                  <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M11 8v6M8 11h6M21 21l-4.3-4.3"/></svg></button>
+                  <span class="zoom-level" id="pgZoomLevel">100%</span>
+                  <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Alejar"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M21 21l-4.3-4.3"/></svg></button>
+                  <button type="button" class="zoom-btn zoom-btn--reset" data-zoom="0" aria-label="Restablecer"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
+                </div>
         </div>
         <div class="pg-viewer__info">
           <span class="pg-viewer__idx" id="pgViewerIdx">01</span>
@@ -787,11 +788,11 @@
       <!-- Close top-right · Zoom top-left: corners, nunca encima de nav/dots/libro -->
       <button class="carta-revista__close" id="cartaRevistaClose" type="button" aria-label="Cerrar carta">✕</button>
       <div class="zoom-controls carta-revista__zoom-controls" id="cartaZoomControls" hidden>
-        <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Alejar"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M21 21l-4.3-4.3"/></svg></button>
-        <span class="zoom-level" id="cartaZoomLevel">100%</span>
-        <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M11 8v6M8 11h6M21 21l-4.3-4.3"/></svg></button>
-        <button type="button" class="zoom-btn zoom-btn--reset" data-zoom="0" aria-label="Restablecer"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
-      </div>
+                  <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M11 8v6M8 11h6M21 21l-4.3-4.3"/></svg></button>
+                  <span class="zoom-level" id="cartaZoomLevel">100%</span>
+                  <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Alejar"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M21 21l-4.3-4.3"/></svg></button>
+                  <button type="button" class="zoom-btn zoom-btn--reset" data-zoom="0" aria-label="Restablecer"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
+                </div>
 
       <div class="carta-revista__stage" id="cartaRevistaStage">
         <div class="carta-revista__meta">
@@ -961,7 +962,7 @@
   <script src="js/brand-manual.js?v=3"></script>
   <script src="js/figma-proto.js?v=5"></script>
   <script src="js/cd-case.js?v=3"></script>
-  <script src="js/bottle-3d.js?v=4"></script>
-  <script src="js/proyectos.js?v=21"></script>
+  <script src="js/bottle-3d.js?v=5"></script>
+  <script src="js/proyectos.js?v=22"></script>
 </body>
 </html>
