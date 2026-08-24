@@ -68,10 +68,18 @@
   var targetRotY = rotY;
   var targetRotX = rotX;
   var discSpin = 0;
-  var discSpinVel = 0.35; // auto rad/s
+  var discSpinVel = 0.55; // auto rad/s (open)
   var discUserSpin = 0;
   var discIdleT = 0;
   var pointerId = null;
+  // auto showcase motion — pauses while user holds pointer
+  var autoOrbit = true;
+  var autoOrbitSpeed = 0.28; // rad/s around Y
+  var autoTiltAmp = 0.06;
+  var autoTiltSpeed = 0.55;
+  var autoT = 0;
+  var CASE_DISC_SPIN = 0.12; // subtle when closed
+  var OPEN_DISC_SPIN = 0.55;
 
   var raycaster = null;
   var pointerNdc = null;
@@ -315,6 +323,7 @@
     if (!open || !ready) return;
     if (e.button != null && e.button !== 0) return;
     dragging = true;
+    autoOrbit = false; // user takes control
     pointerId = e.pointerId;
     lastX = e.clientX;
     lastY = e.clientY;
@@ -329,6 +338,9 @@
       discSpinVel = 0;
     } else {
       dragMode = 'case';
+      // lock targets to current pose so drag feels direct
+      targetRotY = rotY;
+      targetRotX = rotX;
     }
     e.preventDefault();
   }
@@ -350,6 +362,8 @@
       targetRotY += dx * 0.008;
       targetRotX += dy * 0.005;
       targetRotX = Math.max(-0.55, Math.min(0.65, targetRotX));
+      rotY = targetRotY;
+      rotX = targetRotX;
     }
     e.preventDefault();
   }
@@ -359,6 +373,8 @@
     dragging = false;
     dragMode = null;
     pointerId = null;
+    // resume continuous showcase after a short beat
+    autoOrbit = true;
     try {
       renderer.domElement.releasePointerCapture(e.pointerId);
     } catch (err) {}
@@ -378,56 +394,67 @@
     setStatus(caseOpen ? 'Caja abierta' : 'Caja cerrada');
     setHint(
       caseOpen
-        ? 'Arrastrá el disco para girarlo · arrastrá afuera para orbitar · Cerrar caja'
-        : 'Arrastrá para girar la caja (frente / contratapa) · Abrir caja'
+        ? 'Gira sola · tocá el disco o la caja para frenar y controlar · Cerrar caja'
+        : 'Gira sola · mantené el mouse para frenar y rotar · Abrir caja'
     );
-    // when opening, ease toward a nice open angle
+    // keep auto showcase; nudge pose slightly when opening
     if (caseOpen) {
-      targetRotY = -0.15;
-      targetRotX = 0.22;
+      if (!dragging) {
+        targetRotY = rotY;
+        targetRotX = 0.22;
+      }
+      discSpinVel = OPEN_DISC_SPIN;
     } else {
-      targetRotY = -0.35;
-      targetRotX = 0.18;
-      discSpinVel = 0.35;
+      if (!dragging) {
+        targetRotX = 0.18;
+      }
+      discSpinVel = CASE_DISC_SPIN;
     }
+    autoOrbit = !dragging;
   }
 
   function animate() {
     if (!open || !ready) return;
     raf = requestAnimationFrame(animate);
     var dt = Math.min(0.05, clock.getDelta());
+    autoT += dt;
 
     // smooth lid
     lidAngle += (lidTarget - lidAngle) * Math.min(1, dt * 5.5);
     if (lidPivot) lidPivot.rotation.y = lidAngle;
 
-    // smooth case orbit
-    rotY += (targetRotY - rotY) * Math.min(1, dt * 8);
-    rotX += (targetRotX - rotX) * Math.min(1, dt * 8);
+    // continuous case orbit unless user is holding the pointer
+    if (autoOrbit && !dragging) {
+      targetRotY += autoOrbitSpeed * dt;
+      // gentle breathing tilt so it feels alive, not a turntable
+      var baseTilt = caseOpen ? 0.22 : 0.18;
+      targetRotX = baseTilt + Math.sin(autoT * autoTiltSpeed) * autoTiltAmp;
+      rotY = targetRotY;
+      rotX += (targetRotX - rotX) * Math.min(1, dt * 4);
+    } else {
+      // smooth toward manual targets while / after drag
+      rotY += (targetRotY - rotY) * Math.min(1, dt * 10);
+      rotX += (targetRotX - rotX) * Math.min(1, dt * 10);
+    }
     if (rootGroup) {
       rootGroup.rotation.y = rotY;
       rootGroup.rotation.x = rotX;
     }
 
-    // disc spin: auto when open + idle, or residual velocity
+    // disc spin: continuous unless user is dragging the disc
     if (discPivot) {
-      if (caseOpen) {
-        if (dragMode === 'disc') {
-          discPivot.rotation.z = discUserSpin;
-        } else {
-          discIdleT += dt;
-          // subtle continuous spin after short idle (PS2 memory-card vibe)
-          if (discIdleT > 0.35) {
-            discSpinVel += (0.45 - discSpinVel) * dt * 1.2;
-          } else {
-            discSpinVel *= Math.pow(0.15, dt); // damp user flick
-          }
-          discUserSpin += discSpinVel * dt;
-          discPivot.rotation.z = discUserSpin;
-        }
+      if (dragMode === 'disc') {
+        discPivot.rotation.z = discUserSpin;
       } else {
-        // closed: very subtle idle (barely visible through motion of case)
-        discUserSpin += 0.08 * dt;
+        discIdleT += dt;
+        var want = caseOpen ? OPEN_DISC_SPIN : CASE_DISC_SPIN;
+        if (discIdleT > 0.2) {
+          discSpinVel += (want - discSpinVel) * Math.min(1, dt * 2.2);
+        } else {
+          // residual flick then ease back to idle
+          discSpinVel += (want - discSpinVel) * Math.min(1, dt * 0.9);
+        }
+        discUserSpin += discSpinVel * dt;
         discPivot.rotation.z = discUserSpin;
       }
     }
@@ -587,10 +614,14 @@
     targetRotY = rotY;
     targetRotX = rotX;
     discUserSpin = 0;
-    discSpinVel = 0.35;
+    discSpinVel = CASE_DISC_SPIN;
     discIdleT = 0;
+    autoOrbit = true;
+    autoT = 0;
+    dragging = false;
+    dragMode = null;
     setToggleLabel();
-    setHint('Arrastrá para girar la caja (frente / contratapa) · Abrir caja');
+    setHint('Gira sola · mantené el mouse para frenar y rotar · Abrir caja');
     setOpen(true);
     try {
       await ensureScene();

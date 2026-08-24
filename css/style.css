@@ -3773,9 +3773,9 @@ body.brand-manual-open #trailCanvas {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.65rem 1rem;
-  padding: 0.05rem 0.1rem 0.15rem;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.2rem 0.1rem 0.15rem;
 }
 .cd-case__hint {
   margin: 0;
@@ -3784,29 +3784,73 @@ body.brand-manual-open #trailCanvas {
   color: rgba(255, 255, 255, 0.5);
   max-width: min(100%, 42rem);
   line-height: 1.35;
+  text-align: center;
+  width: 100%;
 }
-.cd-case__toggle {
-  flex: 0 0 auto;
+/* CTA grande flotando sobre el stage 3D (siempre a la vista) */
+.cd-case__stage > .cd-case__toggle {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(0.9rem, 3vh, 1.55rem);
+  transform: translateX(-50%);
+  z-index: 6;
   appearance: none;
-  border: 1px solid rgba(255, 180, 140, 0.4);
-  background: rgba(255, 120, 60, 0.14);
+  border: 1px solid rgba(255, 210, 170, 0.8);
+  background: linear-gradient(180deg, rgba(255, 145, 75, 0.98), rgba(220, 90, 35, 1));
   color: #fff;
   font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: 0.86rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  padding: 0.62rem 1.1rem;
+  font-size: clamp(0.95rem, 1.8vw, 1.08rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.9rem 1.65rem;
+  min-width: min(86vw, 250px);
   border-radius: 999px;
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.14) inset,
+    0 0 28px rgba(255, 120, 50, 0.4);
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  pointer-events: auto;
 }
-.cd-case__toggle:hover {
-  background: rgba(255, 120, 60, 0.26);
-  border-color: rgba(255, 180, 140, 0.65);
-  transform: translateY(-1px);
+.cd-case.is-open .cd-case__stage > .cd-case__toggle {
+  animation: cd-case-cta-pulse 2.4s ease-in-out infinite;
 }
-.cd-case__toggle:active {
-  transform: translateY(0);
+@keyframes cd-case-cta-pulse {
+  0%, 100% {
+    box-shadow:
+      0 12px 32px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.14) inset,
+      0 0 22px rgba(255, 120, 50, 0.35);
+  }
+  50% {
+    box-shadow:
+      0 14px 38px rgba(0, 0, 0, 0.55),
+      0 0 0 1px rgba(255, 255, 255, 0.2) inset,
+      0 0 36px rgba(255, 145, 60, 0.6);
+  }
+}
+.cd-case__stage > .cd-case__toggle:hover {
+  background: linear-gradient(180deg, rgba(255, 165, 95, 1), rgba(235, 105, 40, 1));
+  border-color: rgba(255, 230, 200, 0.95);
+  transform: translateX(-50%) translateY(-2px) scale(1.03);
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.22) inset,
+    0 0 40px rgba(255, 140, 60, 0.6);
+  animation: none;
+}
+.cd-case__stage > .cd-case__toggle:active {
+  transform: translateX(-50%) translateY(0) scale(0.99);
+}
+.cd-case__stage > .cd-case__toggle[aria-pressed="true"] {
+  background: linear-gradient(180deg, rgba(78, 78, 88, 0.96), rgba(34, 34, 40, 0.98));
+  border-color: rgba(255, 255, 255, 0.38);
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  animation: none;
 }
 body.cd-case-open .pg-viewer,
 body.cd-case-open .modal {
@@ -3825,12 +3869,10 @@ body.cd-case-open .nav {
     width: 42px;
     height: 42px;
   }
-  .cd-case__bottom {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .cd-case__toggle {
-    width: 100%;
-    text-align: center;
+  .cd-case__stage > .cd-case__toggle {
+    min-width: min(92vw, 280px);
+    font-size: 0.95rem;
+    padding: 0.92rem 1.3rem;
+    bottom: 0.85rem;
   }
 }
