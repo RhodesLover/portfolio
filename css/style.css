@@ -1340,7 +1340,10 @@ body.modal-open .nav {
   display: none;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 1.2rem;
+  width: 100%;
+  text-align: center;
   animation: modalFade 0.25s ease;
 }
 
@@ -1349,14 +1352,17 @@ body.modal-open .nav {
 }
 
 .modal__lightbox-img-wrap {
+  /* Solo la imagen define el ancho; zoom controls fuera del flujo (no descentran el título) */
   position: relative;
   max-width: 100%;
   max-height: none;
+  width: fit-content;
+  margin-inline: auto;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.65rem;
+  gap: 0;
   overflow: visible;
   background: transparent;
 }
@@ -1369,6 +1375,23 @@ body.modal-open .nav {
   min-height: 0;
   background: transparent;
   border: none;
+  margin-inline: auto;
+}
+.modal__lightbox-img-wrap .zoom-controls {
+  position: absolute;
+  left: calc(100% + 0.55rem);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+}
+@media (max-width: 720px) {
+  .modal__lightbox-img-wrap .zoom-controls {
+    position: static;
+    transform: none;
+    margin-top: 0.55rem;
+    left: auto;
+    top: auto;
+  }
 }
 .modal__project-left {
   position: relative;
@@ -1415,6 +1438,12 @@ body.modal-open .nav {
   color: rgba(255,255,255,0.5);
   letter-spacing: 1px;
   text-transform: uppercase;
+  text-align: center;
+  width: 100%;
+  max-width: min(100%, 920px);
+  margin: 0 auto;
+  align-self: center;
+  line-height: 1.35;
 }
 
 /* --- Project mode (Redes, Branding, Proyectos) --- */
