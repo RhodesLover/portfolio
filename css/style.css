@@ -4098,8 +4098,23 @@ body.bottle-3d-open .nav {
   background: #fb650e;
   box-shadow: 0 0 10px rgba(251,101,14,0.45);
 }
+.pg-viewer__gallery {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  min-height: 0;
+}
+.pg-viewer__gallery:empty {
+  display: none;
+}
 .pg-viewer__info .viewer-gallery-nav,
+.pg-viewer__gallery .viewer-gallery-nav,
 .modal__project-right .viewer-gallery-nav,
 .modal__lightbox .viewer-gallery-nav {
   margin-bottom: 0.25rem;
+}
+.pg-viewer__info .viewer-gallery-nav,
+.pg-viewer__gallery .viewer-gallery-nav {
+  margin-top: 0.15rem;
 }

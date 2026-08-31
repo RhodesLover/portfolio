@@ -116,13 +116,17 @@
   let visibleCells = cells.slice();
   let currentIndex = -1;
   let galleryState = { list: [], idx: 0, chrome: null, _bound: false };
-  (function initGalleryChrome() {
-    var host = document.getElementById('pgViewerActions') || document.querySelector('.pg-viewer__info');
-    var ens = typeof ensureGalleryChrome === 'function' ? ensureGalleryChrome : window.ensureGalleryChrome;
-    if (ens) {
-      galleryState.chrome = ens(host, { nav: 'pgGalleryNav', label: 'pgGalleryLabel', dots: 'pgGalleryDots' });
-    }
-  })();
+    (function initGalleryChrome() {
+      // Host fijo: NUNCA montar en #pgViewerActions (openViewer hace innerHTML='' y borra el carrusel)
+      var host =
+        document.getElementById('pgViewerGallery') ||
+        document.querySelector('.pg-viewer__info') ||
+        document.getElementById('pgViewerActions');
+      var ens = typeof ensureGalleryChrome === 'function' ? ensureGalleryChrome : window.ensureGalleryChrome;
+      if (ens && host) {
+        galleryState.chrome = ens(host, { nav: 'pgGalleryNav', label: 'pgGalleryLabel', dots: 'pgGalleryDots' });
+      }
+    })();
 
   // chrome host: actions area under info
 
@@ -488,7 +492,8 @@
     vIdx.textContent = idxLabel ? idxLabel.textContent : String(currentIndex + 1).padStart(2, '0');
 
     vActions.innerHTML = '';
-    const isRedes = (cell.dataset.section === 'redes') || (cat || '').indexOf('Social') === 0;
+        // CTAs van a #pgViewerActions; el carrusel vive en #pgViewerGallery (no se borra acá)
+        const isRedes = (cell.dataset.section === 'redes') || (cat || '').indexOf('Social') === 0;
     const figmaProto = cell.dataset.figmaProto || '';
     const cartaDir = cell.dataset.carta || '';
         const cartaPages = cell.dataset.cartaPages || '';

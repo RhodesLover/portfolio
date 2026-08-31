@@ -893,7 +893,20 @@ document.addEventListener('DOMContentLoaded', () => {
     .filter((c) => c.dataset.modal !== 'lightbox');
   let currentIndex = -1;
   let pageGalleryState = { list: [], idx: 0, chrome: null, _bound: false };
-  (function(){ var host=document.getElementById('pgViewerActions')||document.querySelector('.pg-viewer__info'); pageGalleryState.chrome=(window.ensureGalleryChrome)(host,{nav:'mainPgGalleryNav',label:'mainPgGalleryLabel',dots:'mainPgGalleryDots'}); })();
+    (function () {
+      // Host fijo: no usar #pgViewerActions (se vacía en cada openViewer)
+      var host =
+        document.getElementById('pgViewerGallery') ||
+        document.querySelector('.pg-viewer__info') ||
+        document.getElementById('pgViewerActions');
+      if (window.ensureGalleryChrome && host) {
+        pageGalleryState.chrome = window.ensureGalleryChrome(host, {
+          nav: 'mainPgGalleryNav',
+          label: 'mainPgGalleryLabel',
+          dots: 'mainPgGalleryDots'
+        });
+      }
+    })();
 
 
   function getCardMedia(card) {
@@ -1052,173 +1065,216 @@ document.addEventListener('DOMContentLoaded', () => {
   window.galleryLabel = galleryLabel;
 
   function openViewer(card) {
-    if (!viewer || !card) return;
-    currentIndex = viewerCards.indexOf(card);
-    if (currentIndex < 0) return;
+      if (!viewer || !card) return;
+      currentIndex = viewerCards.indexOf(card);
+      if (currentIndex < 0) return;
 
-    const title = card.dataset.title || '';
-    const category = card.dataset.category || '';
-    const desc = card.dataset.description || '';
-    const behance = card.dataset.behance || '';
-    const media = getCardMedia(card);
+      const title = card.dataset.title || '';
+      const category = card.dataset.category || '';
+      const desc = card.dataset.description || '';
+      const behance = card.dataset.behance || '';
+      const media = getCardMedia(card);
+      const galleryList =
+        (typeof window.parseGallery === 'function' ? window.parseGallery(card) : parseGallery(card)) || [];
+      const media0 = galleryList[0] || media.media || '';
 
-    clearViewerMedia();
+      clearViewerMedia();
 
-    if (media.type === 'video' && media.media) {
-      vVideo.style.display = 'block';
-      if (media.poster) vVideo.poster = media.poster;
-      vVideo.src = media.media;
-      var onMeta = function () {
-        fitStageToMedia(vVideo);
-        vVideo.removeEventListener('loadedmetadata', onMeta);
-      };
-      vVideo.addEventListener('loadedmetadata', onMeta);
-      if (vVideo.readyState >= 1) fitStageToMedia(vVideo);
-      vVideo.play().catch(function () {});
-      setVideoFill(false);
-      if (mediaZoom) mediaZoom.setEnabled(false);
-    } else {
-      vImg.style.display = 'block';
-      vImg.src = media.media;
-      vImg.alt = title;
-      var onLoad = function () {
-        fitStageToMedia(vImg);
-        vImg.removeEventListener('load', onLoad);
-      };
-      vImg.addEventListener('load', onLoad);
-      if (vImg.complete && vImg.naturalWidth) fitStageToMedia(vImg);
-      setVideoFill(false);
-      if (mediaZoom) mediaZoom.setEnabled(!!media.media);
-    }
+      if (media.type === 'video' && media.media) {
+        vVideo.style.display = 'block';
+        if (media.poster) vVideo.poster = media.poster;
+        vVideo.src = media.media;
+        var onMeta = function () {
+          fitStageToMedia(vVideo);
+          vVideo.removeEventListener('loadedmetadata', onMeta);
+        };
+        vVideo.addEventListener('loadedmetadata', onMeta);
+        if (vVideo.readyState >= 1) fitStageToMedia(vVideo);
+        vVideo.play().catch(function () {});
+        setVideoFill(false);
+        if (mediaZoom) mediaZoom.setEnabled(false);
+        if (pageGalleryState && pageGalleryState.chrome) {
+          if (pageGalleryState.chrome.nav) pageGalleryState.chrome.nav.classList.remove('is-on');
+          if (pageGalleryState.chrome.dots) {
+            pageGalleryState.chrome.dots.classList.remove('is-on');
+            pageGalleryState.chrome.dots.innerHTML = '';
+          }
+          if (pageGalleryState.chrome.label) pageGalleryState.chrome.label.textContent = '';
+        }
+        pageGalleryState.list = [];
+      } else {
+        var setGal = typeof window.setGallery === 'function' ? window.setGallery : setGallery;
+        setGal(
+          pageGalleryState,
+          galleryList.length ? galleryList : [media0 || media.media || ''],
+          function (src) {
+            if (!src) {
+              vImg.removeAttribute('src');
+              vImg.style.display = 'none';
+              return;
+            }
+            vImg.style.display = 'block';
+            vImg.src = src;
+            vImg.alt = title;
+            var onGalLoad = function () {
+              fitStageToMedia(vImg);
+              vImg.removeEventListener('load', onGalLoad);
+            };
+            vImg.addEventListener('load', onGalLoad);
+            if (vImg.complete && vImg.naturalWidth) fitStageToMedia(vImg);
+            if (mediaZoom) {
+              try {
+                if (mediaZoom.reset) mediaZoom.reset();
+              } catch (e) {}
+              try {
+                if (mediaZoom.setEnabled) mediaZoom.setEnabled(true);
+              } catch (e) {}
+            }
+          }
+        );
+        setVideoFill(false);
+        if (mediaZoom) mediaZoom.setEnabled(!!(media0 || media.media));
+      }
 
-    vTitle.textContent = title;
-    vCat.textContent = category;
-    vDesc.textContent = desc;
-    vIdx.textContent = String(currentIndex + 1).padStart(2, '0');
+      vTitle.textContent = title;
+      vCat.textContent = category;
+      vDesc.textContent = desc;
+      vIdx.textContent = String(currentIndex + 1).padStart(2, '0');
 
-    vActions.innerHTML = '';
-    const isSocial = (category || '').indexOf('Social') === 0;
-    const figmaProto = card.dataset.figmaProto || '';
-        const cartaDir = card.dataset.carta || '';
-        const cartaPages = card.dataset.cartaPages || '';
-        const manualDir = card.dataset.manual || '';
-        const manualPages = card.dataset.manualPages || '';
-        const cdDir = card.dataset.cd || '';
-        const bottleDir = card.dataset.bottle || '';
-        const revistaDir = card.dataset.revista || '';
-        const revistaPages = card.dataset.revistaPages || '';
-        if (isSocial) {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'pg-viewer__link';
-      b.textContent = 'Ver Instagram →';
-      if (figmaProto && typeof window.openFigmaProto === 'function') {
+      // Solo limpia CTAs; el carrusel vive en #pgViewerGallery (host fijo)
+      vActions.innerHTML = '';
+      const isSocial = (category || '').indexOf('Social') === 0;
+      const figmaProto = card.dataset.figmaProto || '';
+          const cartaDir = card.dataset.carta || '';
+          const cartaPages = card.dataset.cartaPages || '';
+          const manualDir = card.dataset.manual || '';
+          const manualPages = card.dataset.manualPages || '';
+          const cdDir = card.dataset.cd || '';
+          const bottleDir = card.dataset.bottle || '';
+          const revistaDir = card.dataset.revista || '';
+          const revistaPages = card.dataset.revistaPages || '';
+          if (isSocial) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'pg-viewer__link';
+        b.textContent = 'Ver Instagram →';
+        if (figmaProto && typeof window.openFigmaProto === 'function') {
+          b.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            window.openFigmaProto(figmaProto, title);
+          });
+        } else if (figmaProto) {
+          b.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.open(figmaProto, '_blank', 'noopener');
+          });
+        } else {
+          b.disabled = true;
+          b.title = 'Prototipo próximamente';
+          b.setAttribute('aria-disabled', 'true');
+        }
+        vActions.appendChild(b);
+            } else if (revistaDir && (typeof window.openRevista === 'function' || typeof window.openCartaRevista === 'function')) {
+              const b = document.createElement('button');
+              b.type = 'button';
+              b.className = 'pg-viewer__link';
+              b.textContent = 'Ver revista →';
+              b.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const open =
+                  typeof window.openRevista === 'function'
+                    ? window.openRevista
+                    : function (dir, t, n) {
+                        window.openCartaRevista(dir, t, n, { kind: 'revista', size: 'large' });
+                      };
+                open(revistaDir, title || 'Revista', revistaPages);
+              });
+              vActions.appendChild(b);
+            } else if (cdDir && typeof window.openCdCase === 'function') {
+              const b = document.createElement('button');
+              b.type = 'button';
+              b.className = 'pg-viewer__link';
+              b.textContent = 'Ver caja de CD →';
+              b.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.openCdCase({ dir: cdDir, title: title || 'Desembarco — CD' });
+              });
+              vActions.appendChild(b);
+            } else if (bottleDir && typeof window.openBottle3d === 'function') {
+              const b = document.createElement('button');
+              b.type = 'button';
+              b.className = 'pg-viewer__link';
+              b.textContent = 'Ver botella →';
+              b.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.openBottle3d({ dir: bottleDir, title: title || 'Fernet Cordobita' });
+              });
+              vActions.appendChild(b);
+            } else if (manualDir && typeof window.openBrandManual === 'function') {
+              const b = document.createElement('button');
+              b.type = 'button';
+              b.className = 'pg-viewer__link';
+              b.textContent = 'Ver manual de marca →';
+              b.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.openBrandManual(manualDir, title || 'Manual de marca', manualPages);
+              });
+              vActions.appendChild(b);
+            } else if (cartaDir && typeof window.openCartaRevista === 'function') {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'pg-viewer__link';
+        b.textContent = 'Diseño de carta →';
         b.addEventListener('click', (e) => {
           e.preventDefault();
           e.stopPropagation();
-          window.openFigmaProto(figmaProto, title);
+          window.openCartaRevista(cartaDir, title || 'Diseño de carta', cartaPages);
         });
-      } else if (figmaProto) {
-        b.addEventListener('click', (e) => {
-          e.preventDefault();
-          window.open(figmaProto, '_blank', 'noopener');
-        });
-      } else {
-        b.disabled = true;
-        b.title = 'Prototipo próximamente';
-        b.setAttribute('aria-disabled', 'true');
+        vActions.appendChild(b);
+      } else if (behance) {
+        const a = document.createElement('a');
+        a.href = behance;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.className = 'pg-viewer__link';
+        a.textContent = 'Ver en Behance →';
+        vActions.appendChild(a);
       }
-      vActions.appendChild(b);
-          } else if (revistaDir && (typeof window.openRevista === 'function' || typeof window.openCartaRevista === 'function')) {
-            const b = document.createElement('button');
-            b.type = 'button';
-            b.className = 'pg-viewer__link';
-            b.textContent = 'Ver revista →';
-            b.addEventListener('click', (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              const open =
-                typeof window.openRevista === 'function'
-                  ? window.openRevista
-                  : function (dir, t, n) {
-                      window.openCartaRevista(dir, t, n, { kind: 'revista', size: 'large' });
-                    };
-              open(revistaDir, title || 'Revista', revistaPages);
-            });
-            vActions.appendChild(b);
-          } else if (cdDir && typeof window.openCdCase === 'function') {
-            const b = document.createElement('button');
-            b.type = 'button';
-            b.className = 'pg-viewer__link';
-            b.textContent = 'Ver caja de CD →';
-            b.addEventListener('click', (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              window.openCdCase({ dir: cdDir, title: title || 'Desembarco — CD' });
-            });
-            vActions.appendChild(b);
-          } else if (bottleDir && typeof window.openBottle3d === 'function') {
-            const b = document.createElement('button');
-            b.type = 'button';
-            b.className = 'pg-viewer__link';
-            b.textContent = 'Ver botella →';
-            b.addEventListener('click', (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              window.openBottle3d({ dir: bottleDir, title: title || 'Fernet Cordobita' });
-            });
-            vActions.appendChild(b);
-          } else if (manualDir && typeof window.openBrandManual === 'function') {
-            const b = document.createElement('button');
-            b.type = 'button';
-            b.className = 'pg-viewer__link';
-            b.textContent = 'Ver manual de marca →';
-            b.addEventListener('click', (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              window.openBrandManual(manualDir, title || 'Manual de marca', manualPages);
-            });
-            vActions.appendChild(b);
-          } else if (cartaDir && typeof window.openCartaRevista === 'function') {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'pg-viewer__link';
-      b.textContent = 'Diseño de carta →';
-      b.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        window.openCartaRevista(cartaDir, title || 'Diseño de carta', cartaPages);
-      });
-      vActions.appendChild(b);
-    } else if (behance) {
-      const a = document.createElement('a');
-      a.href = behance;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      a.className = 'pg-viewer__link';
-      a.textContent = 'Ver en Behance →';
-      vActions.appendChild(a);
+
+      if (prevBtn) prevBtn.disabled = currentIndex <= 0;
+      if (nextBtn) nextBtn.disabled = currentIndex >= viewerCards.length - 1;
+
+      viewer.classList.add('is-open');
+      viewer.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('pg-viewer-open');
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
     }
 
-    if (prevBtn) prevBtn.disabled = currentIndex <= 0;
-    if (nextBtn) nextBtn.disabled = currentIndex >= viewerCards.length - 1;
-
-    viewer.classList.add('is-open');
-    viewer.setAttribute('aria-hidden', 'false');
-    document.body.classList.add('pg-viewer-open');
-    document.body.style.overflow = 'hidden';
-    document.documentElement.style.overflow = 'hidden';
-  }
-
-  function closeViewer() {
-    if (!viewer) return;
-    viewer.classList.remove('is-open');
-    viewer.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('pg-viewer-open');
-    document.body.style.overflow = '';
-    document.documentElement.style.overflow = '';
-    clearViewerMedia();
-  }
+    function closeViewer() {
+      if (pageGalleryState) {
+        pageGalleryState.list = [];
+        pageGalleryState.idx = 0;
+        if (pageGalleryState.chrome && pageGalleryState.chrome.nav) pageGalleryState.chrome.nav.classList.remove('is-on');
+        if (pageGalleryState.chrome && pageGalleryState.chrome.dots) {
+          pageGalleryState.chrome.dots.classList.remove('is-on');
+          pageGalleryState.chrome.dots.innerHTML = '';
+        }
+        if (pageGalleryState.chrome && pageGalleryState.chrome.label) pageGalleryState.chrome.label.textContent = '';
+      }
+      if (!viewer) return;
+      viewer.classList.remove('is-open');
+      viewer.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('pg-viewer-open');
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      clearViewerMedia();
+    }
 
   function navigate(dir) {
     if (currentIndex < 0) return;
