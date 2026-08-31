@@ -1274,27 +1274,29 @@ document.addEventListener('DOMContentLoaded', () => {
               });
               vActions.appendChild(b);
             } else if (cdDir && typeof window.openCdCase === 'function') {
-              const b = document.createElement('button');
-              b.type = 'button';
-              b.className = 'pg-viewer__link';
-              b.textContent = 'Ver caja de CD →';
-              b.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                window.openCdCase({ dir: cdDir, title: title || 'Desembarco — CD' });
-              });
-              vActions.appendChild(b);
-            } else if (bottleDir && typeof window.openBottle3d === 'function') {
-              const b = document.createElement('button');
-              b.type = 'button';
-              b.className = 'pg-viewer__link';
-              b.textContent = 'Ver botella →';
-              b.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                window.openBottle3d({ dir: bottleDir, title: title || 'Fernet Cordobita' });
-              });
-              vActions.appendChild(b);
+                          const b = document.createElement('button');
+                          b.type = 'button';
+                          // Pack Desembarco: naranja (resto del portfolio = rosa pastel)
+                          b.className = 'pg-viewer__link pg-viewer__link--pack';
+                          b.textContent = 'Ver caja de CD →';
+                          b.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            window.openCdCase({ dir: cdDir, title: title || 'Desembarco — CD' });
+                          });
+                          vActions.appendChild(b);
+                        } else if (bottleDir && typeof window.openBottle3d === 'function') {
+                          const b = document.createElement('button');
+                          b.type = 'button';
+                          // Pack Fernet: naranja (resto del portfolio = rosa pastel)
+                          b.className = 'pg-viewer__link pg-viewer__link--pack';
+                          b.textContent = 'Ver botella →';
+                          b.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            window.openBottle3d({ dir: bottleDir, title: title || 'Fernet Cordobita' });
+                          });
+                          vActions.appendChild(b);
             } else if (manualDir && typeof window.openBrandManual === 'function') {
               const b = document.createElement('button');
               b.type = 'button';
@@ -1328,59 +1330,91 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const extraVideo = card.dataset.video || '';
-            if (extraVideo && media.type !== 'video') {
-              const b = document.createElement('button');
-              b.type = 'button';
-              b.className = 'pg-viewer__link pg-viewer__link--ghost';
-              b.textContent = 'Ver motion →';
-              b.addEventListener('click', () => {
-                if (vImg.naturalWidth && vImg.naturalHeight && zoomStage) fitStageToMedia(vImg);
-                vImg.style.display = 'none';
-                vVideo.style.display = 'block';
-                if (media0 || media.media) vVideo.poster = media0 || media.media;
-                vVideo.muted = false;
-                vVideo.src = extraVideo;
-                var onMetaM = function () {
-                  fitStageToMedia(vVideo);
-                  vVideo.removeEventListener('loadedmetadata', onMetaM);
-                };
-                vVideo.addEventListener('loadedmetadata', onMetaM);
-                setVideoFill(false);
-                vVideo.play().catch(() => {});
-                if (mediaZoom) mediaZoom.setEnabled(false);
-                b.disabled = true;
-                b.textContent = 'Motion';
-              });
-              vActions.appendChild(b);
-            }
-            const processVideo = card.dataset.process || '';
-            if (processVideo && media.type !== 'video') {
-              const bp = document.createElement('button');
-              bp.type = 'button';
-              bp.className = 'pg-viewer__link pg-viewer__link--ghost';
-              bp.textContent = 'Ver proceso →';
-              bp.addEventListener('click', () => {
-                if (vImg.naturalWidth && vImg.naturalHeight && zoomStage) fitStageToMedia(vImg);
-                vImg.style.display = 'none';
-                vVideo.style.display = 'block';
-                if (media0 || media.media) vVideo.poster = media0 || media.media;
-                vVideo.muted = false;
-                vVideo.src = processVideo;
-                var onMetaP = function () {
-                  fitStageToMedia(vVideo);
-                  vVideo.removeEventListener('loadedmetadata', onMetaP);
-                };
-                vVideo.addEventListener('loadedmetadata', onMetaP);
-                setVideoFill(false);
-                vVideo.play().catch(() => {});
-                if (mediaZoom) mediaZoom.setEnabled(false);
-                bp.disabled = true;
-                bp.textContent = 'Proceso';
-              });
-              vActions.appendChild(bp);
-            }
+                        const processVideo = card.dataset.process || '';
+                        if ((extraVideo || processVideo) && media.type !== 'video') {
+                          const stillSrc = media0 || media.media || '';
+                          let btnMotion = null;
+                          let btnProcess = null;
+                          if (extraVideo) {
+                            btnMotion = document.createElement('button');
+                            btnMotion.type = 'button';
+                            btnMotion.className = 'pg-viewer__link pg-viewer__link--ghost';
+                            btnMotion.textContent = 'Ver motion →';
+                          }
+                          if (processVideo) {
+                            btnProcess = document.createElement('button');
+                            btnProcess.type = 'button';
+                            btnProcess.className = 'pg-viewer__link pg-viewer__link--ghost';
+                            btnProcess.textContent = 'Ver proceso →';
+                          }
+                          const btnStill = document.createElement('button');
+                          btnStill.type = 'button';
+                          btnStill.className = 'pg-viewer__link pg-viewer__link--ghost';
+                          btnStill.textContent = 'Ver imagen →';
+                          btnStill.hidden = true;
 
-            if (prevBtn) prevBtn.disabled = currentIndex <= 0;
+                          function setMediaMode(mode) {
+                            var isStill = mode === 'still';
+                            var isMotion = mode === 'motion';
+                            var isProcess = mode === 'process';
+                            if (isStill) {
+                              try { vVideo.pause(); } catch (e) {}
+                              vVideo.removeAttribute('src');
+                              try { vVideo.load(); } catch (e) {}
+                              vVideo.style.display = 'none';
+                              if (stillSrc) {
+                                vImg.style.display = 'block';
+                                if (vImg.getAttribute('src') !== stillSrc) vImg.src = stillSrc;
+                                if (vImg.complete && vImg.naturalWidth) fitStageToMedia(vImg);
+                              }
+                              if (mediaZoom) mediaZoom.setEnabled(!!stillSrc);
+                              setVideoFill(false);
+                            } else {
+                              var src = isProcess ? processVideo : extraVideo;
+                              if (vImg.naturalWidth && vImg.naturalHeight && zoomStage) fitStageToMedia(vImg);
+                              vImg.style.display = 'none';
+                              vVideo.style.display = 'block';
+                              if (stillSrc) vVideo.poster = stillSrc;
+                              vVideo.muted = false;
+                              if (vVideo.getAttribute('src') !== src) vVideo.src = src;
+                              else {
+                                try { vVideo.currentTime = 0; } catch (e) {}
+                              }
+                              var onMeta = function () {
+                                fitStageToMedia(vVideo);
+                                vVideo.removeEventListener('loadedmetadata', onMeta);
+                              };
+                              vVideo.addEventListener('loadedmetadata', onMeta);
+                              if (vVideo.readyState >= 1) fitStageToMedia(vVideo);
+                              setVideoFill(false);
+                              vVideo.play().catch(function () {});
+                              if (mediaZoom) mediaZoom.setEnabled(false);
+                            }
+                            if (btnMotion) {
+                              btnMotion.classList.toggle('is-active', isMotion);
+                              btnMotion.textContent = isMotion ? 'Motion' : 'Ver motion →';
+                            }
+                            if (btnProcess) {
+                              btnProcess.classList.toggle('is-active', isProcess);
+                              btnProcess.textContent = isProcess ? 'Proceso' : 'Ver proceso →';
+                            }
+                            btnStill.hidden = isStill;
+                            btnStill.classList.toggle('is-active', isStill);
+                          }
+
+                          if (btnMotion) {
+                            btnMotion.addEventListener('click', function () { setMediaMode('motion'); });
+                            vActions.appendChild(btnMotion);
+                          }
+                          if (btnProcess) {
+                            btnProcess.addEventListener('click', function () { setMediaMode('process'); });
+                            vActions.appendChild(btnProcess);
+                          }
+                          btnStill.addEventListener('click', function () { setMediaMode('still'); });
+                          vActions.appendChild(btnStill);
+                        }
+
+                        if (prevBtn) prevBtn.disabled = currentIndex <= 0;
       if (nextBtn) nextBtn.disabled = currentIndex >= viewerCards.length - 1;
 
       viewer.classList.add('is-open');

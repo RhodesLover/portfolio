@@ -594,27 +594,29 @@
                   });
                   vActions.appendChild(b);
                 } else if (cdDir && typeof window.openCdCase === 'function') {
-                  const b = document.createElement('button');
-                  b.type = 'button';
-                  b.className = 'pg-viewer__link';
-                  b.textContent = 'Ver caja de CD →';
-                  b.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    window.openCdCase({ dir: cdDir, title: title || 'Desembarco — CD' });
-                  });
-                  vActions.appendChild(b);
-                } else if (bottleDir && typeof window.openBottle3d === 'function') {
-                  const b = document.createElement('button');
-                  b.type = 'button';
-                  b.className = 'pg-viewer__link';
-                  b.textContent = 'Ver botella →';
-                  b.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    window.openBottle3d({ dir: bottleDir, title: title || 'Fernet Cordobita' });
-                  });
-                  vActions.appendChild(b);
+                                  const b = document.createElement('button');
+                                  b.type = 'button';
+                                  // Pack Desembarco: naranja (resto del portfolio = rosa pastel)
+                                  b.className = 'pg-viewer__link pg-viewer__link--pack';
+                                  b.textContent = 'Ver caja de CD →';
+                                  b.addEventListener('click', (e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    window.openCdCase({ dir: cdDir, title: title || 'Desembarco — CD' });
+                                  });
+                                  vActions.appendChild(b);
+                                } else if (bottleDir && typeof window.openBottle3d === 'function') {
+                                  const b = document.createElement('button');
+                                  b.type = 'button';
+                                  // Pack Fernet: naranja (resto del portfolio = rosa pastel)
+                                  b.className = 'pg-viewer__link pg-viewer__link--pack';
+                                  b.textContent = 'Ver botella →';
+                                  b.addEventListener('click', (e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    window.openBottle3d({ dir: bottleDir, title: title || 'Fernet Cordobita' });
+                                  });
+                                  vActions.appendChild(b);
                 } else if (manualDir && typeof window.openBrandManual === 'function') {
           const b = document.createElement('button');
           b.type = 'button';
@@ -647,60 +649,139 @@
       vActions.appendChild(a);
     }
     if (extraVideo && type !== 'video') {
-          const b = document.createElement('button');
-          b.type = 'button';
-          b.className = 'pg-viewer__link pg-viewer__link--ghost';
-          b.textContent = 'Ver motion →';
-          b.addEventListener('click', () => {
-            // Motion opt-in: video completo sin crop, stage sigue el aspect del still o del video
-            if (vImg.naturalWidth && vImg.naturalHeight && zoomStage) {
-              fitStageToMedia(vImg);
+          // Motion / proceso / still: se puede volver a cualquiera (no se deshabilitan)
+          const processVideo = cell.dataset.process || '';
+          const stillSrc = media0 || media || '';
+          const btnMotion = document.createElement('button');
+          btnMotion.type = 'button';
+          btnMotion.className = 'pg-viewer__link pg-viewer__link--ghost';
+          btnMotion.textContent = 'Ver motion →';
+          btnMotion.dataset.mediaMode = 'motion';
+          let btnProcess = null;
+          if (processVideo) {
+            btnProcess = document.createElement('button');
+            btnProcess.type = 'button';
+            btnProcess.className = 'pg-viewer__link pg-viewer__link--ghost';
+            btnProcess.textContent = 'Ver proceso →';
+            btnProcess.dataset.mediaMode = 'process';
+          }
+          const btnStill = document.createElement('button');
+          btnStill.type = 'button';
+          btnStill.className = 'pg-viewer__link pg-viewer__link--ghost';
+          btnStill.textContent = 'Ver imagen →';
+          btnStill.dataset.mediaMode = 'still';
+          btnStill.hidden = true;
+
+          function setMediaMode(mode) {
+            var isStill = mode === 'still';
+            var isMotion = mode === 'motion';
+            var isProcess = mode === 'process';
+            if (isStill) {
+              try { vVideo.pause(); } catch (e) {}
+              vVideo.removeAttribute('src');
+              try { vVideo.load(); } catch (e) {}
+              vVideo.style.display = 'none';
+              if (stillSrc) {
+                vImg.style.display = 'block';
+                if (vImg.getAttribute('src') !== stillSrc) vImg.src = stillSrc;
+                var onStill = function () {
+                  if (typeof fitStageToMedia === 'function') fitStageToMedia(vImg);
+                  vImg.removeEventListener('load', onStill);
+                };
+                vImg.addEventListener('load', onStill);
+                if (vImg.complete && vImg.naturalWidth && typeof fitStageToMedia === 'function') fitStageToMedia(vImg);
+              }
+              if (mediaZoom) mediaZoom.setEnabled(!!stillSrc);
+              setVideoFill(false);
+            } else {
+              var src = isProcess ? processVideo : extraVideo;
+              if (vImg.naturalWidth && vImg.naturalHeight && zoomStage) fitStageToMedia(vImg);
+              vImg.style.display = 'none';
+              vVideo.style.display = 'block';
+              if (stillSrc) vVideo.poster = stillSrc;
+              vVideo.muted = false;
+              if (vVideo.getAttribute('src') !== src) vVideo.src = src;
+              else {
+                try { vVideo.currentTime = 0; } catch (e) {}
+              }
+              var onMeta = function () {
+                fitStageToMedia(vVideo);
+                vVideo.removeEventListener('loadedmetadata', onMeta);
+              };
+              vVideo.addEventListener('loadedmetadata', onMeta);
+              if (vVideo.readyState >= 1) fitStageToMedia(vVideo);
+              setVideoFill(false);
+              vVideo.play().catch(function () {});
+              if (mediaZoom) mediaZoom.setEnabled(false);
             }
-            vImg.style.display = 'none';
-            vVideo.style.display = 'block';
-            if (media) vVideo.poster = media;
-            vVideo.muted = false;
-            vVideo.src = extraVideo;
-            var onMeta = function () {
-              fitStageToMedia(vVideo);
-              vVideo.removeEventListener('loadedmetadata', onMeta);
-            };
-            vVideo.addEventListener('loadedmetadata', onMeta);
-            setVideoFill(false);
-            vVideo.play().catch(() => {});
-            if (mediaZoom) mediaZoom.setEnabled(false);
-            b.disabled = true;
-            b.textContent = 'Motion';
-          });
-          vActions.appendChild(b);
-        }
-        const processVideo = cell.dataset.process || '';
-        if (processVideo && type !== 'video') {
-          const bp = document.createElement('button');
-          bp.type = 'button';
-          bp.className = 'pg-viewer__link pg-viewer__link--ghost';
-          bp.textContent = 'Ver proceso →';
-          bp.addEventListener('click', () => {
-            if (vImg.naturalWidth && vImg.naturalHeight && zoomStage) {
-              fitStageToMedia(vImg);
+            btnMotion.classList.toggle('is-active', isMotion);
+            btnMotion.textContent = isMotion ? 'Motion' : 'Ver motion →';
+            btnStill.hidden = isStill;
+            btnStill.classList.toggle('is-active', isStill);
+            if (btnProcess) {
+              btnProcess.classList.toggle('is-active', isProcess);
+              btnProcess.textContent = isProcess ? 'Proceso' : 'Ver proceso →';
             }
-            vImg.style.display = 'none';
-            vVideo.style.display = 'block';
-            if (media) vVideo.poster = media;
-            vVideo.muted = false;
-            vVideo.src = processVideo;
-            var onMetaP = function () {
-              fitStageToMedia(vVideo);
-              vVideo.removeEventListener('loadedmetadata', onMetaP);
-            };
-            vVideo.addEventListener('loadedmetadata', onMetaP);
-            setVideoFill(false);
-            vVideo.play().catch(() => {});
-            if (mediaZoom) mediaZoom.setEnabled(false);
-            bp.disabled = true;
-            bp.textContent = 'Proceso';
-          });
-          vActions.appendChild(bp);
+          }
+
+          btnMotion.addEventListener('click', function () { setMediaMode('motion'); });
+          btnStill.addEventListener('click', function () { setMediaMode('still'); });
+          if (btnProcess) btnProcess.addEventListener('click', function () { setMediaMode('process'); });
+          vActions.appendChild(btnMotion);
+          if (btnProcess) vActions.appendChild(btnProcess);
+          vActions.appendChild(btnStill);
+        } else {
+          const processVideo = cell.dataset.process || '';
+          if (processVideo && type !== 'video') {
+            const stillSrc = media0 || media || '';
+            const bp = document.createElement('button');
+            bp.type = 'button';
+            bp.className = 'pg-viewer__link pg-viewer__link--ghost';
+            bp.textContent = 'Ver proceso →';
+            const bs = document.createElement('button');
+            bs.type = 'button';
+            bs.className = 'pg-viewer__link pg-viewer__link--ghost';
+            bs.textContent = 'Ver imagen →';
+            bs.hidden = true;
+            function setProcMode(mode) {
+              if (mode === 'still') {
+                try { vVideo.pause(); } catch (e) {}
+                vVideo.removeAttribute('src');
+                try { vVideo.load(); } catch (e) {}
+                vVideo.style.display = 'none';
+                if (stillSrc) {
+                  vImg.style.display = 'block';
+                  if (vImg.getAttribute('src') !== stillSrc) vImg.src = stillSrc;
+                  if (vImg.complete && vImg.naturalWidth) fitStageToMedia(vImg);
+                }
+                if (mediaZoom) mediaZoom.setEnabled(!!stillSrc);
+                bp.classList.remove('is-active');
+                bp.textContent = 'Ver proceso →';
+                bs.hidden = true;
+              } else {
+                vImg.style.display = 'none';
+                vVideo.style.display = 'block';
+                if (stillSrc) vVideo.poster = stillSrc;
+                vVideo.muted = false;
+                vVideo.src = processVideo;
+                var onMetaP = function () {
+                  fitStageToMedia(vVideo);
+                  vVideo.removeEventListener('loadedmetadata', onMetaP);
+                };
+                vVideo.addEventListener('loadedmetadata', onMetaP);
+                setVideoFill(false);
+                vVideo.play().catch(function () {});
+                if (mediaZoom) mediaZoom.setEnabled(false);
+                bp.classList.add('is-active');
+                bp.textContent = 'Proceso';
+                bs.hidden = false;
+              }
+            }
+            bp.addEventListener('click', function () { setProcMode('process'); });
+            bs.addEventListener('click', function () { setProcMode('still'); });
+            vActions.appendChild(bp);
+            vActions.appendChild(bs);
+          }
         }
 
     if (prevBtn) prevBtn.disabled = currentIndex <= 0;

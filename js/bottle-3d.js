@@ -141,31 +141,60 @@
   }
 
   function profilePoints() {
-    // Lathe: x = radio, y = altura. Cuerpo liso (sin relieve Branca).
-    return [
-      new THREE.Vector2(0.0, 0.0),
-      new THREE.Vector2(BODY_R * 0.92, 0.0),
-      new THREE.Vector2(BODY_R * 0.98, 0.035),
-      new THREE.Vector2(BODY_R, 0.1),
-      // cuerpo cilíndrico alto
-      new THREE.Vector2(BODY_R, BODY_TOP * 0.55),
-      new THREE.Vector2(BODY_R * 0.995, BODY_TOP),
-      // hombro suave
-      new THREE.Vector2(BODY_R * 0.88, BODY_TOP + 0.1),
-      new THREE.Vector2(BODY_R * 0.62, BODY_TOP + 0.22),
-      new THREE.Vector2(BODY_R * 0.42, SHOULDER_TOP - 0.08),
-      new THREE.Vector2(NECK_R * 1.15, SHOULDER_TOP),
-      // cuello
-      new THREE.Vector2(NECK_R, SHOULDER_TOP + 0.08),
-      new THREE.Vector2(NECK_R, NECK_TOP - 0.12),
-      // finish / zona de rosca
-      new THREE.Vector2(FINISH_R * 0.95, NECK_TOP - 0.06),
-      new THREE.Vector2(FINISH_R, NECK_TOP),
-      new THREE.Vector2(FINISH_R * 0.98, LIP_TOP - 0.04),
-      new THREE.Vector2(FINISH_R * 0.88, LIP_TOP),
-      new THREE.Vector2(0.0, LIP_TOP)
-    ];
-  }
+      // Lathe: x = radio, y = altura.
+      // Más puntos de control en hombro/base = silueta más redonda (look SDS sin Modifier).
+      return [
+        new THREE.Vector2(0.0, 0.0),
+        new THREE.Vector2(BODY_R * 0.78, 0.0),
+        new THREE.Vector2(BODY_R * 0.92, 0.018),
+        new THREE.Vector2(BODY_R * 0.98, 0.05),
+        new THREE.Vector2(BODY_R, 0.12),
+        // cuerpo cilíndrico alto (leve belly suave)
+        new THREE.Vector2(BODY_R * 1.005, BODY_TOP * 0.35),
+        new THREE.Vector2(BODY_R, BODY_TOP * 0.55),
+        new THREE.Vector2(BODY_R * 0.998, BODY_TOP * 0.82),
+        new THREE.Vector2(BODY_R * 0.99, BODY_TOP),
+        // hombro muy suave (curva larga tipo subdivision)
+        new THREE.Vector2(BODY_R * 0.94, BODY_TOP + 0.06),
+        new THREE.Vector2(BODY_R * 0.82, BODY_TOP + 0.14),
+        new THREE.Vector2(BODY_R * 0.66, BODY_TOP + 0.22),
+        new THREE.Vector2(BODY_R * 0.5, SHOULDER_TOP - 0.1),
+        new THREE.Vector2(BODY_R * 0.36, SHOULDER_TOP - 0.04),
+        new THREE.Vector2(NECK_R * 1.28, SHOULDER_TOP),
+        new THREE.Vector2(NECK_R * 1.1, SHOULDER_TOP + 0.05),
+        // cuello
+        new THREE.Vector2(NECK_R * 1.02, SHOULDER_TOP + 0.1),
+        new THREE.Vector2(NECK_R, NECK_TOP - 0.14),
+        new THREE.Vector2(NECK_R * 1.02, NECK_TOP - 0.1),
+        // finish / zona de rosca (filetes más redondos)
+        new THREE.Vector2(FINISH_R * 0.9, NECK_TOP - 0.07),
+        new THREE.Vector2(FINISH_R * 0.98, NECK_TOP - 0.03),
+        new THREE.Vector2(FINISH_R, NECK_TOP),
+        new THREE.Vector2(FINISH_R * 0.99, LIP_TOP - 0.05),
+        new THREE.Vector2(FINISH_R * 0.92, LIP_TOP - 0.02),
+        new THREE.Vector2(FINISH_R * 0.82, LIP_TOP),
+        new THREE.Vector2(0.0, LIP_TOP)
+      ];
+    }
+
+    /** Suaviza la polyline del perfil (Chaikin) → look Subdivision Surface. */
+    function smoothProfile(pts, iterations) {
+      iterations = iterations == null ? 2 : iterations;
+      var out = pts.slice();
+      for (var n = 0; n < iterations; n++) {
+        var next = [];
+        next.push(out[0].clone());
+        for (var i = 0; i < out.length - 1; i++) {
+          var a = out[i];
+          var b = out[i + 1];
+          next.push(new THREE.Vector2(a.x * 0.75 + b.x * 0.25, a.y * 0.75 + b.y * 0.25));
+          next.push(new THREE.Vector2(a.x * 0.25 + b.x * 0.75, a.y * 0.25 + b.y * 0.75));
+        }
+        next.push(out[out.length - 1].clone());
+        out = next;
+      }
+      return out;
+    }
 
   function liquidPoints() {
     var inset = 0.03;
@@ -199,9 +228,9 @@
     var bodyH = 0.2;
     var capR = FINISH_R + 0.012;
     var body = new THREE.Mesh(
-      new THREE.CylinderGeometry(capR, capR * 1.02, bodyH, 48),
-      black
-    );
+          new THREE.CylinderGeometry(capR, capR * 1.02, bodyH, 64),
+          black
+        );
     body.position.y = bodyH * 0.5;
     body.castShadow = true;
     g.add(body);
@@ -312,28 +341,30 @@
     rootGroup = new THREE.Group();
     scene.add(rootGroup);
 
-    var pts = profilePoints();
-    var bodyGeo = new THREE.LatheGeometry(pts, 96);
-    bodyGeo.computeVertexNormals();
+    // Perfil suavizado (Chaikin) + más segmentos = look SDS sin modifier C4D
+        var pts = smoothProfile(profilePoints(), 2);
+        var bodyGeo = new THREE.LatheGeometry(pts, 160);
+        bodyGeo.computeVertexNormals();
 
-    // shell vidrio negro opaco
-    var shell = new THREE.Mesh(
-      bodyGeo,
-      blackGlassMat({ roughness: 0.16 })
-    );
-    shell.castShadow = true;
-    shell.receiveShadow = true;
-    shell.renderOrder = 1;
-    rootGroup.add(shell);
+        // shell vidrio negro opaco
+        var shell = new THREE.Mesh(
+          bodyGeo,
+          blackGlassMat({ roughness: 0.14 })
+        );
+        shell.castShadow = true;
+        shell.receiveShadow = true;
+        shell.renderOrder = 1;
+        rootGroup.add(shell);
 
-    // capa interior oscura (volumen)
-    var innerPts = profilePoints().map(function (v) {
-      return new THREE.Vector2(Math.max(0, v.x * 0.94), v.y);
-    });
-    var innerGeo = new THREE.LatheGeometry(innerPts, 64);
-    var inner = new THREE.Mesh(innerGeo, glassInnerMat());
-    inner.renderOrder = 0;
-    rootGroup.add(inner);
+        // capa interior oscura (volumen) — misma curva suavizada
+        var innerPts = pts.map(function (v) {
+          return new THREE.Vector2(Math.max(0, v.x * 0.94), v.y);
+        });
+        var innerGeo = new THREE.LatheGeometry(innerPts, 96);
+        innerGeo.computeVertexNormals();
+        var inner = new THREE.Mesh(innerGeo, glassInnerMat());
+        inner.renderOrder = 0;
+        rootGroup.add(inner);
 
     // etiquetas Cordobita en el cuerpo (arco se ajusta al aspect de cada arte)
     var labelH = 1.05;

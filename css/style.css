@@ -1054,11 +1054,11 @@ ul { list-style: none; }
   opacity: 1;
 }
 
-/* ---------- FOOTER ---------- */
+/* ---------- FOOTER (base; site/pg-footer override below) ---------- */
 .footer {
-  padding: 2rem;
-  text-align: center;
-  border-top: 1px solid rgba(255,255,255,0.04);
+  padding: 0;
+  text-align: left;
+  border-top: none;
 }
 
 .footer p {
@@ -1816,8 +1816,9 @@ body.modal-open .nav {
   gap: var(--space-4);
 }
 .pg-grid--modelos {
-  grid-template-columns: 1fr;
-  max-width: 720px;
+  grid-template-columns: minmax(0, 1fr);
+  max-width: min(420px, 100%);
+  margin-inline: 0;
 }
 
 /* Cells */
@@ -1957,23 +1958,179 @@ body.modal-open .nav {
 .pg-cell--model .pg-cell__frame { aspect-ratio: 16/11; }
 
 .pg-footer {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem 1.75rem;
   max-width: var(--pg-max);
-  margin: 0 auto;
-  padding: 0 clamp(1.25rem, 4vw, 3rem) var(--space-8);
+  margin: 3.5rem auto 0;
+  padding: 1.75rem clamp(1.25rem, 4vw, 3rem) 2.5rem;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+.pg-footer__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+}
+.pg-footer__mark {
+  flex: 0 0 auto;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,197,211,0.45);
+  display: grid;
+  place-items: center;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #FFC5D3;
+  background: rgba(255,197,211,0.06);
+}
+.pg-footer__copy { min-width: 0; }
+.pg-footer__name {
+  margin: 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: rgba(245,245,245,0.92);
+  letter-spacing: 0.02em;
+}
+.pg-footer__meta {
+  margin: 0.2rem 0 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.68rem;
+  color: rgba(245,245,245,0.42);
+  letter-spacing: 0.04em;
+}
+.pg-footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem 1.25rem;
+  justify-content: flex-end;
 }
 .pg-footer__link {
   font-family: 'DM Sans', sans-serif;
   font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #FFC5D3;
+  color: rgba(245,245,245,0.55);
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
-.pg-footer__link:hover { color: #ffa8b9; }
+.pg-footer__link:hover { color: #FFC5D3; }
+.pg-footer__link--accent { color: #FFC5D3; }
+.pg-footer__link--accent:hover { color: #ffa8b9; }
+.pg-footer__year {
+  margin: 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: rgba(245,245,245,0.28);
+  justify-self: end;
+}
+.footer:not(.pg-footer):not(.site-footer) {
+  /* legacy bare footer fallback */
+  padding: 2rem;
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+.footer p {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.7rem;
+  color: rgba(245,245,245,0.15);
+  letter-spacing: 1px;
+}
+
+/* Home site footer */
+.site-footer {
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding: 0;
+  text-align: left;
+}
+.site-footer__inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 1.75rem clamp(1.25rem, 4vw, 2.5rem) 2.5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1.25rem 1.75rem;
+}
+.site-footer__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+}
+.site-footer__mark {
+  flex: 0 0 auto;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,197,211,0.45);
+  display: grid;
+  place-items: center;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #FFC5D3;
+  background: rgba(255,197,211,0.06);
+}
+.site-footer__name {
+  margin: 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: rgba(245,245,245,0.92);
+}
+.site-footer__meta {
+  margin: 0.2rem 0 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.68rem;
+  color: rgba(245,245,245,0.42);
+}
+.site-footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem 1.25rem;
+  justify-content: flex-end;
+}
+.site-footer__link {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(245,245,245,0.55);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.site-footer__link:hover { color: #FFC5D3; }
+.site-footer__link--accent { color: #FFC5D3; }
+.site-footer__link--accent:hover { color: #ffa8b9; }
+.site-footer__year {
+  margin: 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: rgba(245,245,245,0.28);
+  justify-self: end;
+}
+@media (max-width: 720px) {
+  .pg-footer,
+  .site-footer__inner {
+    grid-template-columns: 1fr;
+    justify-items: start;
+  }
+  .pg-footer__nav,
+  .site-footer__nav { justify-content: flex-start; }
+  .pg-footer__year,
+  .site-footer__year { justify-self: start; }
+}
 
 /* Viewer */
 .pg-viewer {
@@ -2248,6 +2405,27 @@ body.modal-open .nav {
 .pg-viewer__link--ghost:hover {
   background: rgba(255,197,211,0.08);
   color: #fff;
+}
+.pg-viewer__link--ghost.is-active {
+  background: rgba(255,197,211,0.14);
+  color: #fff;
+  border-color: rgba(255,197,211,0.55);
+}
+.pg-viewer__link:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* Accent naranja solo en packaging interactivo (Fernet / Desembarco) */
+.pg-viewer__link--pack {
+  background: transparent;
+  color: #fb650e;
+  border-color: #fb650e;
+}
+.pg-viewer__link--pack:hover {
+  background: rgba(251,101,14,0.12);
+  color: #fb650e;
+  border-color: #fb650e;
 }
 
 body.pg-viewer-open .nav { opacity: 0; pointer-events: none; }
@@ -3259,19 +3437,31 @@ body.carta-revista-open #trailCanvas {
 }
 .carta-revista.is-large .carta-revista__dots::-webkit-scrollbar { display: none; }
 
-/* Revistas grid en archivo — 2 columnas iguales, tapa vertical */
+/* Revistas grid en archivo — más chicas, proporción tapa vertical */
 .pg-grid--revistas {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 220px));
   gap: clamp(0.85rem, 1.6vw, 1.35rem);
   align-items: stretch;
+  justify-content: start;
+  max-width: 520px;
 }
 .pg-grid--revistas .pg-cell .pg-cell__frame,
 .pg-grid--revistas .pg-cell--feature .pg-cell__frame {
   aspect-ratio: 3 / 4;
-  min-height: min(42vh, 460px);
+  min-height: 0;
+  max-height: none;
 }
 @media (max-width: 768px) {
-  .pg-grid--revistas { grid-template-columns: 1fr; }
+  .pg-grid--revistas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 420px;
+  }
+}
+@media (max-width: 480px) {
+  .pg-grid--revistas {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 260px;
+  }
 }
 
 /* ============================================================
