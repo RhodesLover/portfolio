@@ -294,20 +294,30 @@
   }
 
   function clearViewerMedia() {
-    vVideo.pause();
-    vVideo.removeAttribute('src');
-    vVideo.load();
-    vVideo.style.display = 'none';
-    vImg.removeAttribute('src');
-    vImg.style.display = 'none';
-    if (mediaZoom) mediaZoom.setEnabled(false);
-    setVideoFill(false);
-    if (zoomStage) {
-      zoomStage.style.aspectRatio = '';
-      zoomStage.style.removeProperty('--media-ar');
-      zoomStage.classList.remove('is-fitted', 'is-video-fill');
+      vVideo.pause();
+      try { vVideo.muted = false; } catch (e) {}
+      vVideo.removeAttribute('src');
+      vVideo.load();
+      vVideo.style.display = 'none';
+      vImg.removeAttribute('src');
+      vImg.style.display = 'none';
+      if (mediaZoom) mediaZoom.setEnabled(false);
+      setVideoFill(false);
+      if (zoomStage) {
+        zoomStage.style.aspectRatio = '';
+        zoomStage.style.removeProperty('--media-ar');
+        zoomStage.classList.remove('is-fitted', 'is-video-fill');
+      }
+      var ov = document.getElementById('pgGalOverlay');
+      if (ov) {
+        ov.hidden = true;
+        ov.classList.remove('is-on');
+        var bp = ov.querySelector('[data-gal="-1"]');
+        var bn = ov.querySelector('[data-gal="1"]');
+        if (bp) bp.hidden = false;
+        if (bn) bn.hidden = false;
+      }
     }
-  }
 
 
   function parseGallery(el) {
@@ -358,55 +368,93 @@
   }
 
   function bindGallery(state) {
-    if (state._bound) return;
-    state._bound = true;
-    var nav = state.chrome && state.chrome.nav;
-    if (nav) {
-      nav.addEventListener('click', function (e) {
-        var btn = e.target.closest('[data-gal]');
-        if (!btn || !state.list || state.list.length < 2) return;
-        var d = parseInt(btn.getAttribute('data-gal'), 10) || 0;
-        if (!d) return;
-        state.idx = (state.idx + d + state.list.length) % state.list.length;
+      if (state._bound) return;
+      state._bound = true;
+      function step(d) {
+        if (!state.list || state.list.length < 2 || !d) return;
+        // no wrap: stop at edges
+        var next = state.idx + d;
+        if (next < 0 || next >= state.list.length) return;
+        state.idx = next;
         state.render();
-      });
+      }
+      var nav = state.chrome && state.chrome.nav;
+      if (nav) {
+        nav.addEventListener('click', function (e) {
+          var btn = e.target.closest('[data-gal]');
+          if (!btn || !state.list || state.list.length < 2) return;
+          var d = parseInt(btn.getAttribute('data-gal'), 10) || 0;
+          step(d);
+        });
+      }
+      var ov = document.getElementById('pgGalOverlay');
+      if (ov && !ov._galBound) {
+        ov._galBound = true;
+        ov.addEventListener('click', function (e) {
+          var btn = e.target.closest('[data-gal]');
+          if (!btn || !state.list || state.list.length < 2) return;
+          e.preventDefault();
+          e.stopPropagation();
+          var d = parseInt(btn.getAttribute('data-gal'), 10) || 0;
+          step(d);
+        });
+      }
     }
-  }
 
-  function setGallery(state, list, onShow) {
-    state.list = list || [];
-    state.idx = 0;
-    state.onShow = onShow;
-    state.render = function () {
-      var list = state.list || [];
-      var multi = list.length > 1;
-      if (state.chrome && state.chrome.nav) state.chrome.nav.classList.toggle('is-on', multi);
-      if (state.chrome && state.chrome.dots) {
-        state.chrome.dots.classList.toggle('is-on', multi);
-        state.chrome.dots.innerHTML = '';
-        if (multi) {
-          list.forEach(function (_, i) {
-            var b = document.createElement('button');
-            b.type = 'button';
-            b.setAttribute('aria-label', 'Ir a imagen ' + (i + 1));
-            if (i === state.idx) b.classList.add('is-active');
-            b.addEventListener('click', function () {
-              state.idx = i;
-              state.render();
-            });
-            state.chrome.dots.appendChild(b);
-          });
+    function setGallery(state, list, onShow, opts) {
+      state.list = list || [];
+      state.idx = 0;
+      state.onShow = onShow;
+      state.overlay = !!(opts && opts.overlay);
+      state.render = function () {
+        var list = state.list || [];
+        var multi = list.length > 1;
+        var useOverlay = multi && state.overlay;
+        if (state.chrome && state.chrome.nav) {
+          // panel nav only when multi AND not image-overlay mode
+          state.chrome.nav.classList.toggle('is-on', multi && !useOverlay);
         }
-      }
-      if (state.chrome && state.chrome.label) {
-        var src = list[state.idx] || '';
-        state.chrome.label.textContent = multi ? galleryLabel(src, state.idx, list.length) : '';
-      }
-      if (typeof state.onShow === 'function') state.onShow(list[state.idx] || '', state.idx, list);
-    };
-    bindGallery(state);
-    state.render();
-  }
+        if (state.chrome && state.chrome.dots) {
+          state.chrome.dots.classList.toggle('is-on', multi);
+          state.chrome.dots.innerHTML = '';
+          if (multi) {
+            list.forEach(function (_, i) {
+              var b = document.createElement('button');
+              b.type = 'button';
+              b.setAttribute('aria-label', 'Ir a imagen ' + (i + 1));
+              if (i === state.idx) b.classList.add('is-active');
+              b.addEventListener('click', function () {
+                state.idx = i;
+                state.render();
+              });
+              state.chrome.dots.appendChild(b);
+            });
+          }
+        }
+        if (state.chrome && state.chrome.label) {
+          var src = list[state.idx] || '';
+          state.chrome.label.textContent = multi && !useOverlay ? galleryLabel(src, state.idx, list.length) : (multi ? galleryLabel(src, state.idx, list.length) : '');
+        }
+        var ov = document.getElementById('pgGalOverlay');
+        if (ov) {
+          if (useOverlay) {
+            ov.hidden = false;
+            ov.classList.add('is-on');
+            var bp = ov.querySelector('[data-gal="-1"]');
+            var bn = ov.querySelector('[data-gal="1"]');
+            // first: no left; last: no right
+            if (bp) bp.hidden = state.idx <= 0;
+            if (bn) bn.hidden = state.idx >= list.length - 1;
+          } else {
+            ov.hidden = true;
+            ov.classList.remove('is-on');
+          }
+        }
+        if (typeof state.onShow === 'function') state.onShow(list[state.idx] || '', state.idx, list);
+      };
+      bindGallery(state);
+      state.render();
+    }
 
   window.parseGallery = parseGallery;
   window.setGallery = setGallery;
@@ -440,51 +488,53 @@
     // Imagen/poster primero. Si es video nativo (redes), abre video.
     // Piezas con data-video (Fly Moon / Tokyo) abren el still y el motion es opt-in.
     if (type === 'video') {
-      vVideo.style.display = 'block';
-      if (poster) vVideo.poster = poster;
-      vVideo.src = media;
-      var onMeta = function () {
-        fitStageToMedia(vVideo);
-        vVideo.removeEventListener('loadedmetadata', onMeta);
-      };
-      vVideo.addEventListener('loadedmetadata', onMeta);
-      if (vVideo.readyState >= 1) fitStageToMedia(vVideo);
-      vVideo.play().catch(function () {});
-      setVideoFill(false);
-      if (mediaZoom) mediaZoom.setEnabled(false);
-    } else {
-      setGallery(galleryState, galleryList.length ? galleryList : [media0 || media || ''], function (src) {
-      if (!src) {
-        vImg.removeAttribute('src');
-        vImg.style.display = 'none';
-        return;
-      }
-      vImg.style.display = 'block';
-      vImg.src = src;
-      vImg.alt = title;
-      const onGalLoad = function () {
-        if (typeof fitStageToMedia === 'function') fitStageToMedia(vImg);
-        vImg.removeEventListener('load', onGalLoad);
-      };
-      vImg.addEventListener('load', onGalLoad);
-      if (vImg.complete && vImg.naturalWidth && typeof fitStageToMedia === 'function') fitStageToMedia(vImg);
-      if (typeof viewerZoom !== 'undefined' && viewerZoom) {
-        try { if (viewerZoom.reset) viewerZoom.reset(); } catch (e) {}
-        try { if (viewerZoom.setEnabled) viewerZoom.setEnabled(true); } catch (e) {}
-      } else if (typeof pgZoom !== 'undefined' && pgZoom) {
-        try { if (pgZoom.reset) pgZoom.reset(); } catch (e) {}
-        try { if (pgZoom.setEnabled) pgZoom.setEnabled(true); } catch (e) {}
-      }
-    });
-      var onLoad = function () {
-        fitStageToMedia(vImg);
-        vImg.removeEventListener('load', onLoad);
-      };
-      vImg.addEventListener('load', onLoad);
-      if (vImg.complete && vImg.naturalWidth) fitStageToMedia(vImg);
-      setVideoFill(false);
-      if (mediaZoom) mediaZoom.setEnabled(!!media);
-    }
+          vVideo.style.display = 'block';
+          if (poster) vVideo.poster = poster;
+          vVideo.muted = false;
+          vVideo.src = media;
+          var onMeta = function () {
+            fitStageToMedia(vVideo);
+            vVideo.removeEventListener('loadedmetadata', onMeta);
+          };
+          vVideo.addEventListener('loadedmetadata', onMeta);
+          if (vVideo.readyState >= 1) fitStageToMedia(vVideo);
+          vVideo.play().catch(function () {});
+          setVideoFill(false);
+          if (mediaZoom) mediaZoom.setEnabled(false);
+        } else {
+          var useOverlay = cell.dataset.galleryOverlay === '1' || cell.dataset.galleryOverlay === 'true';
+          setGallery(galleryState, galleryList.length ? galleryList : [media0 || media || ''], function (src) {
+          if (!src) {
+            vImg.removeAttribute('src');
+            vImg.style.display = 'none';
+            return;
+          }
+          vImg.style.display = 'block';
+          vImg.src = src;
+          vImg.alt = title;
+          const onGalLoad = function () {
+            if (typeof fitStageToMedia === 'function') fitStageToMedia(vImg);
+            vImg.removeEventListener('load', onGalLoad);
+          };
+          vImg.addEventListener('load', onGalLoad);
+          if (vImg.complete && vImg.naturalWidth && typeof fitStageToMedia === 'function') fitStageToMedia(vImg);
+          if (typeof viewerZoom !== 'undefined' && viewerZoom) {
+            try { if (viewerZoom.reset) viewerZoom.reset(); } catch (e) {}
+            try { if (viewerZoom.setEnabled) viewerZoom.setEnabled(true); } catch (e) {}
+          } else if (typeof pgZoom !== 'undefined' && pgZoom) {
+            try { if (pgZoom.reset) pgZoom.reset(); } catch (e) {}
+            try { if (pgZoom.setEnabled) pgZoom.setEnabled(true); } catch (e) {}
+          }
+        }, { overlay: useOverlay });
+          var onLoad = function () {
+            fitStageToMedia(vImg);
+            vImg.removeEventListener('load', onLoad);
+          };
+          vImg.addEventListener('load', onLoad);
+          if (vImg.complete && vImg.naturalWidth) fitStageToMedia(vImg);
+          setVideoFill(false);
+          if (mediaZoom) mediaZoom.setEnabled(!!media);
+        }
 
     vTitle.textContent = title;
     vCat.textContent = cat;
@@ -597,32 +647,61 @@
       vActions.appendChild(a);
     }
     if (extraVideo && type !== 'video') {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'pg-viewer__link pg-viewer__link--ghost';
-      b.textContent = 'Ver motion →';
-      b.addEventListener('click', () => {
-        // Motion opt-in: video completo sin crop, stage sigue el aspect del still o del video
-        if (vImg.naturalWidth && vImg.naturalHeight && zoomStage) {
-          fitStageToMedia(vImg);
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'pg-viewer__link pg-viewer__link--ghost';
+          b.textContent = 'Ver motion →';
+          b.addEventListener('click', () => {
+            // Motion opt-in: video completo sin crop, stage sigue el aspect del still o del video
+            if (vImg.naturalWidth && vImg.naturalHeight && zoomStage) {
+              fitStageToMedia(vImg);
+            }
+            vImg.style.display = 'none';
+            vVideo.style.display = 'block';
+            if (media) vVideo.poster = media;
+            vVideo.muted = false;
+            vVideo.src = extraVideo;
+            var onMeta = function () {
+              fitStageToMedia(vVideo);
+              vVideo.removeEventListener('loadedmetadata', onMeta);
+            };
+            vVideo.addEventListener('loadedmetadata', onMeta);
+            setVideoFill(false);
+            vVideo.play().catch(() => {});
+            if (mediaZoom) mediaZoom.setEnabled(false);
+            b.disabled = true;
+            b.textContent = 'Motion';
+          });
+          vActions.appendChild(b);
         }
-        vImg.style.display = 'none';
-        vVideo.style.display = 'block';
-        if (media) vVideo.poster = media;
-        vVideo.src = extraVideo;
-        var onMeta = function () {
-          fitStageToMedia(vVideo);
-          vVideo.removeEventListener('loadedmetadata', onMeta);
-        };
-        vVideo.addEventListener('loadedmetadata', onMeta);
-        setVideoFill(false);
-        vVideo.play().catch(() => {});
-        if (mediaZoom) mediaZoom.setEnabled(false);
-        b.disabled = true;
-        b.textContent = 'Motion';
-      });
-      vActions.appendChild(b);
-    }
+        const processVideo = cell.dataset.process || '';
+        if (processVideo && type !== 'video') {
+          const bp = document.createElement('button');
+          bp.type = 'button';
+          bp.className = 'pg-viewer__link pg-viewer__link--ghost';
+          bp.textContent = 'Ver proceso →';
+          bp.addEventListener('click', () => {
+            if (vImg.naturalWidth && vImg.naturalHeight && zoomStage) {
+              fitStageToMedia(vImg);
+            }
+            vImg.style.display = 'none';
+            vVideo.style.display = 'block';
+            if (media) vVideo.poster = media;
+            vVideo.muted = false;
+            vVideo.src = processVideo;
+            var onMetaP = function () {
+              fitStageToMedia(vVideo);
+              vVideo.removeEventListener('loadedmetadata', onMetaP);
+            };
+            vVideo.addEventListener('loadedmetadata', onMetaP);
+            setVideoFill(false);
+            vVideo.play().catch(() => {});
+            if (mediaZoom) mediaZoom.setEnabled(false);
+            bp.disabled = true;
+            bp.textContent = 'Proceso';
+          });
+          vActions.appendChild(bp);
+        }
 
     if (prevBtn) prevBtn.disabled = currentIndex <= 0;
     if (nextBtn) nextBtn.disabled = currentIndex >= visibleCells.length - 1;

@@ -44,50 +44,85 @@
     }
     return { nav: nav, label: document.getElementById(ids.label), dots: dots };
   };
-  w.setGallery = function (state, list, onShow) {
-    state.list = list || [];
-    state.idx = 0;
-    state.onShow = onShow;
-    if (!state._bound && state.chrome && state.chrome.nav) {
-      state._bound = true;
-      state.chrome.nav.addEventListener('click', function (e) {
-        var btn = e.target.closest('[data-gal]');
-        if (!btn || !state.list || state.list.length < 2) return;
-        var d = parseInt(btn.getAttribute('data-gal'), 10) || 0;
-        if (!d) return;
-        state.idx = (state.idx + d + state.list.length) % state.list.length;
+  w.setGallery = function (state, list, onShow, opts) {
+      state.list = list || [];
+      state.idx = 0;
+      state.onShow = onShow;
+      state.overlay = !!(opts && opts.overlay);
+      function step(d) {
+        if (!state.list || state.list.length < 2 || !d) return;
+        var next = state.idx + d;
+        if (next < 0 || next >= state.list.length) return;
+        state.idx = next;
         state.render();
-      });
-    }
-    state.render = function () {
-      var list = state.list || [];
-      var multi = list.length > 1;
-      if (state.chrome && state.chrome.nav) state.chrome.nav.classList.toggle('is-on', multi);
-      if (state.chrome && state.chrome.dots) {
-        state.chrome.dots.classList.toggle('is-on', multi);
-        state.chrome.dots.innerHTML = '';
-        if (multi) {
-          list.forEach(function (_, i) {
-            var b = document.createElement('button');
-            b.type = 'button';
-            b.setAttribute('aria-label', 'Ir a imagen ' + (i + 1));
-            if (i === state.idx) b.classList.add('is-active');
-            b.addEventListener('click', function () {
-              state.idx = i;
-              state.render();
-            });
-            state.chrome.dots.appendChild(b);
+      }
+      if (!state._bound) {
+        state._bound = true;
+        if (state.chrome && state.chrome.nav) {
+          state.chrome.nav.addEventListener('click', function (e) {
+            var btn = e.target.closest('[data-gal]');
+            if (!btn || !state.list || state.list.length < 2) return;
+            var d = parseInt(btn.getAttribute('data-gal'), 10) || 0;
+            step(d);
+          });
+        }
+        var ov0 = document.getElementById('pgGalOverlay');
+        if (ov0 && !ov0._galBound) {
+          ov0._galBound = true;
+          ov0.addEventListener('click', function (e) {
+            var btn = e.target.closest('[data-gal]');
+            if (!btn || !state.list || state.list.length < 2) return;
+            e.preventDefault();
+            e.stopPropagation();
+            var d = parseInt(btn.getAttribute('data-gal'), 10) || 0;
+            step(d);
           });
         }
       }
-      if (state.chrome && state.chrome.label) {
-        var src = list[state.idx] || '';
-        state.chrome.label.textContent = multi ? w.galleryLabel(src, state.idx, list.length) : '';
-      }
-      if (typeof state.onShow === 'function') state.onShow(list[state.idx] || '', state.idx, list);
+      state.render = function () {
+        var list = state.list || [];
+        var multi = list.length > 1;
+        var useOverlay = multi && state.overlay;
+        if (state.chrome && state.chrome.nav) state.chrome.nav.classList.toggle('is-on', multi && !useOverlay);
+        if (state.chrome && state.chrome.dots) {
+          state.chrome.dots.classList.toggle('is-on', multi);
+          state.chrome.dots.innerHTML = '';
+          if (multi) {
+            list.forEach(function (_, i) {
+              var b = document.createElement('button');
+              b.type = 'button';
+              b.setAttribute('aria-label', 'Ir a imagen ' + (i + 1));
+              if (i === state.idx) b.classList.add('is-active');
+              b.addEventListener('click', function () {
+                state.idx = i;
+                state.render();
+              });
+              state.chrome.dots.appendChild(b);
+            });
+          }
+        }
+        if (state.chrome && state.chrome.label) {
+          var src = list[state.idx] || '';
+          state.chrome.label.textContent = multi ? w.galleryLabel(src, state.idx, list.length) : '';
+        }
+        var ov = document.getElementById('pgGalOverlay');
+        if (ov) {
+          if (useOverlay) {
+            ov.hidden = false;
+            ov.classList.add('is-on');
+            var bp = ov.querySelector('[data-gal="-1"]');
+            var bn = ov.querySelector('[data-gal="1"]');
+            if (bp) bp.hidden = state.idx <= 0;
+            if (bn) bn.hidden = state.idx >= list.length - 1;
+          } else {
+            ov.hidden = true;
+            ov.classList.remove('is-on');
+          }
+        }
+        if (typeof state.onShow === 'function') state.onShow(list[state.idx] || '', state.idx, list);
+      };
+      state.render();
     };
-    state.render();
-  };
 })(window);
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -944,20 +979,30 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function clearViewerMedia() {
-    vVideo.pause();
-    vVideo.removeAttribute('src');
-    vVideo.load();
-    vVideo.style.display = 'none';
-    vImg.removeAttribute('src');
-    vImg.style.display = 'none';
-    if (mediaZoom) mediaZoom.setEnabled(false);
-    setVideoFill(false);
-    if (zoomStage) {
-      zoomStage.style.aspectRatio = '';
-      zoomStage.style.removeProperty('--media-ar');
-      zoomStage.classList.remove('is-fitted', 'is-video-fill');
+      vVideo.pause();
+      try { vVideo.muted = false; } catch (e) {}
+      vVideo.removeAttribute('src');
+      vVideo.load();
+      vVideo.style.display = 'none';
+      vImg.removeAttribute('src');
+      vImg.style.display = 'none';
+      if (mediaZoom) mediaZoom.setEnabled(false);
+      setVideoFill(false);
+      if (zoomStage) {
+        zoomStage.style.aspectRatio = '';
+        zoomStage.style.removeProperty('--media-ar');
+        zoomStage.classList.remove('is-fitted', 'is-video-fill');
+      }
+      var ov = document.getElementById('pgGalOverlay');
+      if (ov) {
+        ov.hidden = true;
+        ov.classList.remove('is-on');
+        var bp = ov.querySelector('[data-gal="-1"]');
+        var bn = ov.querySelector('[data-gal="1"]');
+        if (bp) bp.hidden = false;
+        if (bn) bn.hidden = false;
+      }
     }
-  }
 
 
   function parseGallery(el) {
@@ -1009,55 +1054,88 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function bindGallery(state) {
-    if (state._bound) return;
-    state._bound = true;
-    var nav = state.chrome && state.chrome.nav;
-    if (nav) {
-      nav.addEventListener('click', function (e) {
-        var btn = e.target.closest('[data-gal]');
-        if (!btn || !state.list || state.list.length < 2) return;
-        var d = parseInt(btn.getAttribute('data-gal'), 10) || 0;
-        if (!d) return;
-        state.idx = (state.idx + d + state.list.length) % state.list.length;
+      if (state._bound) return;
+      state._bound = true;
+      function step(d) {
+        if (!state.list || state.list.length < 2 || !d) return;
+        var next = state.idx + d;
+        if (next < 0 || next >= state.list.length) return;
+        state.idx = next;
         state.render();
-      });
+      }
+      var nav = state.chrome && state.chrome.nav;
+      if (nav) {
+        nav.addEventListener('click', function (e) {
+          var btn = e.target.closest('[data-gal]');
+          if (!btn || !state.list || state.list.length < 2) return;
+          var d = parseInt(btn.getAttribute('data-gal'), 10) || 0;
+          step(d);
+        });
+      }
+      var ov = document.getElementById('pgGalOverlay');
+      if (ov && !ov._galBound) {
+        ov._galBound = true;
+        ov.addEventListener('click', function (e) {
+          var btn = e.target.closest('[data-gal]');
+          if (!btn || !state.list || state.list.length < 2) return;
+          e.preventDefault();
+          e.stopPropagation();
+          var d = parseInt(btn.getAttribute('data-gal'), 10) || 0;
+          step(d);
+        });
+      }
     }
-  }
 
-  function setGallery(state, list, onShow) {
-    state.list = list || [];
-    state.idx = 0;
-    state.onShow = onShow;
-    state.render = function () {
-      var list = state.list || [];
-      var multi = list.length > 1;
-      if (state.chrome && state.chrome.nav) state.chrome.nav.classList.toggle('is-on', multi);
-      if (state.chrome && state.chrome.dots) {
-        state.chrome.dots.classList.toggle('is-on', multi);
-        state.chrome.dots.innerHTML = '';
-        if (multi) {
-          list.forEach(function (_, i) {
-            var b = document.createElement('button');
-            b.type = 'button';
-            b.setAttribute('aria-label', 'Ir a imagen ' + (i + 1));
-            if (i === state.idx) b.classList.add('is-active');
-            b.addEventListener('click', function () {
-              state.idx = i;
-              state.render();
+    function setGallery(state, list, onShow, opts) {
+      state.list = list || [];
+      state.idx = 0;
+      state.onShow = onShow;
+      state.overlay = !!(opts && opts.overlay);
+      state.render = function () {
+        var list = state.list || [];
+        var multi = list.length > 1;
+        var useOverlay = multi && state.overlay;
+        if (state.chrome && state.chrome.nav) state.chrome.nav.classList.toggle('is-on', multi && !useOverlay);
+        if (state.chrome && state.chrome.dots) {
+          state.chrome.dots.classList.toggle('is-on', multi);
+          state.chrome.dots.innerHTML = '';
+          if (multi) {
+            list.forEach(function (_, i) {
+              var b = document.createElement('button');
+              b.type = 'button';
+              b.setAttribute('aria-label', 'Ir a imagen ' + (i + 1));
+              if (i === state.idx) b.classList.add('is-active');
+              b.addEventListener('click', function () {
+                state.idx = i;
+                state.render();
+              });
+              state.chrome.dots.appendChild(b);
             });
-            state.chrome.dots.appendChild(b);
-          });
+          }
         }
-      }
-      if (state.chrome && state.chrome.label) {
-        var src = list[state.idx] || '';
-        state.chrome.label.textContent = multi ? galleryLabel(src, state.idx, list.length) : '';
-      }
-      if (typeof state.onShow === 'function') state.onShow(list[state.idx] || '', state.idx, list);
-    };
-    bindGallery(state);
-    state.render();
-  }
+        if (state.chrome && state.chrome.label) {
+          var src = list[state.idx] || '';
+          state.chrome.label.textContent = multi ? galleryLabel(src, state.idx, list.length) : '';
+        }
+        var ov = document.getElementById('pgGalOverlay');
+        if (ov) {
+          if (useOverlay) {
+            ov.hidden = false;
+            ov.classList.add('is-on');
+            var bp = ov.querySelector('[data-gal="-1"]');
+            var bn = ov.querySelector('[data-gal="1"]');
+            if (bp) bp.hidden = state.idx <= 0;
+            if (bn) bn.hidden = state.idx >= list.length - 1;
+          } else {
+            ov.hidden = true;
+            ov.classList.remove('is-on');
+          }
+        }
+        if (typeof state.onShow === 'function') state.onShow(list[state.idx] || '', state.idx, list);
+      };
+      bindGallery(state);
+      state.render();
+    }
 
   window.parseGallery = parseGallery;
   window.setGallery = setGallery;
@@ -1081,60 +1159,63 @@ document.addEventListener('DOMContentLoaded', () => {
       clearViewerMedia();
 
       if (media.type === 'video' && media.media) {
-        vVideo.style.display = 'block';
-        if (media.poster) vVideo.poster = media.poster;
-        vVideo.src = media.media;
-        var onMeta = function () {
-          fitStageToMedia(vVideo);
-          vVideo.removeEventListener('loadedmetadata', onMeta);
-        };
-        vVideo.addEventListener('loadedmetadata', onMeta);
-        if (vVideo.readyState >= 1) fitStageToMedia(vVideo);
-        vVideo.play().catch(function () {});
-        setVideoFill(false);
-        if (mediaZoom) mediaZoom.setEnabled(false);
-        if (pageGalleryState && pageGalleryState.chrome) {
-          if (pageGalleryState.chrome.nav) pageGalleryState.chrome.nav.classList.remove('is-on');
-          if (pageGalleryState.chrome.dots) {
-            pageGalleryState.chrome.dots.classList.remove('is-on');
-            pageGalleryState.chrome.dots.innerHTML = '';
-          }
-          if (pageGalleryState.chrome.label) pageGalleryState.chrome.label.textContent = '';
-        }
-        pageGalleryState.list = [];
-      } else {
-        var setGal = typeof window.setGallery === 'function' ? window.setGallery : setGallery;
-        setGal(
-          pageGalleryState,
-          galleryList.length ? galleryList : [media0 || media.media || ''],
-          function (src) {
-            if (!src) {
-              vImg.removeAttribute('src');
-              vImg.style.display = 'none';
-              return;
+              vVideo.style.display = 'block';
+              if (media.poster) vVideo.poster = media.poster;
+              vVideo.muted = false;
+              vVideo.src = media.media;
+              var onMeta = function () {
+                fitStageToMedia(vVideo);
+                vVideo.removeEventListener('loadedmetadata', onMeta);
+              };
+              vVideo.addEventListener('loadedmetadata', onMeta);
+              if (vVideo.readyState >= 1) fitStageToMedia(vVideo);
+              vVideo.play().catch(function () {});
+              setVideoFill(false);
+              if (mediaZoom) mediaZoom.setEnabled(false);
+              if (pageGalleryState && pageGalleryState.chrome) {
+                if (pageGalleryState.chrome.nav) pageGalleryState.chrome.nav.classList.remove('is-on');
+                if (pageGalleryState.chrome.dots) {
+                  pageGalleryState.chrome.dots.classList.remove('is-on');
+                  pageGalleryState.chrome.dots.innerHTML = '';
+                }
+                if (pageGalleryState.chrome.label) pageGalleryState.chrome.label.textContent = '';
+              }
+              pageGalleryState.list = [];
+            } else {
+              var setGal = typeof window.setGallery === 'function' ? window.setGallery : setGallery;
+              var useOverlay = card.dataset.galleryOverlay === '1' || card.dataset.galleryOverlay === 'true';
+              setGal(
+                pageGalleryState,
+                galleryList.length ? galleryList : [media0 || media.media || ''],
+                function (src) {
+                  if (!src) {
+                    vImg.removeAttribute('src');
+                    vImg.style.display = 'none';
+                    return;
+                  }
+                  vImg.style.display = 'block';
+                  vImg.src = src;
+                  vImg.alt = title;
+                  var onGalLoad = function () {
+                    fitStageToMedia(vImg);
+                    vImg.removeEventListener('load', onGalLoad);
+                  };
+                  vImg.addEventListener('load', onGalLoad);
+                  if (vImg.complete && vImg.naturalWidth) fitStageToMedia(vImg);
+                  if (mediaZoom) {
+                    try {
+                      if (mediaZoom.reset) mediaZoom.reset();
+                    } catch (e) {}
+                    try {
+                      if (mediaZoom.setEnabled) mediaZoom.setEnabled(true);
+                    } catch (e) {}
+                  }
+                },
+                { overlay: useOverlay }
+              );
+              setVideoFill(false);
+              if (mediaZoom) mediaZoom.setEnabled(!!(media0 || media.media));
             }
-            vImg.style.display = 'block';
-            vImg.src = src;
-            vImg.alt = title;
-            var onGalLoad = function () {
-              fitStageToMedia(vImg);
-              vImg.removeEventListener('load', onGalLoad);
-            };
-            vImg.addEventListener('load', onGalLoad);
-            if (vImg.complete && vImg.naturalWidth) fitStageToMedia(vImg);
-            if (mediaZoom) {
-              try {
-                if (mediaZoom.reset) mediaZoom.reset();
-              } catch (e) {}
-              try {
-                if (mediaZoom.setEnabled) mediaZoom.setEnabled(true);
-              } catch (e) {}
-            }
-          }
-        );
-        setVideoFill(false);
-        if (mediaZoom) mediaZoom.setEnabled(!!(media0 || media.media));
-      }
 
       vTitle.textContent = title;
       vCat.textContent = category;
@@ -1237,16 +1318,69 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         vActions.appendChild(b);
       } else if (behance) {
-        const a = document.createElement('a');
-        a.href = behance;
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        a.className = 'pg-viewer__link';
-        a.textContent = 'Ver en Behance →';
-        vActions.appendChild(a);
-      }
+              const a = document.createElement('a');
+              a.href = behance;
+              a.target = '_blank';
+              a.rel = 'noopener noreferrer';
+              a.className = 'pg-viewer__link';
+              a.textContent = 'Ver en Behance →';
+              vActions.appendChild(a);
+            }
 
-      if (prevBtn) prevBtn.disabled = currentIndex <= 0;
+            const extraVideo = card.dataset.video || '';
+            if (extraVideo && media.type !== 'video') {
+              const b = document.createElement('button');
+              b.type = 'button';
+              b.className = 'pg-viewer__link pg-viewer__link--ghost';
+              b.textContent = 'Ver motion →';
+              b.addEventListener('click', () => {
+                if (vImg.naturalWidth && vImg.naturalHeight && zoomStage) fitStageToMedia(vImg);
+                vImg.style.display = 'none';
+                vVideo.style.display = 'block';
+                if (media0 || media.media) vVideo.poster = media0 || media.media;
+                vVideo.muted = false;
+                vVideo.src = extraVideo;
+                var onMetaM = function () {
+                  fitStageToMedia(vVideo);
+                  vVideo.removeEventListener('loadedmetadata', onMetaM);
+                };
+                vVideo.addEventListener('loadedmetadata', onMetaM);
+                setVideoFill(false);
+                vVideo.play().catch(() => {});
+                if (mediaZoom) mediaZoom.setEnabled(false);
+                b.disabled = true;
+                b.textContent = 'Motion';
+              });
+              vActions.appendChild(b);
+            }
+            const processVideo = card.dataset.process || '';
+            if (processVideo && media.type !== 'video') {
+              const bp = document.createElement('button');
+              bp.type = 'button';
+              bp.className = 'pg-viewer__link pg-viewer__link--ghost';
+              bp.textContent = 'Ver proceso →';
+              bp.addEventListener('click', () => {
+                if (vImg.naturalWidth && vImg.naturalHeight && zoomStage) fitStageToMedia(vImg);
+                vImg.style.display = 'none';
+                vVideo.style.display = 'block';
+                if (media0 || media.media) vVideo.poster = media0 || media.media;
+                vVideo.muted = false;
+                vVideo.src = processVideo;
+                var onMetaP = function () {
+                  fitStageToMedia(vVideo);
+                  vVideo.removeEventListener('loadedmetadata', onMetaP);
+                };
+                vVideo.addEventListener('loadedmetadata', onMetaP);
+                setVideoFill(false);
+                vVideo.play().catch(() => {});
+                if (mediaZoom) mediaZoom.setEnabled(false);
+                bp.disabled = true;
+                bp.textContent = 'Proceso';
+              });
+              vActions.appendChild(bp);
+            }
+
+            if (prevBtn) prevBtn.disabled = currentIndex <= 0;
       if (nextBtn) nextBtn.disabled = currentIndex >= viewerCards.length - 1;
 
       viewer.classList.add('is-open');

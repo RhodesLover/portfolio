@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=55">
+  <link rel="stylesheet" href="css/style.css?v=56">
 </head>
 <body>
 
@@ -56,19 +56,6 @@
         <span class="marquee__item">Identidad</span><span class="marquee__dot">✳</span>
       </div>
     </div>
-
-  <!-- ========== SHOWREEL ========== -->
-  <section class="showreel" id="showreel">
-    <div class="showreel__inner">
-      <div class="showreel__video">
-        <div class="showreel__placeholder">
-          <div class="showreel__icon">▶</div>
-          <p>Showreel</p>
-          <span>Subí tu reel acá · MP4 · 16:9</span>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ========== WORK ========== -->
   <section class="section" id="work">
@@ -567,7 +554,7 @@
               <div class="modal__project-left" id="modalProjectMediaWrap">
                 <div class="zoom-stage" id="modalProjectZoomStage">
                   <img class="modal__project-img zoom-target" id="modalProjectImg" src="" alt="">
-                  <video class="modal__project-video" id="modalProjectVideo" muted loop playsinline></video>
+                  <video class="modal__project-video" id="modalProjectVideo" loop playsinline controls></video>
                 </div>
                 <div class="zoom-controls" id="modalProjectZoomControls" hidden>
                   <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M11 8v6M8 11h6M21 21l-4.3-4.3"/></svg></button>
@@ -612,7 +599,11 @@
       <div class="pg-viewer__media-wrap" id="pgViewerMediaWrap">
         <div class="zoom-stage" id="pgZoomStage">
           <img class="pg-viewer__img zoom-target" id="pgViewerImg" alt="">
-          <video class="pg-viewer__video" id="pgViewerVideo" controls playsinline muted loop></video>
+          <video class="pg-viewer__video" id="pgViewerVideo" controls playsinline loop></video>
+            <div class="viewer-gal-overlay" id="pgGalOverlay" hidden>
+              <button type="button" class="viewer-gal-overlay__btn viewer-gal-overlay__btn--prev" data-gal="-1" aria-label="Anterior">‹</button>
+              <button type="button" class="viewer-gal-overlay__btn viewer-gal-overlay__btn--next" data-gal="1" aria-label="Siguiente">›</button>
+            </div>
         </div>
         <div class="zoom-controls" id="pgZoomControls" hidden>
                   <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M11 8v6M8 11h6M21 21l-4.3-4.3"/></svg></button>
@@ -822,6 +813,6 @@
   <script src="js/figma-proto.js?v=5"></script>
   <script src="js/cd-case.js?v=3"></script>
   <script src="js/bottle-3d.js?v=5"></script>
-  <script src="js/main.js?v=37"></script>
+  <script src="js/main.js?v=38"></script>
 </body>
 </html>

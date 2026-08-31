@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=55">
+  <link rel="stylesheet" href="css/style.css?v=56">
     </head>
     <body class="page-projects">
     <canvas id="particlesCanvas" aria-hidden="true"></canvas>
@@ -511,14 +511,15 @@
                   </div>
                 </article>
         <article class="pg-cell pg-cell--poster" tabindex="0" role="button"
-                  data-title="Tokyo Poster" data-cat="Poster · 2022" data-section="posters"
-                  data-desc="Poster Tokyo con versión motion."
-                  data-media="assets/images/proyectos/tokyo-poster.jpg" data-type="image"
-                  data-video="assets/videos/proyectos/tokyo.mp4">
-                  <div class="pg-cell__frame" style="--bg:#0a1018">
-                    <img class="pg-cell__media" src="assets/images/proyectos/tokyo-poster.jpg" alt="Tokyo Poster" loading="lazy">
-                    <span class="pg-cell__badge">+ motion</span>
-                  </div>
+                          data-title="Tokyo Poster" data-cat="Poster · 2022" data-section="posters"
+                          data-desc="Poster Tokyo con versión motion y proceso."
+                          data-media="assets/images/proyectos/tokyo-poster.jpg" data-type="image"
+                          data-video="assets/videos/proyectos/tokyo.mp4"
+                          data-process="assets/videos/proyectos/tokyo-proceso.mp4">
+                          <div class="pg-cell__frame" style="--bg:#0a1018">
+                            <img class="pg-cell__media" src="assets/images/proyectos/tokyo-poster.jpg" alt="Tokyo Poster" loading="lazy">
+                            <span class="pg-cell__badge">+ motion</span>
+                          </div>
                   <div class="pg-cell__meta">
                     <span class="pg-cell__idx">04.18</span>
                     <h3 class="pg-cell__name">Tokyo</h3>
@@ -685,10 +686,11 @@
       </header>
       <div class="pg-grid pg-grid--modelos">
         <article class="pg-cell pg-cell--model" tabindex="0" role="button"
-                  data-title="NOGA Joystick" data-cat="Modelo 3D · 2025" data-section="modelos"
-                  data-desc="Modelado 3D del joystick NOGA."
-                  data-media="assets/images/proyectos/noga-joystick.jpg" data-type="image"
-                  data-gallery="assets/images/proyectos/noga-joystick.jpg,assets/images/proyectos/noga-joystick-2.jpg,assets/images/proyectos/noga-joystick-3.jpg">
+                          data-title="NOGA Joystick" data-cat="Modelo 3D · 2025" data-section="modelos"
+                          data-desc="Modelado 3D del joystick NOGA."
+                          data-media="assets/images/proyectos/noga-joystick.jpg" data-type="image"
+                          data-gallery="assets/images/proyectos/noga-joystick.jpg,assets/images/proyectos/noga-joystick-2.jpg,assets/images/proyectos/noga-joystick-3.jpg"
+                          data-gallery-overlay="1">
                   <div class="pg-cell__frame" style="--bg:#101014">
                     <img class="pg-cell__media" src="assets/images/proyectos/noga-joystick.jpg" alt="NOGA Joystick" loading="lazy">
                   </div>
@@ -766,10 +768,14 @@
       <button class="pg-viewer__nav pg-viewer__nav--next" id="pgViewerNext" type="button" aria-label="Siguiente">›</button>
       <div class="pg-viewer__stage">
         <div class="pg-viewer__media-wrap" id="pgViewerMediaWrap">
-          <div class="zoom-stage" id="pgZoomStage">
-            <img class="pg-viewer__img zoom-target" id="pgViewerImg" alt="">
-            <video class="pg-viewer__video" id="pgViewerVideo" controls playsinline muted loop></video>
-          </div>
+                  <div class="zoom-stage" id="pgZoomStage">
+                    <img class="pg-viewer__img zoom-target" id="pgViewerImg" alt="">
+                    <video class="pg-viewer__video" id="pgViewerVideo" controls playsinline loop></video>
+                    <div class="viewer-gal-overlay" id="pgGalOverlay" hidden>
+                      <button type="button" class="viewer-gal-overlay__btn viewer-gal-overlay__btn--prev" data-gal="-1" aria-label="Anterior">‹</button>
+                      <button type="button" class="viewer-gal-overlay__btn viewer-gal-overlay__btn--next" data-gal="1" aria-label="Siguiente">›</button>
+                    </div>
+                  </div>
           <div class="zoom-controls" id="pgZoomControls" hidden>
                   <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M11 8v6M8 11h6M21 21l-4.3-4.3"/></svg></button>
                   <span class="zoom-level" id="pgZoomLevel">100%</span>
@@ -978,6 +984,6 @@
   <script src="js/figma-proto.js?v=5"></script>
   <script src="js/cd-case.js?v=3"></script>
   <script src="js/bottle-3d.js?v=5"></script>
-  <script src="js/proyectos.js?v=23"></script>
+  <script src="js/proyectos.js?v=24"></script>
 </body>
 </html>
