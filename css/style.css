@@ -1260,6 +1260,15 @@ ul { list-style: none; }
   opacity: 0.5;
   transition: opacity 0.3s;
 }
+/* Behance mark from Drive — monochrome currentColor, same box as LinkedIn */
+.social-icon--behance {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  display: block;
+  overflow: visible;
+}
+
 .social-link:hover .social-icon {
   opacity: 1;
 }
