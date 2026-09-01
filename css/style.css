@@ -232,11 +232,17 @@ ul { list-style: none; }
 }
 
 .nav__logo {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.5rem;
-  font-weight: 900;
-  letter-spacing: -0.01em;
+  display: inline-flex;
+  align-items: center;
   color: #fff;
+  line-height: 0;
+}
+
+.nav__logo-img {
+  display: block;
+  width: auto;
+  height: 1.5rem; /* 24px — mismo tamaño de diseño que el monograma tipográfico */
+  max-height: 24px;
 }
 
 .nav__links {
@@ -4772,8 +4778,8 @@ body.bottle-3d-open .nav {
   grid-column: 1 !important;
   justify-self: start !important;
   z-index: 2;
-  line-height: 1 !important;
-  font-size: 1.25rem !important;
+  line-height: 0 !important;
+  font-size: inherit !important;
   padding: 0 !important;
   margin: 0 !important;
 }
@@ -4987,7 +4993,14 @@ body.bottle-3d-open .nav {
 }
 /* restore logo size (undo compact shrink) */
 .nav:not(.nav--projects) .nav__logo {
-  font-size: 1.5rem !important;
+  font-size: inherit !important;
+}
+.nav:not(.nav--projects) .nav__logo-img,
+.nav--projects .nav__logo-img,
+.page-projects .nav__logo-img {
+  height: 1.5rem !important;
+  max-height: 24px !important;
+  width: auto !important;
 }
 .lang-switch__btn {
   padding: 0.35rem 0.7rem !important;
