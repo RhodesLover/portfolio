@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tomi Zárate — Diseñador Gráfico</title>
+  <title data-i18n-meta="meta.title">Tomi Zárate — Diseñador Gráfico</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='12' fill='%23FFC5D3'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='900' font-family='Arial' text-anchor='middle' fill='%23000'%3ETZ%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=70">
+  <link rel="stylesheet" href="css/style.css?v=71">
 </head>
 <body>
 
@@ -20,12 +20,17 @@
   <nav class="nav" id="nav">
     <div class="nav__inner">
       <a href="#hero" class="nav__logo">TZ</a>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" class="lang-switch__btn" data-lang-switch="es" aria-pressed="true">ES</button>
+        <span class="lang-switch__sep" aria-hidden="true">/</span>
+        <button type="button" class="lang-switch__btn" data-lang-switch="en" aria-pressed="false">EN</button>
+      </div>
       <ul class="nav__links">
-        <li><a href="proyectos.html" class="nav__link">Trabajo</a></li>
-        <li><a href="#about" class="nav__link">Sobre mí</a></li>
-        <li><a href="#contact" class="nav__link">Contacto</a></li>
+        <li><a href="proyectos.html" class="nav__link" data-i18n="nav.work">Trabajo</a></li>
+        <li><a href="#about" class="nav__link" data-i18n="nav.about">Sobre mí</a></li>
+        <li><a href="#contact" class="nav__link" data-i18n="nav.contact">Contacto</a></li>
       </ul>
-      <button class="nav__toggle" id="navToggle" aria-label="Menú">
+      <button class="nav__toggle" id="navToggle" aria-label="Menú" data-i18n-aria="nav.menu">
         <span></span><span></span>
       </button>
     </div>
@@ -41,8 +46,8 @@
       </h1>
       <p class="hero__sub">Diseñador Gráfico · Branding · Social Media</p>
       <div class="hero__cta">
-        <a href="#work" class="btn btn--primary">Ver trabajo</a>
-        <a href="#contact" class="btn btn--outline">Contacto</a>
+        <a href="#work" class="btn btn--primary" data-i18n="hero.cta.work">Ver trabajo</a>
+        <a href="#contact" class="btn btn--outline" data-i18n="hero.cta.contact">Contacto</a>
       </div>
     </div>
   </section>
@@ -60,17 +65,17 @@
   <!-- ========== WORK ========== -->
   <section class="section" id="work">
     <div class="section__header anim-title">
-      <h2 class="section__title">Trabajo</h2>
-      <p class="section__desc">Una mirada a los proyectos que definen mi enfoque.</p>
+      <h2 class="section__title" data-i18n="work.title">Trabajo</h2>
+      <p class="section__desc" data-i18n="work.desc">Una mirada a los proyectos que definen mi enfoque.</p>
     </div>
 
     <!-- ===== REDES ===== -->
     <div class="category" id="social">
       <div class="category__divider anim-title">
         <span class="category__tag">01</span>
-        <h3 class="category__title anim-underline">Redes</h3>
+        <h3 class="category__title anim-underline" data-i18n="cat.redes">Redes</h3>
         <div class="category__line"></div>
-        <span class="category__qty">4 proyectos</span>
+        <span class="category__qty" data-i18n-qty="4">4 proyectos</span>
       </div>
       <div class="grid grid--social">
         
@@ -88,7 +93,7 @@
             </div>
             <span class="project-card__badge">Animado</span>
             <div class="project-card__overlay">
-              <span>Ver proyecto →</span>
+              <span data-i18n="overlay.viewProject">Ver proyecto →</span>
             </div>
           </div>
           <div class="project-card__info">
@@ -106,7 +111,7 @@
               <img class="project-card__img" src="assets/images/redes/26shop.jpg" alt="26Shop" loading="lazy">
             </div>
             <div class="project-card__overlay">
-              <span>Ver →</span>
+              <span data-i18n="overlay.view">Ver →</span>
             </div>
           </div>
           <div class="project-card__info">
@@ -125,7 +130,7 @@
             </div>
             <span class="project-card__badge">Animado</span>
             <div class="project-card__overlay">
-              <span>Ver →</span>
+              <span data-i18n="overlay.view">Ver →</span>
             </div>
           </div>
           <div class="project-card__info">
@@ -142,7 +147,7 @@
                     <div class="project-card__media-bg" style="background:#1a1a0a;">
                       <img class="project-card__img project-card__img--gif-hover" src="assets/images/branding/mercado-montanes-still.jpg?v=1" data-still="assets/images/branding/mercado-montanes-still.jpg?v=1" data-gif="assets/images/branding/mercado-montanes.gif?v=2" alt="Mercado Montañés" loading="lazy">
                     </div>
-                    <div class="project-card__overlay"><span>Ver proyecto →</span></div>
+                    <div class="project-card__overlay"><span data-i18n="overlay.viewProject">Ver proyecto →</span></div>
                   </div>
                   <div class="project-card__info">
                     <h4>Mercado Montañés</h4>
@@ -158,9 +163,9 @@
     <div class="category" id="branding">
       <div class="category__divider anim-title">
         <span class="category__tag">02</span>
-        <h3 class="category__title anim-underline">Branding</h3>
+        <h3 class="category__title anim-underline" data-i18n="cat.branding">Branding</h3>
         <div class="category__line"></div>
-        <span class="category__qty">3 proyectos</span>
+        <span class="category__qty" data-i18n-qty="3">3 proyectos</span>
       </div>
       <div class="grid grid--branding">
         
@@ -175,7 +180,7 @@
             <div class="project-card__media-bg" style="background:#1a1a0a;">
               <img class="project-card__img project-card__img--gif-hover" src="assets/images/branding/mercado-montanes-still.jpg?v=1" data-still="assets/images/branding/mercado-montanes-still.jpg?v=1" data-gif="assets/images/branding/mercado-montanes.gif?v=2" alt="Mercado Montañés" loading="lazy">
             </div>
-            <div class="project-card__overlay"><span>Ver proyecto →</span></div>
+            <div class="project-card__overlay"><span data-i18n="overlay.viewProject">Ver proyecto →</span></div>
           </div>
           <div class="project-card__info">
             <h4>Mercado Montañés</h4>
@@ -193,7 +198,7 @@
             <div class="project-card__media-bg" style="background:#1a0a0a;">
               <img class="project-card__img" src="assets/images/branding/fernet-cordobita.jpg" alt="Fernet Cordobita" loading="lazy">
             </div>
-            <div class="project-card__overlay"><span>Ver proyecto →</span></div>
+            <div class="project-card__overlay"><span data-i18n="overlay.viewProject">Ver proyecto →</span></div>
           </div>
           <div class="project-card__info">
             <h4>Fernet Cordobita</h4>
@@ -213,7 +218,7 @@
               <video class="project-card__video" src="assets/videos/branding/naturaleza-humana.mp4" poster="assets/images/branding/naturaleza-humana-poster.jpg" muted loop playsinline preload="metadata"></video>
             </div>
             <span class="project-card__badge">Animado</span>
-            <div class="project-card__overlay"><span>Ver proyecto →</span></div>
+            <div class="project-card__overlay"><span data-i18n="overlay.viewProject">Ver proyecto →</span></div>
           </div>
           <div class="project-card__info">
             <h4>Naturaleza Humana</h4>
@@ -229,9 +234,9 @@
     <div class="category" id="posters">
       <div class="category__divider anim-title">
         <span class="category__tag">03</span>
-        <h3 class="category__title anim-underline">Posters</h3>
+        <h3 class="category__title anim-underline" data-i18n="cat.posters">Posters</h3>
         <div class="category__line"></div>
-        <span class="category__qty">3 proyectos</span>
+        <span class="category__qty" data-i18n-qty="3">3 proyectos</span>
       </div>
       <div class="grid grid--posters">
         
@@ -244,7 +249,7 @@
             <div class="project-card__media-bg" style="background:#0a0015;">
               <img class="project-card__img" src="assets/images/proyectos/fantasma-cerati.jpg" alt="Fantasma - Gustavo Cerati" loading="lazy">
             </div>
-            <div class="project-card__overlay"><span>Ver →</span></div>
+            <div class="project-card__overlay"><span data-i18n="overlay.view">Ver →</span></div>
           </div>
           <div class="project-card__info">
             <h4>Fantasma</h4>
@@ -260,7 +265,7 @@
             <div class="project-card__media-bg" style="background:#0a0a1a;">
               <img class="project-card__img" src="assets/images/proyectos/fly-moon.jpg" alt="Fly me to the Moon" loading="lazy">
             </div>
-            <div class="project-card__overlay"><span>Ver →</span></div>
+            <div class="project-card__overlay"><span data-i18n="overlay.view">Ver →</span></div>
           </div>
           <div class="project-card__info">
             <h4>Fly me to the Moon</h4>
@@ -276,7 +281,7 @@
             <div class="project-card__media-bg" style="background:#0a0a00;">
               <img class="project-card__img" src="assets/images/proyectos/arte-unico-branca.jpg" alt="Arte Único Branca" loading="lazy">
             </div>
-            <div class="project-card__overlay"><span>Ver →</span></div>
+            <div class="project-card__overlay"><span data-i18n="overlay.view">Ver →</span></div>
           </div>
           <div class="project-card__info">
             <h4>Arte Único Branca</h4>
@@ -292,9 +297,9 @@
     <div class="category" id="proyectos">
       <div class="category__divider anim-title">
         <span class="category__tag">04</span>
-        <h3 class="category__title anim-underline">Proyectos</h3>
+        <h3 class="category__title anim-underline" data-i18n="cat.proyectos">Proyectos</h3>
         <div class="category__line"></div>
-        <span class="category__qty">5 proyectos</span>
+        <span class="category__qty" data-i18n-qty="5">5 proyectos</span>
       </div>
       <div class="grid grid--proyectos">
         
@@ -308,7 +313,7 @@
             <div class="project-card__media-bg" style="background:#0a0a0a;">
               <img class="project-card__img" src="assets/images/proyectos/bardo-arte.gif" alt="Del Bardo al Arte" loading="lazy">
             </div>
-            <div class="project-card__overlay"><span>Ver →</span></div>
+            <div class="project-card__overlay"><span data-i18n="overlay.view">Ver →</span></div>
           </div>
           <div class="project-card__info">
             <h4>Del Bardo al Arte</h4>
@@ -324,7 +329,7 @@
             <div class="project-card__media-bg" style="background:#0a0015;">
               <img class="project-card__img" src="assets/images/proyectos/wonder.gif" alt="Wonder" loading="lazy">
             </div>
-            <div class="project-card__overlay"><span>Ver →</span></div>
+            <div class="project-card__overlay"><span data-i18n="overlay.view">Ver →</span></div>
           </div>
           <div class="project-card__info">
             <span class="project-card__tag">Proyecto · 2025</span>
@@ -339,7 +344,7 @@
             <div class="project-card__media-bg" style="background:#0a0a0a;">
               <img class="project-card__img" src="assets/images/proyectos/desembarco-tapa.jpg" alt="Desembarco" loading="lazy">
             </div>
-            <div class="project-card__overlay"><span>Ver →</span></div>
+            <div class="project-card__overlay"><span data-i18n="overlay.view">Ver →</span></div>
           </div>
           <div class="project-card__info">
             <h4>Desembarco</h4>
@@ -355,7 +360,7 @@
             <div class="project-card__media-bg" style="background:#1a0a00;">
               <img class="project-card__img" src="assets/images/proyectos/kentucky.jpg" alt="Kentucky Vegano" loading="lazy">
             </div>
-            <div class="project-card__overlay"><span>Ver →</span></div>
+            <div class="project-card__overlay"><span data-i18n="overlay.view">Ver →</span></div>
           </div>
           <div class="project-card__info">
             <span class="project-card__tag">Campaña · 2024</span>
@@ -369,7 +374,7 @@
             <div class="project-card__media-bg" style="background:#1a1a0a;">
               <img class="project-card__img" src="assets/images/proyectos/nogal-poster.jpg" alt="Nogal Poster" loading="lazy">
             </div>
-            <div class="project-card__overlay"><span>Ver →</span></div>
+            <div class="project-card__overlay"><span data-i18n="overlay.view">Ver →</span></div>
           </div>
           <div class="project-card__info">
             <h4>Nogal</h4>
@@ -385,9 +390,9 @@
     <div class="category" id="ilustraciones">
       <div class="category__divider anim-title">
         <span class="category__tag">05</span>
-        <h3 class="category__title anim-underline">Ilustraciones</h3>
+        <h3 class="category__title anim-underline" data-i18n="cat.ilustraciones">Ilustraciones</h3>
         <div class="category__line"></div>
-        <span class="category__qty">3 proyectos</span>
+        <span class="category__qty" data-i18n-qty="3">3 proyectos</span>
       </div>
       <div class="grid grid--ilustraciones">
         
@@ -401,7 +406,7 @@
             <div class="project-card__media-bg" style="background:#1a0a1a;">
               <img class="project-card__img" src="assets/images/proyectos/kalisi.jpg" alt="Kalisi" loading="lazy">
             </div>
-            <div class="project-card__overlay"><span>Ver →</span></div>
+            <div class="project-card__overlay"><span data-i18n="overlay.view">Ver →</span></div>
           </div>
           <div class="project-card__info">
             <h4>Kalisi</h4>
@@ -417,7 +422,7 @@
             <div class="project-card__media-bg" style="background:#0a1a2a;">
               <img class="project-card__img" src="assets/images/proyectos/polar-bear.jpg" alt="Polar Bear" loading="lazy">
             </div>
-            <div class="project-card__overlay"><span>Ver →</span></div>
+            <div class="project-card__overlay"><span data-i18n="overlay.view">Ver →</span></div>
           </div>
           <div class="project-card__info">
             <h4>Polar Bear</h4>
@@ -432,7 +437,7 @@
             <div class="project-card__media-bg" style="background:#1a0a00;">
               <img class="project-card__img" src="assets/images/proyectos/bowie.jpg" alt="Ilustración Bowie" loading="lazy">
             </div>
-            <div class="project-card__overlay"><span>Ver →</span></div>
+            <div class="project-card__overlay"><span data-i18n="overlay.view">Ver →</span></div>
           </div>
           <div class="project-card__info">
             <h4>Ilustración Bowie</h4>
@@ -445,9 +450,7 @@
     </div>
 
     <div class="section__footer">
-      <a href="proyectos.html" class="btn btn--primary btn--large">
-        Ver todos los trabajos →
-      </a>
+      <a href="proyectos.html" class="btn btn--primary btn--large"><span data-i18n="work.all">Ver todos los trabajos →</span></a>
     </div>
   </section>
 
@@ -455,22 +458,22 @@
   <section class="about" id="about">
     <div class="about__inner">
       <div class="about__text">
-        <span class="section__overline anim-title">Acerca de</span>
-        <h2 class="about__title anim-title anim-underline">Sobre mí</h2>
-        <p class="about__bio">Soy <span class="highlight">diseñador gráfico</span> recibido en <strong>Escuela Da Vinci</strong>, con experiencia tanto en <span class="highlight">agencias de marketing</span> como trabajando de manera <span class="highlight">independiente</span>.</p>
-        <p class="about__bio">Me interesa crear soluciones visuales que combinen <span class="highlight">diseño</span>, <span class="highlight">comunicación</span> y <span class="highlight">nuevas tecnologías</span>. Exploro el potencial de la <span class="highlight">inteligencia artificial</span> como una herramienta más dentro del proceso creativo, buscando nuevas formas de desarrollar ideas y comunicar conceptos.</p>
-        <p class="about__bio">Actualmente trabajo como <span class="highlight">creativo</span> y diseñador gráfico <span class="highlight">freelance</span>, desarrollando proyectos de <span class="highlight">identidad</span>, contenido, comunicación visual y piezas digitales. Estoy abierto a nuevas oportunidades, tanto en posiciones <span class="highlight">full time</span> como <span class="highlight">part time</span>, y a formar parte de equipos de trabajo donde pueda aportar mi experiencia y seguir desarrollándome profesionalmente.</p>
+        <span <span class="section__overline anim-title" data-i18n="about.overline">Acerca de</span>
+        <h2 class="about__title anim-title anim-underline" data-i18n="about.title">Sobre mí</h2>
+        <p class="about__bio" data-i18n="about.bio1" data-i18n-mode="html">Soy <span class="highlight">diseñador gráfico</span> recibido en <strong>Escuela Da Vinci</strong>, con experiencia tanto en <span class="highlight">agencias de marketing</span> como trabajando de manera <span class="highlight">independiente</span>.</p>
+        <p class="about__bio" data-i18n="about.bio2" data-i18n-mode="html">Me interesa crear soluciones visuales que combinen <span class="highlight">diseño</span>, <span class="highlight">comunicación</span> y <span class="highlight">nuevas tecnologías</span>. Exploro el potencial de la <span class="highlight">inteligencia artificial</span> como una herramienta más dentro del proceso creativo, buscando nuevas formas de desarrollar ideas y comunicar conceptos.</p>
+        <p class="about__bio" data-i18n="about.bio3" data-i18n-mode="html">Actualmente trabajo como <span class="highlight">creativo</span> y diseñador gráfico <span class="highlight">freelance</span>, desarrollando proyectos de <span class="highlight">identidad</span>, contenido, comunicación visual y piezas digitales. Estoy abierto a nuevas oportunidades, tanto en posiciones <span class="highlight">full time</span> como <span class="highlight">part time</span>, y a formar parte de equipos de trabajo donde pueda aportar mi experiencia y seguir desarrollándome profesionalmente.</p>
         <div class="about__meta">
           <div class="about__item">
-            <span class="about__label">Formación</span>
+            <span class="about__label" data-i18n="about.formation">Formación</span>
             <span class="about__value">Escuela Da Vinci · DG</span>
           </div>
           <div class="about__item">
-            <span class="about__label">Idiomas</span>
-            <span class="about__value">Español · Inglés</span>
+            <span class="about__label" data-i18n="about.languages">Idiomas</span>
+            <span class="about__value" data-i18n="about.langValue">Español · Inglés</span>
           </div>
           <div class="about__item about__item--toolkit">
-            <span class="about__label">Toolkit</span>
+            <span class="about__label" data-i18n="about.toolkit">Toolkit</span>
             <span class="about__value about__toolkit">
               <span class="toolkit-chip" title="Photoshop">Ps</span>
               <span class="toolkit-chip" title="Illustrator">Ai</span>
@@ -506,9 +509,9 @@
   <!-- ========== CONTACT ========== -->
   <section class="contact" id="contact">
     <div class="contact__inner">
-      <span class="section__overline anim-title">Contacto</span>
-      <h2 class="contact__title anim-title anim-underline">¿Trabajamos<br>juntos?</h2>
-      <p class="contact__text">Abierto a proyectos freelance, colaboraciones o una charla.</p>
+      <span class="section__overline anim-title" data-i18n="contact.overline">Contacto</span>
+      <h2 class="contact__title anim-title anim-underline"><span data-i18n="contact.title" data-i18n-mode="html">¿Trabajamos<br>juntos?</span></h2>
+      <p class="contact__text" data-i18n="contact.text">Abierto a proyectos freelance, colaboraciones o una charla.</p>
       <a href="https://mail.google.com/mail/?extsrc=mailto&url=mailto%3Atomas.zaratedg%40gmail.com" class="contact__btn" target="_blank" rel="noopener noreferrer" title="Redactar en Gmail">tomas.zaratedg@gmail.com →</a>
       <div class="contact__socials">
         <a href="https://www.behance.net/rhodeslover" target="_blank" class="social-link">
@@ -533,13 +536,13 @@
         <span class="site-footer__mark">TZ</span>
         <div>
           <p class="site-footer__name">Tomi Zárate</p>
-          <p class="site-footer__meta">Diseño gráfico · Branding · Editorial</p>
+          <p class="site-footer__meta" data-i18n="footer.meta">Diseño gráfico · Branding · Editorial</p>
         </div>
       </div>
-      <nav class="site-footer__nav" aria-label="Pie de página">
-        <a href="proyectos.html" class="site-footer__link">Trabajo</a>
-        <a href="#about" class="site-footer__link">Sobre mí</a>
-        <a href="#contact" class="site-footer__link site-footer__link--accent">Contacto →</a>
+      <nav class="site-footer__nav" aria-label="Pie de página" data-i18n-aria="footer.navLabel">
+        <a href="proyectos.html" class="site-footer__link" data-i18n="footer.work">Trabajo</a>
+        <a href="#about" class="site-footer__link" data-i18n="footer.about">Sobre mí</a>
+        <a href="#contact" class="site-footer__link site-footer__link--accent" data-i18n="footer.contact">Contacto →</a>
       </nav>
       <p class="site-footer__year">© 2026</p>
     </div>
@@ -830,6 +833,7 @@
   <script src="js/figma-proto.js?v=5"></script>
   <script src="js/cd-case.js?v=3"></script>
   <script src="js/bottle-3d.js?v=6"></script>
-  <script src="js/main.js?v=48"></script>
+  <script src="js/i18n.js?v=1"></script>
+  <script src="js/main.js?v=49"></script>
 </body>
 </html>

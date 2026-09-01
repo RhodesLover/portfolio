@@ -673,7 +673,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     lbA.target = '_blank';
                     lbA.rel = 'noopener noreferrer';
                     lbA.className = 'modal__behance-btn modal__lightbox-behance';
-                    lbA.textContent = 'Ver en Behance →';
+                    lbA.textContent = (window.TZI18n?window.TZI18n.t('js.behance'):'Ver en Behance →');
                     lbActions.appendChild(lbA);
                     lbActions.hidden = false;
                   } else {
@@ -765,11 +765,11 @@ document.addEventListener('DOMContentLoaded', () => {
                                 const cdDir = card.dataset.cd || '';
                                 const bottleDir = card.dataset.bottle || '';
                                 if (isSocial) {
-                  // Redes → botón "Ver Instagram" (abre prototipo Figma si data-figma-proto)
+                  // Redes → botón (window.TZI18n?window.TZI18n.t('js.instagramShort'):"Ver Instagram") (abre prototipo Figma si data-figma-proto)
                   const btn = document.createElement('button');
                   btn.type = 'button';
                   btn.className = 'modal__behance-btn modal__behance-btn--insta';
-                  btn.textContent = 'Ver Instagram →';
+                  btn.textContent = (window.TZI18n?window.TZI18n.t('js.instagram'):'Ver Instagram →');
                   if (figmaProto && typeof window.openFigmaProto === 'function') {
                     btn.addEventListener('click', (e) => {
                       e.preventDefault();
@@ -783,7 +783,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                   } else {
                     btn.disabled = true;
-                    btn.title = 'Prototipo próximamente';
+                    btn.title = (window.TZI18n?window.TZI18n.t('js.protoSoon'):'Prototipo próximamente');
                     btn.setAttribute('aria-disabled', 'true');
                   }
                   projActions.appendChild(btn);
@@ -791,7 +791,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   const btn = document.createElement('button');
                   btn.type = 'button';
                   btn.className = 'modal__behance-btn';
-                  btn.textContent = 'Ver revista →';
+                  btn.textContent = (window.TZI18n?window.TZI18n.t('js.magazine'):'Ver revista →');
                   btn.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -808,7 +808,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     const btn = document.createElement('button');
                                     btn.type = 'button';
                                     btn.className = 'modal__behance-btn';
-                                    btn.textContent = 'Ver caja de CD →';
+                                    btn.textContent = (window.TZI18n?window.TZI18n.t('js.cd'):'Ver caja de CD →');
                                     btn.addEventListener('click', (e) => {
                                       e.preventDefault();
                                       e.stopPropagation();
@@ -819,7 +819,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     const btn = document.createElement('button');
                                     btn.type = 'button';
                                     btn.className = 'modal__behance-btn';
-                                    btn.textContent = 'Ver botella →';
+                                    btn.textContent = (window.TZI18n?window.TZI18n.t('js.bottle'):'Ver botella →');
                                     btn.addEventListener('click', (e) => {
                                       e.preventDefault();
                                       e.stopPropagation();
@@ -830,7 +830,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     const btn = document.createElement('button');
                                     btn.type = 'button';
                                     btn.className = 'modal__behance-btn';
-                                    btn.textContent = 'Ver manual de marca →';
+                                    btn.textContent = (window.TZI18n?window.TZI18n.t('js.manual'):'Ver manual de marca →');
                                     btn.addEventListener('click', (e) => {
                                       e.preventDefault();
                                       e.stopPropagation();
@@ -841,11 +841,11 @@ document.addEventListener('DOMContentLoaded', () => {
                                                     const btn = document.createElement('button');
                                                     btn.type = 'button';
                                                     btn.className = 'modal__behance-btn';
-                                                    btn.textContent = 'Diseño de carta →';
+                                                    btn.textContent = (window.TZI18n?window.TZI18n.t('js.menu'):'Diseño de carta →');
                                                     btn.addEventListener('click', (e) => {
                                                       e.preventDefault();
                                                       e.stopPropagation();
-                                                      window.openCartaRevista(cartaDir, title || 'Diseño de carta', cartaPages);
+                                                      window.openCartaRevista(cartaDir, title || (window.TZI18n?window.TZI18n.t('js.menuShort'):'Diseño de carta'), cartaPages);
                                                     });
                                                     projActions.appendChild(btn);
                                                   }
@@ -856,7 +856,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                             btn.target = '_blank';
                                             btn.rel = 'noopener noreferrer';
                                             btn.className = 'modal__behance-btn';
-                                            btn.textContent = 'Ver en Behance →';
+                                            btn.textContent = (window.TZI18n?window.TZI18n.t('js.behance'):'Ver en Behance →');
                                             projActions.appendChild(btn);
                                           }
                                         }
@@ -1328,7 +1328,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const b = document.createElement('button');
         b.type = 'button';
         b.className = 'pg-viewer__link';
-        b.textContent = 'Ver Instagram →';
+        b.textContent = (window.TZI18n?window.TZI18n.t('js.instagram'):'Ver Instagram →');
         if (figmaProto && typeof window.openFigmaProto === 'function') {
           b.addEventListener('click', (e) => {
             e.preventDefault();
@@ -1342,7 +1342,7 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         } else {
           b.disabled = true;
-          b.title = 'Prototipo próximamente';
+          b.title = (window.TZI18n?window.TZI18n.t('js.protoSoon'):'Prototipo próximamente');
           b.setAttribute('aria-disabled', 'true');
         }
         vActions.appendChild(b);
@@ -1350,7 +1350,7 @@ document.addEventListener('DOMContentLoaded', () => {
               const b = document.createElement('button');
               b.type = 'button';
               b.className = 'pg-viewer__link';
-              b.textContent = 'Ver revista →';
+              b.textContent = (window.TZI18n?window.TZI18n.t('js.magazine'):'Ver revista →');
               b.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -1368,7 +1368,7 @@ document.addEventListener('DOMContentLoaded', () => {
                           b.type = 'button';
                           // Pack Desembarco: naranja (resto del portfolio = rosa pastel)
                           b.className = 'pg-viewer__link pg-viewer__link--pack';
-                          b.textContent = 'Ver caja de CD →';
+                          b.textContent = (window.TZI18n?window.TZI18n.t('js.cd'):'Ver caja de CD →');
                           b.addEventListener('click', (e) => {
                             e.preventDefault();
                             e.stopPropagation();
@@ -1380,7 +1380,7 @@ document.addEventListener('DOMContentLoaded', () => {
                           b.type = 'button';
                           // Pack Fernet: naranja (resto del portfolio = rosa pastel)
                           b.className = 'pg-viewer__link pg-viewer__link--pack';
-                          b.textContent = 'Ver botella →';
+                          b.textContent = (window.TZI18n?window.TZI18n.t('js.bottle'):'Ver botella →');
                           b.addEventListener('click', (e) => {
                             e.preventDefault();
                             e.stopPropagation();
@@ -1391,7 +1391,7 @@ document.addEventListener('DOMContentLoaded', () => {
               const b = document.createElement('button');
               b.type = 'button';
               b.className = 'pg-viewer__link';
-              b.textContent = 'Ver manual de marca →';
+              b.textContent = (window.TZI18n?window.TZI18n.t('js.manual'):'Ver manual de marca →');
               b.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -1402,11 +1402,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     const b = document.createElement('button');
                     b.type = 'button';
                     b.className = 'pg-viewer__link';
-                    b.textContent = 'Diseño de carta →';
+                    b.textContent = (window.TZI18n?window.TZI18n.t('js.menu'):'Diseño de carta →');
                     b.addEventListener('click', (e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      window.openCartaRevista(cartaDir, title || 'Diseño de carta', cartaPages);
+                      window.openCartaRevista(cartaDir, title || (window.TZI18n?window.TZI18n.t('js.menuShort'):'Diseño de carta'), cartaPages);
                     });
                     vActions.appendChild(b);
                   }
@@ -1417,7 +1417,7 @@ document.addEventListener('DOMContentLoaded', () => {
                           a.target = '_blank';
                           a.rel = 'noopener noreferrer';
                           a.className = 'pg-viewer__link';
-                          a.textContent = 'Ver en Behance →';
+                          a.textContent = (window.TZI18n?window.TZI18n.t('js.behance'):'Ver en Behance →');
                           vActions.appendChild(a);
                         }
 
@@ -1431,18 +1431,18 @@ document.addEventListener('DOMContentLoaded', () => {
                             btnMotion = document.createElement('button');
                             btnMotion.type = 'button';
                             btnMotion.className = 'pg-viewer__link pg-viewer__link--ghost';
-                            btnMotion.textContent = 'Ver motion →';
+                            btnMotion.textContent = (window.TZI18n?window.TZI18n.t('js.motion'):'Ver motion →');
                           }
                           if (processVideo) {
                             btnProcess = document.createElement('button');
                             btnProcess.type = 'button';
                             btnProcess.className = 'pg-viewer__link pg-viewer__link--ghost';
-                            btnProcess.textContent = 'Ver proceso →';
+                            btnProcess.textContent = (window.TZI18n?window.TZI18n.t('js.process'):'Ver proceso →');
                           }
                           const btnStill = document.createElement('button');
                           btnStill.type = 'button';
                           btnStill.className = 'pg-viewer__link pg-viewer__link--ghost';
-                          btnStill.textContent = 'Ver imagen →';
+                          btnStill.textContent = (window.TZI18n?window.TZI18n.t('js.image'):'Ver imagen →');
                           btnStill.hidden = true;
 
                           function setMediaMode(mode) {
@@ -1484,11 +1484,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                             if (btnMotion) {
                               btnMotion.classList.toggle('is-active', isMotion);
-                              btnMotion.textContent = isMotion ? 'Motion' : 'Ver motion →';
+                              btnMotion.textContent = isMotion ? 'Motion' : (window.TZI18n?window.TZI18n.t('js.motion'):'Ver motion →');
                             }
                             if (btnProcess) {
                               btnProcess.classList.toggle('is-active', isProcess);
-                              btnProcess.textContent = isProcess ? 'Proceso' : 'Ver proceso →';
+                              btnProcess.textContent = isProcess ? 'Proceso' : (window.TZI18n?window.TZI18n.t('js.process'):'Ver proceso →');
                             }
                             btnStill.hidden = isStill;
                             btnStill.classList.toggle('is-active', isStill);

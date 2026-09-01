@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Todos los trabajos — Tomi Zárate</title>
+  <title data-i18n-meta="meta.galleryTitle">Todos los trabajos — Tomi Zárate</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='12' fill='%23FFC5D3'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='900' font-family='Arial' text-anchor='middle' fill='%23000'%3ETZ%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=70">
+  <link rel="stylesheet" href="css/style.css?v=71">
     </head>
     <body class="page-projects">
     <canvas id="particlesCanvas" aria-hidden="true"></canvas>
@@ -19,10 +19,15 @@
       <nav class="nav nav--projects" id="nav">
         <div class="nav__inner nav__inner--projects">
           <a href="index.html" class="nav__logo">TZ</a>
-          <ul class="nav__links">
-            <li><a href="proyectos.html" class="nav__link">Trabajo</a></li>
-            <li><a href="index.html#about" class="nav__link">Sobre mí</a></li>
-            <li><a href="index.html#contact" class="nav__link">Contacto</a></li>
+                <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" class="lang-switch__btn" data-lang-switch="es" aria-pressed="true">ES</button>
+        <span class="lang-switch__sep" aria-hidden="true">/</span>
+        <button type="button" class="lang-switch__btn" data-lang-switch="en" aria-pressed="false">EN</button>
+      </div>
+<ul class="nav__links">
+            <li><a href="proyectos.html" class="nav__link" data-i18n="nav.work">Trabajo</a></li>
+            <li><a href="index.html#about" class="nav__link" data-i18n="nav.about">Sobre mí</a></li>
+            <li><a href="index.html#contact" class="nav__link" data-i18n="nav.contact">Contacto</a></li>
           </ul>
           <a href="index.html" class="btn btn--outline btn--sm nav__back">← Volver</a>
         </div>
@@ -50,15 +55,15 @@
     <!-- FILTROS sticky (secciones Drive) -->
     <div class="pg-filter" id="pgFilter" role="navigation" aria-label="Filtrar por disciplina">
       <div class="pg-filter__inner">
-        <button class="btn btn--outline btn--sm pg-filter__btn is-active" data-filter="all" type="button">Todo</button>
-        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="redes" type="button">Redes</button>
-        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="branding" type="button">Branding</button>
-        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="proyectos" type="button">Proyectos</button>
-        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="posters" type="button">Posters</button>
-        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="ilustraciones" type="button">Ilustraciones</button>
-        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="infografias" type="button">Infografías</button>
-                <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="revistas" type="button">Revistas</button>
-                <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="modelos" type="button">Modelos 3D</button>
+        <button class="btn btn--outline btn--sm pg-filter__btn is-active" data-filter="all" type="button" data-i18n="gallery.filterAll">Todo</button>
+        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="redes" type="button" data-i18n="cat.redes">Redes</button>
+        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="branding" type="button" data-i18n="cat.branding">Branding</button>
+        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="proyectos" type="button" data-i18n="cat.proyectos">Proyectos</button>
+        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="posters" type="button" data-i18n="cat.posters">Posters</button>
+        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="ilustraciones" type="button" data-i18n="cat.ilustraciones">Ilustraciones</button>
+        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="infografias" type="button" data-i18n="cat.infografias">Infografías</button>
+                <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="revistas" type="button" data-i18n="cat.revistas">Revistas</button>
+                <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="modelos" type="button" data-i18n="cat.modelos3d">Modelos 3D</button>
               </div>
             </div>
 
@@ -69,7 +74,7 @@
       <header class="pg-section__head">
         <span class="pg-section__num">01</span>
         <div class="pg-section__titles">
-          <h2 class="pg-section__title">Redes</h2>
+          <h2 class="pg-section__title" data-i18n="cat.redes">Redes</h2>
           <p class="pg-section__desc">Social media · feeds · motion</p>
         </div>
         <span class="pg-section__qty" data-qty-for="redes">4</span>
@@ -143,7 +148,7 @@
       <header class="pg-section__head">
         <span class="pg-section__num">02</span>
         <div class="pg-section__titles">
-          <h2 class="pg-section__title">Branding</h2>
+          <h2 class="pg-section__title" data-i18n="cat.branding">Branding</h2>
           <p class="pg-section__desc">Identidad · packaging · sistema</p>
         </div>
         <span class="pg-section__qty" data-qty-for="branding">3</span>
@@ -204,7 +209,7 @@
       <header class="pg-section__head">
         <span class="pg-section__num">03</span>
         <div class="pg-section__titles">
-          <h2 class="pg-section__title">Proyectos</h2>
+          <h2 class="pg-section__title" data-i18n="cat.proyectos">Proyectos</h2>
           <p class="pg-section__desc">Campañas · conceptual · editorial</p>
         </div>
         <span class="pg-section__qty" data-qty-for="proyectos">4</span>
@@ -274,7 +279,7 @@
       <header class="pg-section__head">
         <span class="pg-section__num">04</span>
         <div class="pg-section__titles">
-          <h2 class="pg-section__title">Posters</h2>
+          <h2 class="pg-section__title" data-i18n="cat.posters">Posters</h2>
           <p class="pg-section__desc">Composición · tipografía · atmósfera</p>
         </div>
         <span class="pg-section__qty" data-qty-for="posters">23</span>
@@ -585,7 +590,7 @@
       <header class="pg-section__head">
         <span class="pg-section__num">05</span>
         <div class="pg-section__titles">
-          <h2 class="pg-section__title">Ilustraciones</h2>
+          <h2 class="pg-section__title" data-i18n="cat.ilustraciones">Ilustraciones</h2>
           <p class="pg-section__desc">Trazo · textura · personaje</p>
         </div>
         <span class="pg-section__qty" data-qty-for="ilustraciones">8</span>
@@ -702,7 +707,7 @@
       <header class="pg-section__head">
         <span class="pg-section__num">06</span>
         <div class="pg-section__titles">
-          <h2 class="pg-section__title">Infografías</h2>
+          <h2 class="pg-section__title" data-i18n="cat.infografias">Infografías</h2>
           <p class="pg-section__desc">Dato · jerarquía · lectura</p>
         </div>
         <span class="pg-section__qty" data-qty-for="infografias">2</span>
@@ -742,7 +747,7 @@
                                   <header class="pg-section__head">
                                     <span class="pg-section__num">07</span>
                                     <div class="pg-section__titles">
-                                      <h2 class="pg-section__title">Revistas</h2>
+                                      <h2 class="pg-section__title" data-i18n="cat.revistas">Revistas</h2>
                                       <p class="pg-section__desc">Editorial · tipografía · pliegos</p>
                                     </div>
                                     <span class="pg-section__qty" data-qty-for="revistas">2</span>
@@ -792,7 +797,7 @@
       <header class="pg-section__head">
         <span class="pg-section__num">08</span>
         <div class="pg-section__titles">
-          <h2 class="pg-section__title">Modelos 3D</h2>
+          <h2 class="pg-section__title" data-i18n="cat.modelos3d">Modelos 3D</h2>
           <p class="pg-section__desc">Volumen · producto · render</p>
         </div>
         <span class="pg-section__qty" data-qty-for="modelos">1</span>
@@ -823,12 +828,12 @@
       <span class="pg-footer__mark">TZ</span>
       <div class="pg-footer__copy">
         <p class="pg-footer__name">Tomi Zárate</p>
-        <p class="pg-footer__meta">Diseño gráfico · Branding · Editorial</p>
+        <p class="pg-footer__meta" data-i18n="footer.meta">Diseño gráfico · Branding · Editorial</p>
       </div>
     </div>
-    <nav class="pg-footer__nav" aria-label="Pie de página">
-      <a href="proyectos.html" class="pg-footer__link">Trabajo</a>
-      <a href="index.html#about" class="pg-footer__link">Sobre mí</a>
+    <nav class="pg-footer__nav" aria-label="Pie de página" data-i18n-aria="footer.navLabel">
+      <a href="proyectos.html" class="pg-footer__link" data-i18n="nav.work">Trabajo</a>
+      <a href="index.html#about" class="pg-footer__link" data-i18n="nav.about">Sobre mí</a>
       <a href="index.html#contact" class="pg-footer__link pg-footer__link--accent">Contacto →</a>
     </nav>
     <p class="pg-footer__year">© 2026</p>
@@ -1058,6 +1063,7 @@
   <script src="js/figma-proto.js?v=5"></script>
   <script src="js/cd-case.js?v=3"></script>
   <script src="js/bottle-3d.js?v=6"></script>
-  <script src="js/proyectos.js?v=32"></script>
+  <script src="js/i18n.js?v=1"></script>
+  <script src="js/proyectos.js?v=33"></script>
 </body>
 </html>

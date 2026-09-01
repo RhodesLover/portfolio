@@ -660,11 +660,11 @@
                 const cdDir = cell.dataset.cd || '';
                 const bottleDir = cell.dataset.bottle || '';
                 if (isRedes) {
-          // Redes → botón "Ver Instagram" (abre prototipo Figma si data-figma-proto)
+          // Redes → botón (window.TZI18n?window.TZI18n.t('js.instagramShort'):"Ver Instagram") (abre prototipo Figma si data-figma-proto)
           const b = document.createElement('button');
           b.type = 'button';
           b.className = 'pg-viewer__link';
-          b.textContent = 'Ver Instagram →';
+          b.textContent = (window.TZI18n?window.TZI18n.t('js.instagram'):'Ver Instagram →');
           if (figmaProto && typeof window.openFigmaProto === 'function') {
             b.addEventListener('click', (e) => {
               e.preventDefault();
@@ -678,7 +678,7 @@
             });
           } else {
             b.disabled = true;
-            b.title = 'Prototipo próximamente';
+            b.title = (window.TZI18n?window.TZI18n.t('js.protoSoon'):'Prototipo próximamente');
             b.setAttribute('aria-disabled', 'true');
           }
           vActions.appendChild(b);
@@ -686,7 +686,7 @@
                   const b = document.createElement('button');
                   b.type = 'button';
                   b.className = 'pg-viewer__link';
-                  b.textContent = 'Ver revista →';
+                  b.textContent = (window.TZI18n?window.TZI18n.t('js.magazine'):'Ver revista →');
                   b.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -704,7 +704,7 @@
                                   b.type = 'button';
                                   // Pack Desembarco: naranja (resto del portfolio = rosa pastel)
                                   b.className = 'pg-viewer__link pg-viewer__link--pack';
-                                  b.textContent = 'Ver caja de CD →';
+                                  b.textContent = (window.TZI18n?window.TZI18n.t('js.cd'):'Ver caja de CD →');
                                   b.addEventListener('click', (e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
@@ -716,7 +716,7 @@
                                   b.type = 'button';
                                   // Pack Fernet: naranja (resto del portfolio = rosa pastel)
                                   b.className = 'pg-viewer__link pg-viewer__link--pack';
-                                  b.textContent = 'Ver botella →';
+                                  b.textContent = (window.TZI18n?window.TZI18n.t('js.bottle'):'Ver botella →');
                                   b.addEventListener('click', (e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
@@ -727,7 +727,7 @@
           const b = document.createElement('button');
           b.type = 'button';
           b.className = 'pg-viewer__link';
-          b.textContent = 'Ver manual de marca →';
+          b.textContent = (window.TZI18n?window.TZI18n.t('js.manual'):'Ver manual de marca →');
           b.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -738,11 +738,11 @@
                   const b = document.createElement('button');
                   b.type = 'button';
                   b.className = 'pg-viewer__link';
-                  b.textContent = 'Diseño de carta →';
+                  b.textContent = (window.TZI18n?window.TZI18n.t('js.menu'):'Diseño de carta →');
                   b.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    window.openCartaRevista(cartaDir, title || 'Diseño de carta', cartaPages);
+                    window.openCartaRevista(cartaDir, title || (window.TZI18n?window.TZI18n.t('js.menuShort'):'Diseño de carta'), cartaPages);
                   });
                   vActions.appendChild(b);
                 }
@@ -753,7 +753,7 @@
                   a.target = '_blank';
                   a.rel = 'noopener noreferrer';
                   a.className = 'pg-viewer__link';
-                  a.textContent = 'Ver en Behance →';
+                  a.textContent = (window.TZI18n?window.TZI18n.t('js.behance'):'Ver en Behance →');
                   vActions.appendChild(a);
                 }
             if (extraVideo && type !== 'video') {
@@ -763,20 +763,20 @@
           const btnMotion = document.createElement('button');
           btnMotion.type = 'button';
           btnMotion.className = 'pg-viewer__link pg-viewer__link--ghost';
-          btnMotion.textContent = 'Ver motion →';
+          btnMotion.textContent = (window.TZI18n?window.TZI18n.t('js.motion'):'Ver motion →');
           btnMotion.dataset.mediaMode = 'motion';
           let btnProcess = null;
           if (processVideo) {
             btnProcess = document.createElement('button');
             btnProcess.type = 'button';
             btnProcess.className = 'pg-viewer__link pg-viewer__link--ghost';
-            btnProcess.textContent = 'Ver proceso →';
+            btnProcess.textContent = (window.TZI18n?window.TZI18n.t('js.process'):'Ver proceso →');
             btnProcess.dataset.mediaMode = 'process';
           }
           const btnStill = document.createElement('button');
           btnStill.type = 'button';
           btnStill.className = 'pg-viewer__link pg-viewer__link--ghost';
-          btnStill.textContent = 'Ver imagen →';
+          btnStill.textContent = (window.TZI18n?window.TZI18n.t('js.image'):'Ver imagen →');
           btnStill.dataset.mediaMode = 'still';
           btnStill.hidden = true;
 
@@ -829,12 +829,12 @@
                           }
                         }
             btnMotion.classList.toggle('is-active', isMotion);
-            btnMotion.textContent = isMotion ? 'Motion' : 'Ver motion →';
+            btnMotion.textContent = isMotion ? 'Motion' : (window.TZI18n?window.TZI18n.t('js.motion'):'Ver motion →');
             btnStill.hidden = isStill;
             btnStill.classList.toggle('is-active', isStill);
             if (btnProcess) {
               btnProcess.classList.toggle('is-active', isProcess);
-              btnProcess.textContent = isProcess ? 'Proceso' : 'Ver proceso →';
+              btnProcess.textContent = isProcess ? 'Proceso' : (window.TZI18n?window.TZI18n.t('js.process'):'Ver proceso →');
             }
           }
 
@@ -851,11 +851,11 @@
             const bp = document.createElement('button');
             bp.type = 'button';
             bp.className = 'pg-viewer__link pg-viewer__link--ghost';
-            bp.textContent = 'Ver proceso →';
+            bp.textContent = (window.TZI18n?window.TZI18n.t('js.process'):'Ver proceso →');
             const bs = document.createElement('button');
             bs.type = 'button';
             bs.className = 'pg-viewer__link pg-viewer__link--ghost';
-            bs.textContent = 'Ver imagen →';
+            bs.textContent = (window.TZI18n?window.TZI18n.t('js.image'):'Ver imagen →');
             bs.hidden = true;
             function setProcMode(mode) {
                           if (mode === 'still') {
@@ -871,7 +871,7 @@
                             }
                             if (mediaZoom) mediaZoom.setEnabled(!!stillSrc);
                             bp.classList.remove('is-active');
-                            bp.textContent = 'Ver proceso →';
+                            bp.textContent = (window.TZI18n?window.TZI18n.t('js.process'):'Ver proceso →');
                             bs.hidden = true;
                           } else {
                             showProcessMedia(processVideo, stillSrc);

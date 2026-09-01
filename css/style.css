@@ -4663,3 +4663,50 @@ body.bottle-3d-open .nav {
     padding-inline: 1.1rem;
   }
 }
+
+/* ---------- LANG SWITCH (ES / EN) ---------- */
+.nav__inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+}
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  order: 3;
+  margin-left: 0.75rem;
+  flex: 0 0 auto;
+}
+.nav__links { order: 2; }
+.nav__logo { order: 1; }
+.nav__toggle { order: 4; }
+.lang-switch__btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(245, 245, 245, 0.35);
+  background: transparent;
+  border: 0;
+  padding: 0.25rem 0.15rem;
+  cursor: pointer;
+  transition: color 0.25s ease;
+}
+.lang-switch__btn:hover,
+.lang-switch__btn.is-active,
+.lang-switch__btn[aria-pressed="true"] {
+  color: #FFC5D3;
+}
+.lang-switch__sep {
+  color: rgba(245, 245, 245, 0.2);
+  font-size: 0.65rem;
+}
+@media (max-width: 768px) {
+  .lang-switch {
+    margin-right: 0.5rem;
+  }
+}
+
