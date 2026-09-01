@@ -404,6 +404,11 @@
     try {
       localStorage.setItem(STORAGE_KEY, lang);
     } catch (e) {}
+    try {
+      var u = new URL(window.location.href);
+      u.searchParams.set('lang', lang);
+      window.history.replaceState({}, '', u.pathname + u.search + u.hash);
+    } catch (e4) {}
     apply();
   }
 
@@ -434,4 +439,5 @@
   } else {
     init();
   }
+  window.addEventListener('pageshow', function () { if (window.TZI18n) apply(); });
 })(window);
