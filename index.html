@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=74">
+  <link rel="stylesheet" href="css/style.css?v=75">
 </head>
 <body>
 
@@ -41,72 +41,97 @@
     <div class="hero__bg"></div>
     <div class="hero__ecosystem" aria-hidden="true">
       <div class="hero__eco-glow"></div>
+      <div class="hero__eco-moon"></div>
       <svg class="hero__eco-svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice" focusable="false">
         <defs>
           <linearGradient id="ecoSky" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="#FFC5D3" stop-opacity="0"/>
-            <stop offset="55%" stop-color="#FFC5D3" stop-opacity="0.05"/>
-            <stop offset="100%" stop-color="#FFC5D3" stop-opacity="0.12"/>
+            <stop offset="50%" stop-color="#FFC5D3" stop-opacity="0.04"/>
+            <stop offset="100%" stop-color="#FFC5D3" stop-opacity="0.10"/>
           </linearGradient>
-          <linearGradient id="ecoGround" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="ecoFieldFar" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FFC5D3" stop-opacity="0.10"/>
+            <stop offset="100%" stop-color="#FFC5D3" stop-opacity="0.03"/>
+          </linearGradient>
+          <linearGradient id="ecoFieldMid" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FFC5D3" stop-opacity="0.16"/>
+            <stop offset="100%" stop-color="#FFC5D3" stop-opacity="0.05"/>
+          </linearGradient>
+          <linearGradient id="ecoFieldNear" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="#FFC5D3" stop-opacity="0.22"/>
-            <stop offset="100%" stop-color="#FFC5D3" stop-opacity="0"/>
+            <stop offset="100%" stop-color="#FFC5D3" stop-opacity="0.06"/>
           </linearGradient>
-          <filter id="ecoBlurFar" x="-5%" y="-5%" width="110%" height="110%">
-            <feGaussianBlur stdDeviation="6"/>
+          <filter id="ecoBlurFar" x="-8%" y="-8%" width="116%" height="116%">
+            <feGaussianBlur stdDeviation="7"/>
           </filter>
-          <filter id="ecoBlurMid" x="-5%" y="-5%" width="110%" height="110%">
-            <feGaussianBlur stdDeviation="2.5"/>
+          <filter id="ecoBlurMid" x="-6%" y="-6%" width="112%" height="112%">
+            <feGaussianBlur stdDeviation="3"/>
           </filter>
-          <filter id="ecoSoft" x="-10%" y="-10%" width="120%" height="120%">
-            <feGaussianBlur stdDeviation="1.2"/>
+          <filter id="ecoSoft" x="-8%" y="-8%" width="116%" height="116%">
+            <feGaussianBlur stdDeviation="1.4"/>
           </filter>
         </defs>
         <rect width="1440" height="900" fill="url(#ecoSky)"/>
-        <g class="hero__eco-far" filter="url(#ecoBlurFar)" fill="#FFC5D3" fill-opacity="0.14">
-          <path d="M0 620 L120 540 L220 580 L340 480 L460 560 L580 430 L720 520 L860 400 L980 510 L1120 450 L1260 530 L1440 470 L1440 900 L0 900 Z"/>
-          <path d="M0 680 L180 600 L300 640 L480 560 L640 620 L820 540 L1000 600 L1180 560 L1440 610 L1440 900 L0 900 Z" fill-opacity="0.1"/>
+        <!-- distant hills -->
+        <g class="hero__eco-far" filter="url(#ecoBlurFar)" fill="url(#ecoFieldFar)">
+          <path d="M0 610 C160 560 280 600 420 555 C560 515 680 575 820 540 C980 500 1120 545 1440 520 L1440 900 L0 900 Z"/>
         </g>
-        <g class="hero__eco-mid" filter="url(#ecoBlurMid)" fill="#FFC5D3" fill-opacity="0.18">
-          <path d="M0 700 C180 650 260 720 400 680 C520 650 600 710 760 670 C900 640 980 700 1120 660 C1240 630 1320 690 1440 650 L1440 900 L0 900 Z"/>
+        <!-- mid rolling fields -->
+        <g class="hero__eco-mid" filter="url(#ecoBlurMid)" fill="url(#ecoFieldMid)">
+          <path d="M0 680 C200 640 340 710 520 665 C700 620 860 700 1040 655 C1200 620 1320 680 1440 650 L1440 900 L0 900 Z"/>
         </g>
-        <g class="hero__eco-trees" filter="url(#ecoSoft)" fill="#FFC5D3" fill-opacity="0.28">
-          <g transform="translate(40 0)">
-            <path d="M70 900 V760 L40 760 L70 680 L100 760 L70 760 Z"/>
-            <path d="M130 900 V780 L100 780 L130 700 L160 780 L130 780 Z"/>
-            <path d="M30 900 V800 L5 800 L30 740 L55 800 Z"/>
+        <!-- near meadow band -->
+        <g class="hero__eco-near" fill="url(#ecoFieldNear)">
+          <path d="M0 760 C180 735 360 780 560 750 C780 715 980 780 1200 745 C1320 725 1380 755 1440 740 L1440 900 L0 900 Z"/>
+        </g>
+        <!-- flower field dots (soft neon blooms, no trees) -->
+        <g class="hero__eco-flowers" filter="url(#ecoSoft)" fill="#FFC5D3">
+          <!-- far sparse -->
+          <g opacity="0.18">
+            <circle cx="120" cy="640" r="2.2"/><circle cx="180" cy="655" r="1.5"/><circle cx="260" cy="630" r="1.8"/>
+            <circle cx="340" cy="648" r="1.4"/><circle cx="420" cy="620" r="2"/><circle cx="510" cy="645" r="1.3"/>
+            <circle cx="600" cy="625" r="1.7"/><circle cx="720" cy="640" r="1.5"/><circle cx="840" cy="615" r="2.1"/>
+            <circle cx="930" cy="638" r="1.4"/><circle cx="1040" cy="622" r="1.9"/><circle cx="1160" cy="645" r="1.5"/>
+            <circle cx="1280" cy="618" r="2"/><circle cx="1360" cy="640" r="1.3"/>
           </g>
-          <g transform="translate(200 10)">
-            <path d="M40 900 V770 L15 770 L40 690 L65 770 Z"/>
-            <path d="M90 900 V790 L70 790 L90 720 L110 790 Z"/>
+          <!-- mid denser -->
+          <g opacity="0.28">
+            <circle cx="80" cy="700" r="2.6"/><circle cx="140" cy="720" r="1.8"/><circle cx="210" cy="695" r="2.2"/>
+            <circle cx="290" cy="715" r="1.6"/><circle cx="370" cy="690" r="2.4"/><circle cx="450" cy="710" r="1.7"/>
+            <circle cx="540" cy="698" r="2"/><circle cx="630" cy="722" r="1.5"/><circle cx="710" cy="705" r="2.3"/>
+            <circle cx="800" cy="718" r="1.6"/><circle cx="890" cy="692" r="2.1"/><circle cx="980" cy="715" r="1.8"/>
+            <circle cx="1070" cy="700" r="2.5"/><circle cx="1160" cy="720" r="1.5"/><circle cx="1250" cy="695" r="2"/>
+            <circle cx="1340" cy="712" r="1.7"/>
+            <!-- tiny stems suggestion as vertical dashes via thin ellipses -->
+            <ellipse cx="210" cy="708" rx="0.5" ry="6" opacity="0.35"/>
+            <ellipse cx="540" cy="712" rx="0.5" ry="7" opacity="0.3"/>
+            <ellipse cx="890" cy="705" rx="0.5" ry="6" opacity="0.3"/>
+            <ellipse cx="1070" cy="714" rx="0.5" ry="7" opacity="0.28"/>
           </g>
-          <g transform="translate(1180 0)">
-            <path d="M80 900 V750 L45 750 L80 660 L115 750 L80 750 Z"/>
-            <path d="M150 900 V780 L125 780 L150 700 L175 780 L150 780 Z"/>
-            <path d="M30 900 V810 L10 810 L30 750 L50 810 Z"/>
-            <path d="M200 900 V800 L180 800 L200 740 L220 800 Z"/>
-          </g>
-          <g transform="translate(1050 20)">
-            <path d="M50 900 V780 L25 780 L50 700 L75 780 Z"/>
-            <path d="M100 900 V800 L80 800 L100 730 L120 800 Z"/>
-          </g>
-          <g fill-opacity="0.16">
-            <path d="M520 900 V820 L505 820 L520 780 L535 820 Z"/>
-            <path d="M560 900 V830 L548 830 L560 795 L572 830 Z"/>
-            <path d="M880 900 V825 L865 825 L880 785 L895 825 Z"/>
-            <path d="M920 900 V835 L908 835 L920 800 L932 835 Z"/>
+          <!-- near blooms -->
+          <g opacity="0.38">
+            <circle cx="60" cy="780" r="3"/><circle cx="110" cy="800" r="2"/><circle cx="170" cy="770" r="2.5"/>
+            <circle cx="240" cy="790" r="1.8"/><circle cx="310" cy="775" r="2.8"/><circle cx="390" cy="805" r="2.1"/>
+            <circle cx="470" cy="780" r="2.4"/><circle cx="560" cy="798" r="1.9"/><circle cx="650" cy="772" r="2.7"/>
+            <circle cx="740" cy="795" r="2"/><circle cx="830" cy="778" r="2.6"/><circle cx="920" cy="802" r="1.7"/>
+            <circle cx="1010" cy="785" r="2.9"/><circle cx="1100" cy="800" r="2"/><circle cx="1190" cy="770" r="2.4"/>
+            <circle cx="1280" cy="792" r="1.8"/><circle cx="1360" cy="778" r="2.2"/>
+            <ellipse cx="170" cy="788" rx="0.55" ry="9" opacity="0.35"/>
+            <ellipse cx="470" cy="795" rx="0.55" ry="10" opacity="0.32"/>
+            <ellipse cx="830" cy="793" rx="0.55" ry="9" opacity="0.32"/>
+            <ellipse cx="1190" cy="785" rx="0.55" ry="10" opacity="0.3"/>
           </g>
         </g>
-        <ellipse cx="720" cy="860" rx="620" ry="70" fill="url(#ecoGround)"/>
-        <path class="hero__eco-horizon" d="M0 702 Q360 670 720 695 T1440 680" fill="none" stroke="#FFC5D3" stroke-opacity="0.35" stroke-width="1.2"/>
+        <!-- soft ground haze -->
+        <ellipse cx="720" cy="870" rx="700" ry="80" fill="#FFC5D3" fill-opacity="0.08"/>
+        <path class="hero__eco-horizon" d="M0 688 Q360 660 720 682 T1440 668" fill="none" stroke="#FFC5D3" stroke-opacity="0.28" stroke-width="1"/>
+        <!-- distant pin lights in field -->
         <g class="hero__eco-lights" fill="#FFC5D3">
-          <circle cx="310" cy="620" r="1.6" opacity="0.45"/>
-          <circle cx="340" cy="635" r="1.1" opacity="0.3"/>
-          <circle cx="980" cy="600" r="1.5" opacity="0.4"/>
-          <circle cx="1010" cy="618" r="1.2" opacity="0.28"/>
-          <circle cx="700" cy="640" r="1.3" opacity="0.25"/>
-          <circle cx="1200" cy="590" r="1.4" opacity="0.35"/>
-          <circle cx="180" cy="650" r="1.2" opacity="0.3"/>
+          <circle cx="250" cy="650" r="1.3" opacity="0.4"/>
+          <circle cx="480" cy="635" r="1.1" opacity="0.3"/>
+          <circle cx="760" cy="648" r="1.2" opacity="0.35"/>
+          <circle cx="1020" cy="630" r="1.4" opacity="0.38"/>
+          <circle cx="1220" cy="642" r="1.1" opacity="0.28"/>
         </g>
       </svg>
       <div class="hero__eco-fade"></div>
@@ -906,6 +931,6 @@
   <script src="js/cd-case.js?v=3"></script>
   <script src="js/bottle-3d.js?v=6"></script>
   <script src="js/i18n.js?v=3"></script>
-  <script src="js/main.js?v=52"></script>
+  <script src="js/main.js?v=53"></script>
 </body>
 </html>

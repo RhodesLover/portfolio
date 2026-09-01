@@ -302,12 +302,15 @@ ul { list-style: none; }
 /* ---------- HERO ---------- */
 .hero {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
-  padding: 2rem;
+  /* clear fixed nav so TOMÁS is not clipped under the header */
+  padding: calc(5.75rem + env(safe-area-inset-top, 0px)) 2rem 2.75rem;
+  box-sizing: border-box;
 }
 
 .hero__bg {
@@ -4742,27 +4745,56 @@ body.bottle-3d-open .nav {
   }
 }
 
-/* ---------- HERO ECOSYSTEM (spike: soft pink cyber horizon) ---------- */
+/* ---------- HERO ECOSYSTEM (flower fields + moon, hero only) ---------- */
 .hero__ecosystem {
   position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
-  opacity: 0.9;
+  opacity: 0.92;
 }
 .hero__bg { z-index: 0; }
 .hero__eco-glow {
   position: absolute;
-  left: 50%;
-  bottom: 12%;
-  width: min(90vw, 920px);
-  height: 42%;
-  transform: translateX(-50%);
-  background: radial-gradient(ellipse at center, rgba(255, 197, 211, 0.16) 0%, rgba(255, 197, 211, 0.05) 42%, transparent 72%);
-  filter: blur(28px);
-  opacity: 0.85;
-  animation: ecoPulse 9s ease-in-out infinite;
+  left: 58%;
+  top: 18%;
+  width: min(52vw, 520px);
+  height: min(52vw, 520px);
+  transform: translate(-30%, -20%);
+  background: radial-gradient(circle at center,
+    rgba(255, 197, 211, 0.22) 0%,
+    rgba(255, 197, 211, 0.08) 35%,
+    transparent 68%);
+  filter: blur(26px);
+  opacity: 0.9;
+  animation: ecoPulse 10s ease-in-out infinite;
+}
+.hero__eco-moon {
+  position: absolute;
+  right: max(6%, 2rem);
+  top: max(14%, 5.5rem);
+  width: clamp(88px, 16vw, 180px);
+  height: clamp(88px, 16vw, 180px);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 32%, #fff5f8 0%, #FFC5D3 42%, #e89aab 78%, #c97a8c 100%);
+  box-shadow:
+    0 0 28px rgba(255, 197, 211, 0.45),
+    0 0 80px rgba(255, 197, 211, 0.22),
+    0 0 140px rgba(255, 197, 211, 0.12);
+  opacity: 0.55;
+  z-index: 0;
+  filter: blur(0.4px);
+  animation: ecoMoon 14s ease-in-out infinite;
+}
+.hero__eco-moon::after {
+  content: "";
+  position: absolute;
+  inset: -35%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 197, 211, 0.2) 0%, transparent 70%);
+  z-index: -1;
 }
 .hero__eco-svg {
   position: absolute;
@@ -4770,58 +4802,111 @@ body.bottle-3d-open .nav {
   right: 0;
   bottom: 0;
   width: 100%;
-  height: min(78vh, 820px);
-  opacity: 0.55;
+  height: min(72vh, 760px);
+  opacity: 0.5;
   transform: translate3d(0, 0, 0);
-  animation: ecoDrift 28s ease-in-out infinite alternate;
+  animation: ecoDrift 30s ease-in-out infinite alternate;
 }
 .hero__eco-horizon {
-  filter: drop-shadow(0 0 6px rgba(255, 197, 211, 0.55));
-  animation: ecoHorizon 6.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 5px rgba(255, 197, 211, 0.4));
+  animation: ecoHorizon 7s ease-in-out infinite;
 }
-.hero__eco-lights circle { animation: ecoTwinkle 4.8s ease-in-out infinite; }
-.hero__eco-lights circle:nth-child(2) { animation-delay: 0.7s; }
-.hero__eco-lights circle:nth-child(3) { animation-delay: 1.4s; }
-.hero__eco-lights circle:nth-child(4) { animation-delay: 2.1s; }
-.hero__eco-lights circle:nth-child(5) { animation-delay: 0.3s; }
-.hero__eco-lights circle:nth-child(6) { animation-delay: 1.9s; }
-.hero__eco-lights circle:nth-child(7) { animation-delay: 2.6s; }
+.hero__eco-lights circle { animation: ecoTwinkle 5s ease-in-out infinite; }
+.hero__eco-lights circle:nth-child(2) { animation-delay: 0.8s; }
+.hero__eco-lights circle:nth-child(3) { animation-delay: 1.6s; }
+.hero__eco-lights circle:nth-child(4) { animation-delay: 2.2s; }
+.hero__eco-lights circle:nth-child(5) { animation-delay: 0.4s; }
+.hero__eco-flowers circle { animation: ecoTwinkle 6.5s ease-in-out infinite; }
 .hero__eco-fade {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  height: 42%;
-  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.55) 55%, #000 100%);
+  height: 44%;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 50%, #000 100%);
   z-index: 1;
 }
 .hero__content { z-index: 3; }
 @keyframes ecoDrift {
-  from { transform: translate3d(-1.2%, 1.2%, 0) scale(1.02); }
-  to   { transform: translate3d(1.2%, 0%, 0) scale(1.04); }
+  from { transform: translate3d(-0.8%, 0.8%, 0) scale(1.01); }
+  to   { transform: translate3d(0.8%, 0%, 0) scale(1.03); }
 }
 @keyframes ecoPulse {
-  0%, 100% { opacity: 0.55; transform: translateX(-50%) scale(1); }
-  50%      { opacity: 0.9; transform: translateX(-50%) scale(1.06); }
+  0%, 100% { opacity: 0.65; }
+  50%      { opacity: 0.95; }
+}
+@keyframes ecoMoon {
+  0%, 100% { opacity: 0.48; filter: blur(0.4px); }
+  50%      { opacity: 0.62; filter: blur(0.2px); }
 }
 @keyframes ecoHorizon {
-  0%, 100% { stroke-opacity: 0.22; }
-  50%      { stroke-opacity: 0.5; }
+  0%, 100% { stroke-opacity: 0.18; }
+  50%      { stroke-opacity: 0.4; }
 }
 @keyframes ecoTwinkle {
-  0%, 100% { opacity: 0.2; }
-  50%      { opacity: 0.7; }
+  0%, 100% { opacity: 0.18; }
+  50%      { opacity: 0.65; }
 }
 @media (max-width: 768px) {
-  .hero__eco-svg { height: min(70vh, 640px); opacity: 0.42; }
-  .hero__eco-glow { filter: blur(22px); opacity: 0.7; }
+  .hero {
+    padding-top: calc(5.25rem + env(safe-area-inset-top, 0px));
+  }
+  .hero__eco-svg { height: min(64vh, 560px); opacity: 0.4; }
+  .hero__eco-moon {
+    width: clamp(72px, 22vw, 120px);
+    height: clamp(72px, 22vw, 120px);
+    top: max(16%, 4.75rem);
+    opacity: 0.45;
+  }
+  .hero__eco-glow { opacity: 0.7; filter: blur(20px); }
+}
+@media (max-height: 700px) {
+  .hero {
+    align-items: flex-end;
+    padding-bottom: 3rem;
+  }
+  .hero__content {
+    margin-bottom: 4vh;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero__eco-svg,
   .hero__eco-glow,
+  .hero__eco-moon,
   .hero__eco-horizon,
-  .hero__eco-lights circle {
+  .hero__eco-lights circle,
+  .hero__eco-flowers circle {
     animation: none !important;
   }
+}
+
+/* nav links vertical center */
+.nav__inner {
+  align-items: center;
+}
+.nav__links {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav__links > li {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+.nav__link {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  padding: 0.35rem 0;
+}
+.nav__logo {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
 }
 
