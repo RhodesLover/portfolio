@@ -2742,8 +2742,7 @@ body.pg-viewer-open #trailCanvas { display: none; }
   .grid--posters .project-card--tall .project-card__media,
   .grid--ilustraciones .project-card--tall .project-card__media { aspect-ratio: 16/9; }
   .about__inner { grid-template-columns: 1fr; gap: 3rem; }
-  .about__image { order: -1; max-width: 300px; width: min(100%, 300px); margin: 0 auto; justify-self: center; }
-  .about__photo-frame { padding: 9px; border-radius: 20px; }
+  .about__image { order: -1; max-width: 280px; width: min(100%, 280px); margin: 0 auto; justify-self: center; }
   .about-photo-reveal { width: 100%; }
     .pg-grid--redes,
     .pg-grid--branding,
@@ -4654,6 +4653,7 @@ body.bottle-3d-open .nav {
 
 
 /* ---------- RESPONSIVE SAFETY (global) ---------- */
+/* NO height:auto on all imgs — breaks object-fit:cover portadas */
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -4662,35 +4662,40 @@ html, body {
   max-width: 100%;
   overflow-x: hidden;
 }
-img, video, canvas, svg {
+/* Only constrain free-flow images; media cards keep height:100% + cover */
+svg {
   max-width: 100%;
   height: auto;
 }
-.about__photo,
+.about__photo {
+  max-width: 100%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 .about__photo-frame {
   max-width: 100%;
-}
-.project-card__media img,
-.pg-cell__media img {
-  max-width: 100%;
-  height: auto;
+  box-sizing: border-box;
 }
 .site-footer__inner,
 .pg-footer {
   max-width: 100%;
 }
+/* Portadas: force cover again if anything else interfered */
+.project-card__media img,
+.project-card__img,
+.pg-cell__media img,
+.pg-cell__img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  display: block;
+}
 @media (max-width: 480px) {
   .about__image {
     max-width: 220px;
     width: min(88vw, 220px);
-  }
-  .about__photo-frame {
-    padding: 8px;
-    border-radius: 18px;
-  }
-  .about__photo-corner {
-    width: 14px;
-    height: 14px;
   }
   .toolkit-chip {
     font-size: 0.64rem;
