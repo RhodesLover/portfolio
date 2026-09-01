@@ -317,25 +317,54 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.project-card').forEach(el => cardObserver.observe(el));
 
     /* ---------- ABOUT PHOTO entrance (frame + corners) ---------- */
-    const photoReveal = document.querySelector('[data-photo-reveal]');
-    if (photoReveal) {
-      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduce) {
-        photoReveal.classList.add('is-in');
-      } else {
+      (function initAboutPhotoReveal() {
+        const photoReveal = document.querySelector('[data-photo-reveal]');
+        if (!photoReveal) return;
+
+        const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const markIn = () => {
+          photoReveal.classList.add('is-in');
+        };
+
+        if (reduce) {
+          markIn();
+          return;
+        }
+
+        // If already on screen at load (short viewport / deep link #about), animate in next frames
+        const alreadyVisible = () => {
+          const r = photoReveal.getBoundingClientRect();
+          const vh = window.innerHeight || document.documentElement.clientHeight || 0;
+          return r.top < vh * 0.92 && r.bottom > vh * 0.08 && r.height > 0;
+        };
+
         const photoObs = new IntersectionObserver((entries) => {
           entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('is-in');
+            if (entry.isIntersecting || entry.intersectionRatio > 0) {
+              // double rAF so the browser paints the "from" state before "to"
+              requestAnimationFrame(() => {
+                requestAnimationFrame(markIn);
+              });
               photoObs.unobserve(entry.target);
             }
           });
-        }, { threshold: 0.28, rootMargin: '0px 0px -8% 0px' });
-        photoObs.observe(photoReveal);
-      }
-    }
+        }, { threshold: [0, 0.05, 0.12, 0.2], rootMargin: '0px 0px -4% 0px' });
 
-    /* ---------- NAV SCROLL ---------- */
+        photoObs.observe(photoReveal);
+
+        if (alreadyVisible()) {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(markIn);
+          });
+        }
+
+        // Safety: never leave the photo invisible if IO never fires
+        window.setTimeout(() => {
+          if (!photoReveal.classList.contains('is-in')) markIn();
+        }, 2200);
+      })();
+
+      /* ---------- NAV SCROLL ---------- */
   const nav = document.getElementById('nav');
   if (nav) {
     let ticking = false;
