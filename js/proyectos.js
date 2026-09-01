@@ -735,26 +735,28 @@
           });
           vActions.appendChild(b);
         } else if (cartaDir && typeof window.openCartaRevista === 'function') {
-          const b = document.createElement('button');
-          b.type = 'button';
-          b.className = 'pg-viewer__link';
-          b.textContent = 'Diseño de carta →';
-          b.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            window.openCartaRevista(cartaDir, title || 'Diseño de carta', cartaPages);
-          });
-          vActions.appendChild(b);
-        } else if (behance) {
-      const a = document.createElement('a');
-      a.href = behance;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      a.className = 'pg-viewer__link';
-      a.textContent = 'Ver en Behance →';
-      vActions.appendChild(a);
-    }
-    if (extraVideo && type !== 'video') {
+                  const b = document.createElement('button');
+                  b.type = 'button';
+                  b.className = 'pg-viewer__link';
+                  b.textContent = 'Diseño de carta →';
+                  b.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.openCartaRevista(cartaDir, title || 'Diseño de carta', cartaPages);
+                  });
+                  vActions.appendChild(b);
+                }
+                // Behance gallery links: always available when set (not only as fallback)
+                if (behance && /\/gallery\//.test(String(behance))) {
+                  const a = document.createElement('a');
+                  a.href = behance;
+                  a.target = '_blank';
+                  a.rel = 'noopener noreferrer';
+                  a.className = 'pg-viewer__link';
+                  a.textContent = 'Ver en Behance →';
+                  vActions.appendChild(a);
+                }
+            if (extraVideo && type !== 'video') {
           // Motion / proceso / still: se puede volver a cualquiera (no se deshabilitan)
           const processVideo = cell.dataset.process || '';
           const stillSrc = media0 || media || '';

@@ -615,15 +615,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
         lightboxTitle.textContent = title;
-        var onLb = function () {
-          fitModalStage(lightboxStage, lightboxImg);
-          lightboxImg.removeEventListener('load', onLb);
-        };
-        lightboxImg.addEventListener('load', onLb);
-        if (lightboxImg.complete && lightboxImg.naturalWidth) fitModalStage(lightboxStage, lightboxImg);
-        if (lightboxZoom) lightboxZoom.setEnabled(!!mediaSrc);
-        if (projectZoom) projectZoom.setEnabled(false);
-      } else {
+                // Behance CTA on lightbox posters/illustrations
+                var lbActions = document.getElementById('modalLightboxActions');
+                if (lbActions) {
+                  lbActions.innerHTML = '';
+                  if (behance && /\/gallery\//.test(behance)) {
+                    var lbA = document.createElement('a');
+                    lbA.href = behance;
+                    lbA.target = '_blank';
+                    lbA.rel = 'noopener noreferrer';
+                    lbA.className = 'modal__behance-btn modal__lightbox-behance';
+                    lbA.textContent = 'Ver en Behance →';
+                    lbActions.appendChild(lbA);
+                    lbActions.hidden = false;
+                  } else {
+                    lbActions.hidden = true;
+                  }
+                }
+                var onLb = function () {
+                  fitModalStage(lightboxStage, lightboxImg);
+                  lightboxImg.removeEventListener('load', onLb);
+                };
+                lightboxImg.addEventListener('load', onLb);
+                if (lightboxImg.complete && lightboxImg.naturalWidth) fitModalStage(lightboxStage, lightboxImg);
+                if (lightboxZoom) lightboxZoom.setEnabled(!!mediaSrc);
+                if (projectZoom) projectZoom.setEnabled(false);
+              } else {
         // PROJECT mode: media left + description right + Behance
         modal.classList.add('modal--project');
         modalProject.style.display = 'grid';
@@ -773,25 +790,28 @@ document.addEventListener('DOMContentLoaded', () => {
                                     });
                                     projActions.appendChild(btn);
                                   } else if (cartaDir && typeof window.openCartaRevista === 'function') {
-                  const btn = document.createElement('button');
-                  btn.type = 'button';
-                  btn.className = 'modal__behance-btn';
-                  btn.textContent = 'Diseño de carta →';
-                  btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    window.openCartaRevista(cartaDir, title || 'Diseño de carta', cartaPages);
-                  });
-                  projActions.appendChild(btn);
-                } else if (behance) {
-          const btn = document.createElement('a');
-          btn.href = behance;
-          btn.target = '_blank';
-          btn.className = 'modal__behance-btn';
-          btn.textContent = 'Ver más →';
-          projActions.appendChild(btn);
-        }
-      }
+                                                    const btn = document.createElement('button');
+                                                    btn.type = 'button';
+                                                    btn.className = 'modal__behance-btn';
+                                                    btn.textContent = 'Diseño de carta →';
+                                                    btn.addEventListener('click', (e) => {
+                                                      e.preventDefault();
+                                                      e.stopPropagation();
+                                                      window.openCartaRevista(cartaDir, title || 'Diseño de carta', cartaPages);
+                                                    });
+                                                    projActions.appendChild(btn);
+                                                  }
+                                                  // Behance gallery: always when set (not exclusive with other CTAs)
+                                                  if (behance && /\/gallery\//.test(String(behance))) {
+                                            const btn = document.createElement('a');
+                                            btn.href = behance;
+                                            btn.target = '_blank';
+                                            btn.rel = 'noopener noreferrer';
+                                            btn.className = 'modal__behance-btn';
+                                            btn.textContent = 'Ver en Behance →';
+                                            projActions.appendChild(btn);
+                                          }
+                                        }
 
       modal.classList.add('modal--open');
       document.body.classList.add('modal-open');
@@ -1331,27 +1351,29 @@ document.addEventListener('DOMContentLoaded', () => {
               });
               vActions.appendChild(b);
             } else if (cartaDir && typeof window.openCartaRevista === 'function') {
-        const b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'pg-viewer__link';
-        b.textContent = 'Diseño de carta →';
-        b.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          window.openCartaRevista(cartaDir, title || 'Diseño de carta', cartaPages);
-        });
-        vActions.appendChild(b);
-      } else if (behance) {
-              const a = document.createElement('a');
-              a.href = behance;
-              a.target = '_blank';
-              a.rel = 'noopener noreferrer';
-              a.className = 'pg-viewer__link';
-              a.textContent = 'Ver en Behance →';
-              vActions.appendChild(a);
-            }
+                    const b = document.createElement('button');
+                    b.type = 'button';
+                    b.className = 'pg-viewer__link';
+                    b.textContent = 'Diseño de carta →';
+                    b.addEventListener('click', (e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      window.openCartaRevista(cartaDir, title || 'Diseño de carta', cartaPages);
+                    });
+                    vActions.appendChild(b);
+                  }
+                  // Behance gallery links: always when set (alongside other CTAs)
+                  if (behance && /\/gallery\//.test(String(behance))) {
+                          const a = document.createElement('a');
+                          a.href = behance;
+                          a.target = '_blank';
+                          a.rel = 'noopener noreferrer';
+                          a.className = 'pg-viewer__link';
+                          a.textContent = 'Ver en Behance →';
+                          vActions.appendChild(a);
+                        }
 
-            const extraVideo = card.dataset.video || '';
+                        const extraVideo = card.dataset.video || '';
                         const processVideo = card.dataset.process || '';
                         if ((extraVideo || processVideo) && media.type !== 'video') {
                           const stillSrc = media0 || media.media || '';

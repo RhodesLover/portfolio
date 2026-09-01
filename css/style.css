@@ -904,13 +904,17 @@ ul { list-style: none; }
 .about__bio {
   font-size: 1.05rem;
   line-height: 1.8;
-  color: rgba(245,245,245,0.6);
+  color: #ffffff;
   margin-bottom: 1rem;
 }
 
 .about__bio strong {
-  color: #fff;
+  color: #ffffff;
   font-weight: 600;
+}
+
+.about__bio .highlight {
+  color: #FFC5D3;
 }
 
 .about__meta {
@@ -983,6 +987,10 @@ ul { list-style: none; }
 
 .about__image {
   position: relative;
+  justify-self: end;
+  width: min(100%, 340px);
+  max-width: 340px;
+  margin-inline: auto 0;
 }
 
 .about__photo-placeholder {
@@ -1003,28 +1011,94 @@ ul { list-style: none; }
 .about__photo-placeholder:hover {
   border-color: rgba(255,197,211,0.3);
 }
+
+/* Portrait frame — double border, soft glow, corner ticks */
+.about__photo-frame {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 10px;
+  border-radius: 22px;
+  background:
+    linear-gradient(145deg, rgba(255,197,211,0.35), rgba(255,255,255,0.06) 42%, rgba(255,197,211,0.12));
+  box-shadow:
+    0 0 0 1px rgba(255,197,211,0.18),
+    0 18px 50px rgba(0,0,0,0.45),
+    0 0 40px rgba(255,197,211,0.08);
+}
+.about__photo-frame::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.1);
+  pointer-events: none;
+  z-index: 2;
+}
+.about__photo-frame::after {
+  content: '';
+  position: absolute;
+  inset: -10px;
+  border-radius: 28px;
+  border: 1px solid rgba(255,197,211,0.14);
+  pointer-events: none;
+  z-index: 0;
+}
 .about__photo {
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 4 / 5;
   object-fit: cover;
-  object-position: center top;
-  border-radius: 16px;
+  object-position: center 18%;
+  border-radius: 14px;
   display: block;
   position: relative;
   z-index: 1;
-  border: 1px solid rgba(255,197,211,0.12);
-  background: rgba(255,255,255,0.02);
+  background: #111;
+  filter: contrast(1.03) saturate(1.04);
+}
+.about__photo-corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  z-index: 3;
+  pointer-events: none;
+  border-color: #FFC5D3;
+  border-style: solid;
+  opacity: 0.85;
+}
+.about__photo-corner--tl {
+  top: 2px; left: 2px;
+  border-width: 2px 0 0 2px;
+  border-radius: 4px 0 0 0;
+}
+.about__photo-corner--tr {
+  top: 2px; right: 2px;
+  border-width: 2px 2px 0 0;
+  border-radius: 0 4px 0 0;
+}
+.about__photo-corner--bl {
+  bottom: 2px; left: 2px;
+  border-width: 0 0 2px 2px;
+  border-radius: 0 0 0 4px;
+}
+.about__photo-corner--br {
+  bottom: 2px; right: 2px;
+  border-width: 0 2px 2px 0;
+  border-radius: 0 0 4px 0;
 }
 
 .about__decor {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  border: 1.5px solid rgba(255,197,211,0.08);
-  border-radius: 16px;
-  top: 15px;
-  left: 15px;
+  width: calc(100% + 18px);
+  height: calc(100% + 18px);
+  border: 1px solid rgba(255,197,211,0.16);
+  border-radius: 26px;
+  top: 14px;
+  left: 14px;
   z-index: 0;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(255,197,211,0.12), transparent 55%);
+  pointer-events: none;
 }
 
 /* ---------- CONTACT ---------- */
@@ -1507,6 +1581,24 @@ body.modal-open .nav {
   margin: 0 auto;
   align-self: center;
   line-height: 1.35;
+}
+
+.modal__lightbox-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: min(100%, 920px);
+  margin: 0.85rem auto 0;
+}
+.modal__lightbox-actions[hidden] {
+  display: none !important;
+}
+.modal__lightbox-behance {
+  /* slightly tighter under the lightbox title */
+  padding: 0.65rem 1.4rem;
+  font-size: 0.7rem;
 }
 
 /* --- Project mode (Redes, Branding, Proyectos) --- */
@@ -2569,7 +2661,7 @@ body.pg-viewer-open #trailCanvas { display: none; }
   .grid--posters .project-card--tall .project-card__media,
   .grid--ilustraciones .project-card--tall .project-card__media { aspect-ratio: 16/9; }
   .about__inner { grid-template-columns: 1fr; gap: 3rem; }
-  .about__image { order: -1; max-width: 400px; margin: 0 auto; }
+  .about__image { order: -1; max-width: 280px; width: min(100%, 280px); margin: 0 auto; justify-self: center; }
     .pg-grid--redes,
     .pg-grid--branding,
     .pg-grid--proyectos { grid-template-columns: 1fr 1fr; }
