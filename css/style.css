@@ -1101,6 +1101,77 @@ ul { list-style: none; }
   pointer-events: none;
 }
 
+/* Sobre mí photo — entrance (frame + corners + image) */
+.about-photo-reveal {
+  opacity: 0;
+  transform: translateY(28px) scale(0.96);
+  filter: blur(6px);
+  transition:
+    opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform, filter;
+}
+.about-photo-reveal.is-in {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+}
+.about-photo-reveal .about__photo-frame {
+  transition: box-shadow 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.12s,
+              background 0.9s ease 0.12s;
+}
+.about-photo-reveal:not(.is-in) .about__photo-frame {
+  box-shadow:
+    0 0 0 1px rgba(255,197,211,0.05),
+    0 8px 24px rgba(0,0,0,0.25);
+}
+.about-photo-reveal .about__photo {
+  transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1) 0.08s,
+              filter 1s ease 0.08s;
+  transform: scale(1.04);
+}
+.about-photo-reveal.is-in .about__photo {
+  transform: scale(1);
+}
+.about-photo-reveal .about__photo-corner {
+  opacity: 0;
+  transition: opacity 0.45s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.about-photo-reveal:not(.is-in) .about__photo-corner--tl { transform: translate(-6px, -6px); }
+.about-photo-reveal:not(.is-in) .about__photo-corner--tr { transform: translate(6px, -6px); }
+.about-photo-reveal:not(.is-in) .about__photo-corner--bl { transform: translate(-6px, 6px); }
+.about-photo-reveal:not(.is-in) .about__photo-corner--br { transform: translate(6px, 6px); }
+.about-photo-reveal.is-in .about__photo-corner {
+  opacity: 0.85;
+  transform: none;
+  transition-delay: 0.35s;
+}
+.about-photo-reveal.is-in .about__photo-corner--tr { transition-delay: 0.42s; }
+.about-photo-reveal.is-in .about__photo-corner--bl { transition-delay: 0.48s; }
+.about-photo-reveal.is-in .about__photo-corner--br { transition-delay: 0.55s; }
+.about-photo-reveal .about__decor {
+  opacity: 0;
+  transform: translate(-6px, -6px);
+  transition: opacity 0.7s ease 0.25s, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.25s;
+}
+.about-photo-reveal.is-in .about__decor {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .about-photo-reveal,
+  .about-photo-reveal .about__photo,
+  .about-photo-reveal .about__photo-corner,
+  .about-photo-reveal .about__decor,
+  .about-photo-reveal .about__photo-frame {
+    transition: none !important;
+    filter: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
 /* ---------- CONTACT ---------- */
 .contact {
   padding: 10rem 2rem;

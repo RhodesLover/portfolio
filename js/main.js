@@ -316,7 +316,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('.project-card').forEach(el => cardObserver.observe(el));
 
-  /* ---------- NAV SCROLL ---------- */
+    /* ---------- ABOUT PHOTO entrance (frame + corners) ---------- */
+    const photoReveal = document.querySelector('[data-photo-reveal]');
+    if (photoReveal) {
+      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) {
+        photoReveal.classList.add('is-in');
+      } else {
+        const photoObs = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-in');
+              photoObs.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.28, rootMargin: '0px 0px -8% 0px' });
+        photoObs.observe(photoReveal);
+      }
+    }
+
+    /* ---------- NAV SCROLL ---------- */
   const nav = document.getElementById('nav');
   if (nav) {
     let ticking = false;
