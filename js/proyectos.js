@@ -315,31 +315,114 @@
     });
   }
 
-  function clearViewerMedia() {
-      vVideo.pause();
-      try { vVideo.muted = false; } catch (e) {}
-      vVideo.removeAttribute('src');
-      vVideo.load();
-      vVideo.style.display = 'none';
-      vImg.removeAttribute('src');
-      vImg.style.display = 'none';
-      if (mediaZoom) mediaZoom.setEnabled(false);
-      setVideoFill(false);
-      if (zoomStage) {
-        zoomStage.style.aspectRatio = '';
-        zoomStage.style.removeProperty('--media-ar');
-        zoomStage.classList.remove('is-fitted', 'is-video-fill');
+  function isProcessYoutube(src) {
+        var s = String(src || '');
+        return /^yt:/i.test(s) || /youtube\.com|youtu\.be/i.test(s);
       }
-      var ov = document.getElementById('pgGalOverlay');
-      if (ov) {
-        ov.hidden = true;
-        ov.classList.remove('is-on');
-        var bp = ov.querySelector('[data-gal="-1"]');
-        var bn = ov.querySelector('[data-gal="1"]');
-        if (bp) bp.hidden = false;
-        if (bn) bn.hidden = false;
+
+      function youtubeId(src) {
+        var s = String(src || '').trim();
+        if (/^yt:/i.test(s)) return s.slice(3).trim();
+        var m = s.match(/[?&]v=([\w-]{6,})/) || s.match(/youtu\.be\/([\w-]{6,})/) || s.match(/embed\/([\w-]{6,})/);
+        return m ? m[1] : '';
       }
-    }
+
+      function ensureProcessFrame() {
+        var fr = document.getElementById('pgViewerProcess');
+        if (fr) return fr;
+        if (!zoomStage) return null;
+        fr = document.createElement('iframe');
+        fr.id = 'pgViewerProcess';
+        fr.className = 'pg-viewer__process';
+        fr.title = 'Proceso';
+        fr.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+        fr.setAttribute('allowfullscreen', '');
+        fr.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+        fr.hidden = true;
+        // Keep overlay on top of process media
+        var ov = document.getElementById('pgGalOverlay');
+        if (ov && ov.parentNode === zoomStage) zoomStage.insertBefore(fr, ov);
+        else zoomStage.appendChild(fr);
+        return fr;
+      }
+
+      function hideProcessFrame() {
+        var fr = document.getElementById('pgViewerProcess');
+        if (!fr) return;
+        fr.hidden = true;
+        fr.style.display = 'none';
+        try { fr.src = 'about:blank'; } catch (e) {}
+      }
+
+      function showProcessMedia(src, stillSrc) {
+        var fr = ensureProcessFrame();
+        if (isProcessYoutube(src)) {
+          try { vVideo.pause(); } catch (e) {}
+          vVideo.removeAttribute('src');
+          try { vVideo.load(); } catch (e) {}
+          vVideo.style.display = 'none';
+          vImg.style.display = 'none';
+          if (fr) {
+            var id = youtubeId(src);
+            var url = id ? ('https://www.youtube.com/embed/' + id + '?rel=0') : '';
+            fr.hidden = false;
+            fr.style.display = 'block';
+            if (url && fr.getAttribute('src') !== url) fr.src = url;
+            if (zoomStage) {
+              zoomStage.style.aspectRatio = '16 / 9';
+              zoomStage.classList.add('is-fitted');
+            }
+          }
+          if (mediaZoom) mediaZoom.setEnabled(false);
+          setVideoFill(false);
+          return;
+        }
+        hideProcessFrame();
+        vImg.style.display = 'none';
+        vVideo.style.display = 'block';
+        if (stillSrc) vVideo.poster = stillSrc;
+        vVideo.muted = false;
+        if (vVideo.getAttribute('src') !== src) vVideo.src = src;
+        else {
+          try { vVideo.currentTime = 0; } catch (e) {}
+        }
+        var onMetaP = function () {
+          fitStageToMedia(vVideo);
+          vVideo.removeEventListener('loadedmetadata', onMetaP);
+        };
+        vVideo.addEventListener('loadedmetadata', onMetaP);
+        if (vVideo.readyState >= 1) fitStageToMedia(vVideo);
+        setVideoFill(false);
+        vVideo.play().catch(function () {});
+        if (mediaZoom) mediaZoom.setEnabled(false);
+      }
+
+      function clearViewerMedia() {
+        vVideo.pause();
+        try { vVideo.muted = false; } catch (e) {}
+        vVideo.removeAttribute('src');
+        vVideo.load();
+        vVideo.style.display = 'none';
+        vImg.removeAttribute('src');
+        vImg.style.display = 'none';
+        hideProcessFrame();
+        if (mediaZoom) mediaZoom.setEnabled(false);
+        setVideoFill(false);
+        if (zoomStage) {
+          zoomStage.style.aspectRatio = '';
+          zoomStage.style.removeProperty('--media-ar');
+          zoomStage.classList.remove('is-fitted', 'is-video-fill');
+        }
+        var ov = document.getElementById('pgGalOverlay');
+        if (ov) {
+          ov.hidden = true;
+          ov.classList.remove('is-on');
+          var bp = ov.querySelector('[data-gal="-1"]');
+          var bn = ov.querySelector('[data-gal="1"]');
+          if (bp) bp.hidden = false;
+          if (bn) bn.hidden = false;
+        }
+      }
 
 
   function parseGallery(el) {
@@ -700,43 +783,49 @@
             var isMotion = mode === 'motion';
             var isProcess = mode === 'process';
             if (isStill) {
-              try { vVideo.pause(); } catch (e) {}
-              vVideo.removeAttribute('src');
-              try { vVideo.load(); } catch (e) {}
-              vVideo.style.display = 'none';
-              if (stillSrc) {
-                vImg.style.display = 'block';
-                if (vImg.getAttribute('src') !== stillSrc) vImg.src = stillSrc;
-                var onStill = function () {
-                  if (typeof fitStageToMedia === 'function') fitStageToMedia(vImg);
-                  vImg.removeEventListener('load', onStill);
-                };
-                vImg.addEventListener('load', onStill);
-                if (vImg.complete && vImg.naturalWidth && typeof fitStageToMedia === 'function') fitStageToMedia(vImg);
-              }
-              if (mediaZoom) mediaZoom.setEnabled(!!stillSrc);
-              setVideoFill(false);
-            } else {
-              var src = isProcess ? processVideo : extraVideo;
-              if (vImg.naturalWidth && vImg.naturalHeight && zoomStage) fitStageToMedia(vImg);
-              vImg.style.display = 'none';
-              vVideo.style.display = 'block';
-              if (stillSrc) vVideo.poster = stillSrc;
-              vVideo.muted = false;
-              if (vVideo.getAttribute('src') !== src) vVideo.src = src;
-              else {
-                try { vVideo.currentTime = 0; } catch (e) {}
-              }
-              var onMeta = function () {
-                fitStageToMedia(vVideo);
-                vVideo.removeEventListener('loadedmetadata', onMeta);
-              };
-              vVideo.addEventListener('loadedmetadata', onMeta);
-              if (vVideo.readyState >= 1) fitStageToMedia(vVideo);
-              setVideoFill(false);
-              vVideo.play().catch(function () {});
-              if (mediaZoom) mediaZoom.setEnabled(false);
-            }
+                          try { vVideo.pause(); } catch (e) {}
+                          vVideo.removeAttribute('src');
+                          try { vVideo.load(); } catch (e) {}
+                          vVideo.style.display = 'none';
+                          hideProcessFrame();
+                          if (stillSrc) {
+                            vImg.style.display = 'block';
+                            if (vImg.getAttribute('src') !== stillSrc) vImg.src = stillSrc;
+                            var onStill = function () {
+                              if (typeof fitStageToMedia === 'function') fitStageToMedia(vImg);
+                              vImg.removeEventListener('load', onStill);
+                            };
+                            vImg.addEventListener('load', onStill);
+                            if (vImg.complete && vImg.naturalWidth && typeof fitStageToMedia === 'function') fitStageToMedia(vImg);
+                          }
+                          if (mediaZoom) mediaZoom.setEnabled(!!stillSrc);
+                          setVideoFill(false);
+                        } else {
+                          var src = isProcess ? processVideo : extraVideo;
+                          if (isProcess) {
+                            showProcessMedia(src, stillSrc);
+                          } else {
+                            hideProcessFrame();
+                            if (vImg.naturalWidth && vImg.naturalHeight && zoomStage) fitStageToMedia(vImg);
+                            vImg.style.display = 'none';
+                            vVideo.style.display = 'block';
+                            if (stillSrc) vVideo.poster = stillSrc;
+                            vVideo.muted = false;
+                            if (vVideo.getAttribute('src') !== src) vVideo.src = src;
+                            else {
+                              try { vVideo.currentTime = 0; } catch (e) {}
+                            }
+                            var onMeta = function () {
+                              fitStageToMedia(vVideo);
+                              vVideo.removeEventListener('loadedmetadata', onMeta);
+                            };
+                            vVideo.addEventListener('loadedmetadata', onMeta);
+                            if (vVideo.readyState >= 1) fitStageToMedia(vVideo);
+                            setVideoFill(false);
+                            vVideo.play().catch(function () {});
+                            if (mediaZoom) mediaZoom.setEnabled(false);
+                          }
+                        }
             btnMotion.classList.toggle('is-active', isMotion);
             btnMotion.textContent = isMotion ? 'Motion' : 'Ver motion →';
             btnStill.hidden = isStill;
@@ -767,39 +856,28 @@
             bs.textContent = 'Ver imagen →';
             bs.hidden = true;
             function setProcMode(mode) {
-              if (mode === 'still') {
-                try { vVideo.pause(); } catch (e) {}
-                vVideo.removeAttribute('src');
-                try { vVideo.load(); } catch (e) {}
-                vVideo.style.display = 'none';
-                if (stillSrc) {
-                  vImg.style.display = 'block';
-                  if (vImg.getAttribute('src') !== stillSrc) vImg.src = stillSrc;
-                  if (vImg.complete && vImg.naturalWidth) fitStageToMedia(vImg);
-                }
-                if (mediaZoom) mediaZoom.setEnabled(!!stillSrc);
-                bp.classList.remove('is-active');
-                bp.textContent = 'Ver proceso →';
-                bs.hidden = true;
-              } else {
-                vImg.style.display = 'none';
-                vVideo.style.display = 'block';
-                if (stillSrc) vVideo.poster = stillSrc;
-                vVideo.muted = false;
-                vVideo.src = processVideo;
-                var onMetaP = function () {
-                  fitStageToMedia(vVideo);
-                  vVideo.removeEventListener('loadedmetadata', onMetaP);
-                };
-                vVideo.addEventListener('loadedmetadata', onMetaP);
-                setVideoFill(false);
-                vVideo.play().catch(function () {});
-                if (mediaZoom) mediaZoom.setEnabled(false);
-                bp.classList.add('is-active');
-                bp.textContent = 'Proceso';
-                bs.hidden = false;
-              }
-            }
+                          if (mode === 'still') {
+                            try { vVideo.pause(); } catch (e) {}
+                            vVideo.removeAttribute('src');
+                            try { vVideo.load(); } catch (e) {}
+                            vVideo.style.display = 'none';
+                            hideProcessFrame();
+                            if (stillSrc) {
+                              vImg.style.display = 'block';
+                              if (vImg.getAttribute('src') !== stillSrc) vImg.src = stillSrc;
+                              if (vImg.complete && vImg.naturalWidth) fitStageToMedia(vImg);
+                            }
+                            if (mediaZoom) mediaZoom.setEnabled(!!stillSrc);
+                            bp.classList.remove('is-active');
+                            bp.textContent = 'Ver proceso →';
+                            bs.hidden = true;
+                          } else {
+                            showProcessMedia(processVideo, stillSrc);
+                            bp.classList.add('is-active');
+                            bp.textContent = 'Proceso';
+                            bs.hidden = false;
+                          }
+                        }
             bp.addEventListener('click', function () { setProcMode('process'); });
             bs.addEventListener('click', function () { setProcMode('still'); });
             vActions.appendChild(bp);
