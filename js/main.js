@@ -5,6 +5,26 @@
 
 /* gallery-helpers-bootstrap */
 (function (w) {
+  if (!w.setDescWithFullEmoji) {
+    /** Keep emoji (heart etc.) at full opacity inside faded desc text. */
+    w.setDescWithFullEmoji = function (el, text) {
+      if (!el) return;
+      var s = text == null ? '' : String(text);
+      if (!s) {
+        el.textContent = '';
+        return;
+      }
+      var re = /(\u2764\uFE0F|\u2764|\u2665\uFE0F|\u2665|\uD83D[\uDC93-\uDC9F\uDDA4]|\uD83E\uDDE1)/g;
+      if (!re.test(s)) {
+        el.textContent = s;
+        return;
+      }
+      re.lastIndex = 0;
+      var html = s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      html = html.replace(re, '<span class="emoji-full" aria-hidden="false">$1</span>');
+      el.innerHTML = html;
+    };
+  }
   if (w.parseGallery) return;
   w.parseGallery = function (el) {
     if (!el) return [];
@@ -608,8 +628,9 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.classList.add('modal--project');
         modalProject.style.display = 'grid';
         projTitle.textContent = title;
-        projCat.textContent = category;
-        projDesc.textContent = description;
+                projCat.textContent = category;
+                if (window.setDescWithFullEmoji) window.setDescWithFullEmoji(projDesc, description);
+                else projDesc.textContent = description;
 
         // Desafío → Decisión (si la card los define)
         const challenge = card.dataset.challenge || '';
@@ -1218,9 +1239,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
       vTitle.textContent = title;
-      vCat.textContent = category;
-      vDesc.textContent = desc;
-      vIdx.textContent = String(currentIndex + 1).padStart(2, '0');
+            vCat.textContent = category;
+            if (window.setDescWithFullEmoji) window.setDescWithFullEmoji(vDesc, desc);
+            else vDesc.textContent = desc;
+            vIdx.textContent = String(currentIndex + 1).padStart(2, '0');
 
       // Solo limpia CTAs; el carrusel vive en #pgViewerGallery (host fijo)
       vActions.innerHTML = '';

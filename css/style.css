@@ -1532,8 +1532,13 @@ body.modal-open .nav {
 .modal__project-desc {
   font-size: 0.95rem;
   line-height: 1.7;
-  color: rgba(245,245,245,0.55);
+  /* Opaque grey so emoji (Kalisi heart) render at full opacity */
+  color: #8c8c8c;
   margin: 0 0 var(--space-2);
+}
+.modal__project-desc .emoji-full {
+  color: #fff;
+  opacity: 1;
 }
 
 .modal__project-actions {
@@ -2398,8 +2403,14 @@ body.modal-open .nav {
 .pg-viewer__desc {
   font-size: 0.95rem;
   line-height: 1.65;
-  color: rgba(245,245,245,0.55);
+  /* Opaque grey (not rgba): emoji/heart keep full color opacity */
+  color: #8c8c8c;
   margin-top: 0.4rem;
+}
+.pg-viewer__desc .emoji-full,
+.modal__description .emoji-full {
+  color: #fff;
+  opacity: 1;
 }
 .pg-viewer__actions {
   display: flex;
