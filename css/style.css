@@ -4978,10 +4978,16 @@ body.bottle-3d-open .nav {
 /* ---------- NAV compact height (less air above/below labels) ---------- */
 .nav,
 .nav--projects {
-  padding-top: 0.4rem !important;
-  padding-bottom: 0.4rem !important;
+  padding-top: 0.28rem !important;
+  padding-bottom: 0.28rem !important;
 }
 .nav--scrolled {
-  padding-top: 0.35rem !important;
-  padding-bottom: 0.35rem !important;
+  padding-top: 0.22rem !important;
+  padding-bottom: 0.22rem !important;
+}
+.nav:not(.nav--projects) .nav__logo {
+  font-size: 1.15rem !important;
+}
+.lang-switch__btn {
+  padding: 0.22rem 0.55rem !important;
 }
