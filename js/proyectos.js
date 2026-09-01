@@ -180,7 +180,7 @@
   function updateCount() {
     if (totalEl) {
       const n = visibleCells.length;
-      totalEl.textContent = n + (n === 1 ? ' pieza' : ' piezas');
+      totalEl.setAttribute('data-count', String(n)); totalEl.textContent = n + ' ' + (window.TZI18n ? (n === 1 ? TZI18n.t('gallery.piecesOne') : TZI18n.t('gallery.piecesMany')) : (n === 1 ? 'pieza' : 'piezas'));
     }
   }
 
@@ -829,12 +829,12 @@
                           }
                         }
             btnMotion.classList.toggle('is-active', isMotion);
-            btnMotion.textContent = isMotion ? 'Motion' : (window.TZI18n?window.TZI18n.t('js.motion'):'Ver motion →');
+            btnMotion.textContent = isMotion ? (window.TZI18n?window.TZI18n.t('js.motionShort'):'Motion') : (window.TZI18n?window.TZI18n.t('js.motion'):'Ver motion →');
             btnStill.hidden = isStill;
             btnStill.classList.toggle('is-active', isStill);
             if (btnProcess) {
               btnProcess.classList.toggle('is-active', isProcess);
-              btnProcess.textContent = isProcess ? 'Proceso' : (window.TZI18n?window.TZI18n.t('js.process'):'Ver proceso →');
+              btnProcess.textContent = isProcess ? (window.TZI18n?window.TZI18n.t('js.processShort'):'Proceso') : (window.TZI18n?window.TZI18n.t('js.process'):'Ver proceso →');
             }
           }
 
@@ -876,7 +876,7 @@
                           } else {
                             showProcessMedia(processVideo, stillSrc);
                             bp.classList.add('is-active');
-                            bp.textContent = 'Proceso';
+                            bp.textContent = (window.TZI18n?window.TZI18n.t('js.processShort'):'Proceso');
                             bs.hidden = false;
                           }
                         }

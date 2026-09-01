@@ -40,7 +40,7 @@
       en: 'A look at the projects that define my approach.'
     },
     'work.all': { es: 'Ver todos los trabajos →', en: 'View all work →' },
-    'cat.redes': { es: 'Redes', en: 'Social' },
+    'cat.redes': { es: 'Redes Sociales', en: 'Social Media' },
     'cat.branding': { es: 'Branding', en: 'Branding' },
     'cat.posters': { es: 'Posters', en: 'Posters' },
     'cat.proyectos': { es: 'Proyectos', en: 'Projects' },
@@ -86,9 +86,49 @@
     'footer.contact': { es: 'Contacto →', en: 'Contact →' },
     'footer.navLabel': { es: 'Pie de página', en: 'Footer' },
     'gallery.heading': { es: 'Todos los trabajos', en: 'All work' },
-    'gallery.back': { es: 'Volver', en: 'Back' },
+    'gallery.back': { es: '← Volver', en: '← Back' },
     'gallery.filterAll': { es: 'Todo', en: 'All' },
     'gallery.filtersLabel': { es: 'Filtros', en: 'Filters' },
+    'gallery.back': { es: '← Volver', en: '← Back' },
+    'gallery.archive': { es: 'Archivo completo', en: 'Full archive' },
+    'gallery.piecesOne': { es: 'pieza', en: 'piece' },
+    'gallery.piecesMany': { es: 'piezas', en: 'pieces' },
+    'gallery.heroLine1': { es: 'Todos los', en: 'All' },
+    'gallery.heroLine2': { es: 'trabajos', en: 'work' },
+    'gallery.heroSub': {
+      es: 'Selección por disciplina. Abrí cada pieza, filtrá y explorá el archivo completo.',
+      en: 'Browse by discipline. Open each piece, filter, and explore the full archive.'
+    },
+    'gallery.filterAria': { es: 'Filtrar por disciplina', en: 'Filter by discipline' },
+    'sec.redes': { es: 'Social media · feeds · motion', en: 'Social media · feeds · motion' },
+    'sec.branding': { es: 'Identidad · packaging · sistema', en: 'Identity · packaging · system' },
+    'sec.proyectos': { es: 'Campañas · conceptual · editorial', en: 'Campaigns · conceptual · editorial' },
+    'sec.posters': { es: 'Composición · tipografía · atmósfera', en: 'Composition · typography · atmosphere' },
+    'sec.ilustraciones': { es: 'Trazo · textura · personaje', en: 'Line · texture · character' },
+    'sec.infografias': { es: 'Dato · jerarquía · lectura', en: 'Data · hierarchy · reading' },
+    'sec.revistas': { es: 'Editorial · tipografía · pliegos', en: 'Editorial · typography · spreads' },
+    'sec.modelos': { es: 'Volumen · producto · render', en: 'Volume · product · render' },
+    'js.processShort': { es: 'Proceso', en: 'Process' },
+    'js.motionShort': { es: 'Motion', en: 'Motion' },
+    'js.zoomIn': { es: 'Acercar', en: 'Zoom in' },
+    'js.zoomOut': { es: 'Alejar', en: 'Zoom out' },
+    'js.zoomReset': { es: 'Restablecer', en: 'Reset' },
+    'js.close': { es: 'Cerrar', en: 'Close' },
+    'js.cover': { es: 'Portada', en: 'Cover' },
+    'js.cartaHint': {
+      es: 'Zoom +/− · rueda · doble click · arrastrá · bordes · flechas',
+      en: 'Zoom +/− · wheel · double-click · drag · edges · arrows'
+    },
+    'js.cdHint': {
+      es: 'Gira sola · mantené el mouse para frenar y rotar · Abrir caja',
+      en: 'Spins on its own · hold the mouse to pause and rotate · Open case'
+    },
+    'js.bottleHint': {
+      es: 'Gira sola · mantené el mouse para frenar y rotar',
+      en: 'Spins on its own · hold the mouse to pause and rotate'
+    },
+    'js.openCase': { es: 'Abrir caja', en: 'Open case' },
+
     'js.instagram': { es: 'Ver Instagram →', en: 'View Instagram →' },
     'js.instagramShort': { es: 'Ver Instagram', en: 'View Instagram' },
     'js.protoSoon': { es: 'Prototipo próximamente', en: 'Prototype coming soon' },
@@ -137,10 +177,65 @@
     'Kalisi||Ilustración · 2025': 'Kali ❤️.',
     'Polar Bear||Ilustración · 2025':
       'Illustration of my favorite animal, capturing its violent nature and fantastical aesthetic.',
-    'Ilustración Bowie||Ilustración · 2022': ''
+    'Ilustración Bowie||Ilustración · 2022': '',
+    'Fantasma — Gustavo Cerati||Poster · 2026':
+      'Poster inspired by the song Fantasma by Gustavo Cerati.',
+    'Red Twilight||Poster · 2026':
+      'Advertisement flyer for the cocktail "Red Twilight" (my own recipe), for a bar in Puerto Madero, Buenos Aires.',
+    'Jordan Poster||Poster · 2025':
+      'Poster of basketball\'s G.O.A.T.',
+    'Tinnitus||Poster · 2025':
+      'Conceptual poster about the condition of tinnitus.',
+    'Wonder — Afiche||Poster · 2025':
+      'Conceptual poster for Wonder.',
+    'Nogal||Poster · 2024':
+      'Conceptual poster for Nogal Producciones.',
+    'SOUL NATURE 01||Poster · 2024':
+      'Art poster inspired by Ciruelo\'s talk with Goura\'s Music on Fonograma #42.',
+    'Anti-Gambling||Poster · 2023':
+      'Anti-gambling poster (against gambling addiction) designed for a public-interest campaign.',
+    'Arte Único Branca||Poster · 2023':
+      'Poster entered in the "LEGADO BRANCA" category for Fernet Branca\'s Arte Único 2023 contest.',
+    'Kill Bill||Poster · 2023':
+      'Illustrated poster of the classic Quentin Tarantino film.',
+    'Poster Destilería Campo||Poster · 2023':
+      'Poster / product shot designed for Destilería Campo gin from Tandil.',
+    'Milky\'s||Poster · 2022':
+      'Piece inspired by the Coffee and TV music video by Blur.',
+    'Tokyo Poster||Poster · 2022':
+      'Poster designed for the Intel World Open, host of the international Street Fighter V esports tournament.',
+    'Library||Ilustración · 2024':
+      'Overhead illustration of an urban avenue represented through stationery objects.',
+    'Eva-02||Ilustración · 2022':
+      'Vector illustration of Eva-02 from the anime Neon Genesis Evangelion.',
+    'Gallo Celestial||Ilustración · 2022':
+      'Poster/illustration series inspired by "The Book of Imaginary Beings" by Jorge Luis Borges.',
+    'La Haine||Infografía · 2024':
+      'Full infographic with spoilers of the French film directed by Mathieu Kassovitz, starring Vincent Cassel, Hubert Koundé and Saïd Taghmaoui.',
+    'Malaria Gin||Infografía · 2024':
+      'Infographic for the artisanal gin from Mar del Plata "Malaria Gin".',
+    'Historia de Gotham||Revista · Tipográfica':
+      'Typographic magazine on the history of Gotham. Written and designed by me.',
+    'Los Inrockuptibles — Michael Jackson||Revista · Editorial':
+      'Digitization and editorial recreation of Los Inrockuptibles issue #192 (2014).',
+    'NOGA Joystick||Modelo 3D · 2025':
+      'Realistic 3D model of the Noganet PC/PS2/PS3 joystick. Modeled in Cinema 4D, textured with Arnold.',
+
   };
 
   var CAT_MAP = {
+    Infografía: 'Infographic',
+    Revista: 'Magazine',
+    'Modelo 3D': '3D Model',
+    Editorial: 'Editorial',
+    Tipográfica: 'Typographic',
+    tipográfica: 'typographic',
+    editorial: 'editorial',
+    Social: 'Social',
+    Campaña: 'Campaign',
+    Diente: 'Diente',
+    Cerati: 'Cerati',
+
     'Social Media': 'Social Media',
     Branding: 'Branding',
     Poster: 'Poster',
@@ -168,7 +263,7 @@
   function translateCategory(raw) {
     if (!raw || lang === 'es') return raw;
     return String(raw).replace(
-      /Social Media|Branding|Poster|Proyecto|Campaña|Ilustración|Premios Diente/g,
+      /Social Media|Premios Diente|Modelo 3D|Ilustración|Infografía|Branding|Poster|Proyecto|Campaña|Revista|Editorial|Tipográfica|tipográfica|editorial|Social|Diente|Cerati/g,
       function (m) {
         return CAT_MAP[m] || m;
       }
@@ -238,17 +333,20 @@
       el.textContent = n + ' ' + t('qty.unit');
     });
 
-    // project cards: category tags + stored ES description
-    document.querySelectorAll('.project-card, .project-full-card, [data-title]').forEach(function (card) {
+    // project cards + gallery cells: category tags + stored ES description
+    document.querySelectorAll('.project-card, .project-full-card, .pg-cell, [data-title]').forEach(function (card) {
       if (!card.getAttribute) return;
       var title = card.getAttribute('data-title');
-      var cat = card.getAttribute('data-category');
       if (!title) return;
 
-      if (!card.getAttribute('data-description-es') && card.getAttribute('data-description') != null) {
-        card.setAttribute('data-description-es', card.getAttribute('data-description') || '');
+      var catAttr = card.hasAttribute('data-category') ? 'data-category' : (card.hasAttribute('data-cat') ? 'data-cat' : null);
+      var descAttr = card.hasAttribute('data-description') ? 'data-description' : (card.hasAttribute('data-desc') ? 'data-desc' : null);
+      var cat = catAttr ? card.getAttribute(catAttr) : null;
+
+      if (descAttr && !card.getAttribute('data-description-es') && card.getAttribute(descAttr) != null) {
+        card.setAttribute('data-description-es', card.getAttribute(descAttr) || '');
       }
-      if (!card.getAttribute('data-category-es') && cat) {
+      if (catAttr && !card.getAttribute('data-category-es') && cat) {
         card.setAttribute('data-category-es', cat);
       }
 
@@ -257,20 +355,30 @@
       var catOut = translateCategory(catEs);
       var descOut = descEn(title, catEs, descEs);
 
-      card.setAttribute('data-category', catOut);
-      if (card.hasAttribute('data-description') || descEs || descOut) {
-        card.setAttribute('data-description', descOut);
-      }
+      if (catAttr) card.setAttribute(catAttr, catOut);
+      if (descAttr) card.setAttribute(descAttr, descOut);
 
-      var tag = card.querySelector('.project-card__tag, .project-full-card__tag');
-      if (tag && catEs) {
-        // keep year; translate left token if matches category pattern
-        tag.textContent = translateCategory(tag.getAttribute('data-tag-es') || (function () {
-          if (!tag.getAttribute('data-tag-es')) tag.setAttribute('data-tag-es', tag.textContent.trim());
-          return tag.getAttribute('data-tag-es');
-        })());
+      var tag = card.querySelector('.project-card__tag, .project-full-card__tag, .pg-cell__tag');
+      if (tag) {
+        if (!tag.getAttribute('data-tag-es')) tag.setAttribute('data-tag-es', tag.textContent.trim());
+        tag.textContent = translateCategory(tag.getAttribute('data-tag-es'));
       }
     });
+
+    // gallery piece count label
+    var totalEl = document.getElementById('pgTotalCount');
+    if (totalEl) {
+      var n = totalEl.getAttribute('data-count');
+      if (!n) {
+        var m = (totalEl.textContent || '').match(/(\d+)/);
+        n = m ? m[1] : '';
+        if (n) totalEl.setAttribute('data-count', n);
+      }
+      if (n) {
+        var unit = Number(n) === 1 ? t('gallery.piecesOne') : t('gallery.piecesMany');
+        totalEl.textContent = n + ' ' + unit;
+      }
+    }
 
     // open modal live fields if present
     var md = document.getElementById('modalDescription');

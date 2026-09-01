@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=71">
+  <link rel="stylesheet" href="css/style.css?v=72">
     </head>
     <body class="page-projects">
     <canvas id="particlesCanvas" aria-hidden="true"></canvas>
@@ -29,7 +29,7 @@
             <li><a href="index.html#about" class="nav__link" data-i18n="nav.about">Sobre mí</a></li>
             <li><a href="index.html#contact" class="nav__link" data-i18n="nav.contact">Contacto</a></li>
           </ul>
-          <a href="index.html" class="btn btn--outline btn--sm nav__back">← Volver</a>
+          <a href="index.html" class="btn btn--outline btn--sm nav__back" data-i18n="gallery.back">← Volver</a>
         </div>
       </nav>
 
@@ -41,22 +41,22 @@
           <span></span><span></span><span></span><span></span>
         </div>
         <div class="pg-hero__meta">
-          <span class="pg-hero__index">Archivo completo</span>
-          <span class="pg-hero__count" id="pgTotalCount">38 piezas</span>
+          <span class="pg-hero__index" data-i18n="gallery.archive">Archivo completo</span>
+          <span class="pg-hero__count" id="pgTotalCount" data-count="38">38 piezas</span>
         </div>
         <h1 class="pg-hero__title">
-          <span class="pg-hero__line">Todos los</span>
-          <span class="pg-hero__line pg-hero__line--accent">trabajos</span>
+          <span class="pg-hero__line" data-i18n="gallery.heroLine1">Todos los</span>
+          <span class="pg-hero__line pg-hero__line--accent" data-i18n="gallery.heroLine2">trabajos</span>
         </h1>
-        <p class="pg-hero__sub">Selección por disciplina. Abrí cada pieza, filtrá y explorá el archivo completo.</p>
+        <p class="pg-hero__sub" data-i18n="gallery.heroSub">Selección por disciplina. Abrí cada pieza, filtrá y explorá el archivo completo.</p>
         <div class="pg-hero__rule" aria-hidden="true"></div>
       </header>
 
     <!-- FILTROS sticky (secciones Drive) -->
-    <div class="pg-filter" id="pgFilter" role="navigation" aria-label="Filtrar por disciplina">
+    <div class="pg-filter" id="pgFilter" role="navigation" aria-label="Filtrar por disciplina" data-i18n-aria="gallery.filterAria">
       <div class="pg-filter__inner">
         <button class="btn btn--outline btn--sm pg-filter__btn is-active" data-filter="all" type="button" data-i18n="gallery.filterAll">Todo</button>
-        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="redes" type="button" data-i18n="cat.redes">Redes</button>
+        <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="redes" type="button" data-i18n="cat.redes">Redes Sociales</button>
         <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="branding" type="button" data-i18n="cat.branding">Branding</button>
         <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="proyectos" type="button" data-i18n="cat.proyectos">Proyectos</button>
         <button class="btn btn--outline btn--sm pg-filter__btn" data-filter="posters" type="button" data-i18n="cat.posters">Posters</button>
@@ -74,8 +74,8 @@
       <header class="pg-section__head">
         <span class="pg-section__num">01</span>
         <div class="pg-section__titles">
-          <h2 class="pg-section__title" data-i18n="cat.redes">Redes</h2>
-          <p class="pg-section__desc">Social media · feeds · motion</p>
+          <h2 class="pg-section__title" data-i18n="cat.redes">Redes Sociales</h2>
+          <p class="pg-section__desc" data-i18n="sec.redes">Social media · feeds · motion</p>
         </div>
         <span class="pg-section__qty" data-qty-for="redes">4</span>
       </header>
@@ -149,7 +149,7 @@
         <span class="pg-section__num">02</span>
         <div class="pg-section__titles">
           <h2 class="pg-section__title" data-i18n="cat.branding">Branding</h2>
-          <p class="pg-section__desc">Identidad · packaging · sistema</p>
+          <p class="pg-section__desc" data-i18n="sec.branding">Identidad · packaging · sistema</p>
         </div>
         <span class="pg-section__qty" data-qty-for="branding">3</span>
       </header>
@@ -210,7 +210,7 @@
         <span class="pg-section__num">03</span>
         <div class="pg-section__titles">
           <h2 class="pg-section__title" data-i18n="cat.proyectos">Proyectos</h2>
-          <p class="pg-section__desc">Campañas · conceptual · editorial</p>
+          <p class="pg-section__desc" data-i18n="sec.proyectos">Campañas · conceptual · editorial</p>
         </div>
         <span class="pg-section__qty" data-qty-for="proyectos">4</span>
       </header>
@@ -280,7 +280,7 @@
         <span class="pg-section__num">04</span>
         <div class="pg-section__titles">
           <h2 class="pg-section__title" data-i18n="cat.posters">Posters</h2>
-          <p class="pg-section__desc">Composición · tipografía · atmósfera</p>
+          <p class="pg-section__desc" data-i18n="sec.posters">Composición · tipografía · atmósfera</p>
         </div>
         <span class="pg-section__qty" data-qty-for="posters">23</span>
               </header>
@@ -591,7 +591,7 @@
         <span class="pg-section__num">05</span>
         <div class="pg-section__titles">
           <h2 class="pg-section__title" data-i18n="cat.ilustraciones">Ilustraciones</h2>
-          <p class="pg-section__desc">Trazo · textura · personaje</p>
+          <p class="pg-section__desc" data-i18n="sec.ilustraciones">Trazo · textura · personaje</p>
         </div>
         <span class="pg-section__qty" data-qty-for="ilustraciones">8</span>
       </header>
@@ -708,7 +708,7 @@
         <span class="pg-section__num">06</span>
         <div class="pg-section__titles">
           <h2 class="pg-section__title" data-i18n="cat.infografias">Infografías</h2>
-          <p class="pg-section__desc">Dato · jerarquía · lectura</p>
+          <p class="pg-section__desc" data-i18n="sec.infografias">Dato · jerarquía · lectura</p>
         </div>
         <span class="pg-section__qty" data-qty-for="infografias">2</span>
       </header>
@@ -748,7 +748,7 @@
                                     <span class="pg-section__num">07</span>
                                     <div class="pg-section__titles">
                                       <h2 class="pg-section__title" data-i18n="cat.revistas">Revistas</h2>
-                                      <p class="pg-section__desc">Editorial · tipografía · pliegos</p>
+                                      <p class="pg-section__desc" data-i18n="sec.revistas">Editorial · tipografía · pliegos</p>
                                     </div>
                                     <span class="pg-section__qty" data-qty-for="revistas">2</span>
                                   </header>
@@ -798,7 +798,7 @@
         <span class="pg-section__num">08</span>
         <div class="pg-section__titles">
           <h2 class="pg-section__title" data-i18n="cat.modelos3d">Modelos 3D</h2>
-          <p class="pg-section__desc">Volumen · producto · render</p>
+          <p class="pg-section__desc" data-i18n="sec.modelos">Volumen · producto · render</p>
         </div>
         <span class="pg-section__qty" data-qty-for="modelos">1</span>
       </header>
@@ -856,10 +856,10 @@
                     </div>
                   </div>
           <div class="zoom-controls" id="pgZoomControls" hidden>
-                  <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M11 8v6M8 11h6M21 21l-4.3-4.3"/></svg></button>
+                  <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar" data-i18n-aria="js.zoomIn"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M11 8v6M8 11h6M21 21l-4.3-4.3"/></svg></button>
                   <span class="zoom-level" id="pgZoomLevel">100%</span>
-                  <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Alejar"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M21 21l-4.3-4.3"/></svg></button>
-                  <button type="button" class="zoom-btn zoom-btn--reset" data-zoom="0" aria-label="Restablecer"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
+                  <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Alejar" data-i18n-aria="js.zoomOut"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M21 21l-4.3-4.3"/></svg></button>
+                  <button type="button" class="zoom-btn zoom-btn--reset" data-zoom="0" aria-label="Restablecer" data-i18n-aria="js.zoomReset"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
                 </div>
         </div>
         <div class="pg-viewer__info">
@@ -888,16 +888,16 @@
       <!-- Close top-right · Zoom top-left: corners, nunca encima de nav/dots/libro -->
       <button class="carta-revista__close" id="cartaRevistaClose" type="button" aria-label="Cerrar carta">✕</button>
       <div class="zoom-controls carta-revista__zoom-controls" id="cartaZoomControls" hidden>
-                  <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M11 8v6M8 11h6M21 21l-4.3-4.3"/></svg></button>
+                  <button type="button" class="zoom-btn" data-zoom="1" aria-label="Acercar" data-i18n-aria="js.zoomIn"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M11 8v6M8 11h6M21 21l-4.3-4.3"/></svg></button>
                   <span class="zoom-level" id="cartaZoomLevel">100%</span>
-                  <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Alejar"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M21 21l-4.3-4.3"/></svg></button>
-                  <button type="button" class="zoom-btn zoom-btn--reset" data-zoom="0" aria-label="Restablecer"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
+                  <button type="button" class="zoom-btn" data-zoom="-1" aria-label="Alejar" data-i18n-aria="js.zoomOut"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M21 21l-4.3-4.3"/></svg></button>
+                  <button type="button" class="zoom-btn zoom-btn--reset" data-zoom="0" aria-label="Restablecer" data-i18n-aria="js.zoomReset"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
                 </div>
 
       <div class="carta-revista__stage" id="cartaRevistaStage">
         <div class="carta-revista__meta">
-          <span class="carta-revista__title" id="cartaRevistaTitle">Diseño de carta</span>
-          <span class="carta-revista__counter" id="cartaRevistaCounter">Portada</span>
+          <span class="carta-revista__title" id="cartaRevistaTitle" data-i18n="js.menuShort">Diseño de carta</span>
+          <span class="carta-revista__counter" id="cartaRevistaCounter" data-i18n="js.cover">Portada</span>
         </div>
 
         <div class="carta-revista__zoom-stage zoom-stage" id="cartaZoomStage">
@@ -958,7 +958,7 @@
             <span aria-hidden="true">›</span>
           </button>
         </div>
-        <p class="carta-revista__hint">Zoom +/− · rueda · doble click · arrastrá · bordes · flechas</p>
+        <p class="carta-revista__hint"><span data-i18n="js.cartaHint">Zoom +/− · rueda · doble click · arrastrá · bordes · flechas</span></p>
       </div>
     </div>
 
@@ -1029,7 +1029,7 @@
               <button class="cd-case__toggle" id="cdCaseToggle" type="button" aria-pressed="false">Abrir caja</button>
             </div>
             <footer class="cd-case__bottom">
-              <p class="cd-case__hint" id="cdCaseHint">Gira sola · mantené el mouse para frenar y rotar · Abrir caja</p>
+              <p class="cd-case__hint" id="cdCaseHint"><span data-i18n="js.cdHint">Gira sola · mantené el mouse para frenar y rotar · Abrir caja</span></p>
             </footer>
     </div>
   </div>
@@ -1051,7 +1051,7 @@
         <div class="bottle-3d__canvas" id="bottle3dCanvas"></div>
       </div>
       <footer class="bottle-3d__bottom">
-        <p class="bottle-3d__hint" id="bottle3dHint">Gira sola · mantené el mouse para frenar y rotar</p>
+        <p class="bottle-3d__hint" id="bottle3dHint"><span data-i18n="js.bottleHint">Gira sola · mantené el mouse para frenar y rotar</span></p>
       </footer>
     </div>
   </div>
@@ -1063,7 +1063,7 @@
   <script src="js/figma-proto.js?v=5"></script>
   <script src="js/cd-case.js?v=3"></script>
   <script src="js/bottle-3d.js?v=6"></script>
-  <script src="js/i18n.js?v=1"></script>
-  <script src="js/proyectos.js?v=33"></script>
+  <script src="js/i18n.js?v=2"></script>
+  <script src="js/proyectos.js?v=34"></script>
 </body>
 </html>
