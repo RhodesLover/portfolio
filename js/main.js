@@ -193,8 +193,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let hot = false;
 
     function sizeTrail() {
-      trailCanvas.width = window.innerWidth;
-      trailCanvas.height = window.innerHeight;
+      trailCanvas.width = document.documentElement.clientWidth || window.innerWidth;
+      trailCanvas.height = document.documentElement.clientHeight || window.innerHeight;
       ctx.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
     }
     sizeTrail();

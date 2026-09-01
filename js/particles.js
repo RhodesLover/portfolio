@@ -89,8 +89,9 @@
 
   function resize() {
     dpr = Math.min(2, window.devicePixelRatio || 1);
-    W = window.innerWidth;
-    H = window.innerHeight;
+    // clientWidth excludes scrollbar — avoids 100vw-style horizontal bleed
+    W = document.documentElement.clientWidth || window.innerWidth;
+    H = document.documentElement.clientHeight || window.innerHeight;
     canvas.width = Math.round(W * dpr);
     canvas.height = Math.round(H * dpr);
     canvas.style.width = W + 'px';

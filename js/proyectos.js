@@ -47,8 +47,8 @@
     const ctx = trail.getContext('2d');
     let prevX = 0, prevY = 0, hasPrev = false, hot = false;
     function sizeTrail() {
-      trail.width = window.innerWidth;
-      trail.height = window.innerHeight;
+      trail.width = document.documentElement.clientWidth || window.innerWidth;
+      trail.height = document.documentElement.clientHeight || window.innerHeight;
       ctx.clearRect(0, 0, trail.width, trail.height);
     }
     sizeTrail();
