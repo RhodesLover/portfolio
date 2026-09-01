@@ -101,14 +101,14 @@
     re.lastIndex = 0;
     var html = s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     html = html.replace(re, '<span class="emoji-full" aria-hidden="false">$1</span>');
-    el.innerHTML = html;
-  };
-})();
+        el.innerHTML = html;
+      };
+    })(window);
 
-(function () {
-  'use strict';
+    (function () {
+      'use strict';
 
-  const cells = Array.from(document.querySelectorAll('.pg-cell[data-title]'));
+      const cells = Array.from(document.querySelectorAll('.pg-cell[data-title]'));
   const sections = Array.from(document.querySelectorAll('.pg-section'));
   const filterBtns = Array.from(document.querySelectorAll('.pg-filter__btn'));
   const totalEl = document.getElementById('pgTotalCount');
