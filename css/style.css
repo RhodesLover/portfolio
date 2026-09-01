@@ -161,9 +161,11 @@ ul { list-style: none; }
   left: 0;
   right: 0;
   z-index: 1000;
-  padding: 1.5rem 2rem;
-  transition: background 0.4s ease, padding 0.3s ease, backdrop-filter 0.4s;
-  mix-blend-mode: difference;
+  padding: 1.15rem 2rem;
+  transition: background 0.4s ease, padding 0.3s ease, backdrop-filter 0.4s, mix-blend-mode 0.3s;
+  /* no difference-blend over hero: it cut the landscape into a dark band */
+  mix-blend-mode: normal;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.18) 55%, transparent 100%);
 }
 
 .nav--scrolled {
@@ -309,7 +311,7 @@ ul { list-style: none; }
   position: relative;
   overflow: hidden;
   /* clear fixed nav so TOMÁS is not clipped under the header */
-  padding: calc(5.75rem + env(safe-area-inset-top, 0px)) 2rem 2.75rem;
+  padding: calc(8.5rem + env(safe-area-inset-top, 0px)) 2rem 2.75rem;
   box-sizing: border-box;
 }
 
@@ -4745,70 +4747,132 @@ body.bottle-3d-open .nav {
   }
 }
 
-/* ---------- HERO ECOSYSTEM (flower fields + moon, hero only) ---------- */
+/* ---------- HOME NAV: logo left | links true center | lang right ---------- */
+.nav:not(.nav--projects) .nav__inner {
+  display: grid !important;
+  grid-template-columns: 1fr auto 1fr !important;
+  align-items: center !important;
+  justify-content: stretch !important;
+  gap: 0.75rem 1rem !important;
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+}
+.nav:not(.nav--projects) .nav__logo {
+  grid-column: 1;
+  justify-self: start;
+  z-index: 2;
+}
+.nav:not(.nav--projects) .nav__links {
+  grid-column: 2;
+  justify-self: center;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  z-index: 1;
+}
+.nav:not(.nav--projects) .nav__end {
+  grid-column: 3;
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  z-index: 2;
+}
+.nav:not(.nav--projects) .lang-switch {
+  order: unset !important;
+  margin-left: 0 !important;
+}
+.nav:not(.nav--projects) .nav__toggle {
+  order: unset !important;
+}
+@media (max-width: 768px) {
+  .nav:not(.nav--projects) .nav__inner {
+    grid-template-columns: auto 1fr auto !important;
+  }
+  .nav:not(.nav--projects) .nav__links {
+    display: none !important; /* mobile menu toggle handles links if applicable */
+  }
+  .nav:not(.nav--projects) .nav__logo { grid-column: 1; }
+  .nav:not(.nav--projects) .nav__end { grid-column: 3; }
+}
+
+
+/* ---------- HERO ECOSYSTEM (flower fields + classic crescent moon) ---------- */
 .hero__ecosystem {
   position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
-  opacity: 0.92;
+  opacity: 1;
 }
 .hero__bg { z-index: 0; }
+/* soft top wash so landscape continues under the nav without a hard seam */
+.hero__ecosystem::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 7rem;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, transparent 100%);
+  z-index: 2;
+  pointer-events: none;
+}
 .hero__eco-glow {
   position: absolute;
-  left: 58%;
-  top: 18%;
-  width: min(52vw, 520px);
-  height: min(52vw, 520px);
-  transform: translate(-30%, -20%);
+  right: 4%;
+  top: 8%;
+  width: min(58vw, 560px);
+  height: min(58vw, 560px);
   background: radial-gradient(circle at center,
-    rgba(255, 197, 211, 0.22) 0%,
-    rgba(255, 197, 211, 0.08) 35%,
-    transparent 68%);
-  filter: blur(26px);
-  opacity: 0.9;
+    rgba(255, 197, 211, 0.38) 0%,
+    rgba(255, 197, 211, 0.14) 38%,
+    transparent 70%);
+  filter: blur(22px);
+  opacity: 1;
   animation: ecoPulse 10s ease-in-out infinite;
+  z-index: 0;
 }
 .hero__eco-moon {
   position: absolute;
-  right: max(6%, 2rem);
-  top: max(14%, 5.5rem);
-  width: clamp(88px, 16vw, 180px);
-  height: clamp(88px, 16vw, 180px);
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 35% 32%, #fff5f8 0%, #FFC5D3 42%, #e89aab 78%, #c97a8c 100%);
-  box-shadow:
-    0 0 28px rgba(255, 197, 211, 0.45),
-    0 0 80px rgba(255, 197, 211, 0.22),
-    0 0 140px rgba(255, 197, 211, 0.12);
-  opacity: 0.55;
-  z-index: 0;
-  filter: blur(0.4px);
-  animation: ecoMoon 14s ease-in-out infinite;
+  right: max(5%, 1.5rem);
+  top: max(5.5rem, 11%);
+  width: clamp(110px, 18vw, 210px);
+  height: clamp(110px, 18vw, 210px);
+  z-index: 1;
+  opacity: 1;
+  filter: drop-shadow(0 0 18px rgba(255, 197, 211, 0.75))
+          drop-shadow(0 0 48px rgba(255, 197, 211, 0.45))
+          drop-shadow(0 0 96px rgba(255, 197, 211, 0.28));
+  animation: ecoMoon 12s ease-in-out infinite;
 }
-.hero__eco-moon::after {
-  content: "";
-  position: absolute;
-  inset: -35%;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 197, 211, 0.2) 0%, transparent 70%);
-  z-index: -1;
+.hero__eco-moon-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+.hero__eco-moon-path {
+  /* brighter storybook crescent */
 }
 .hero__eco-svg {
   position: absolute;
   left: 0;
   right: 0;
+  top: 0;
   bottom: 0;
   width: 100%;
-  height: min(72vh, 760px);
-  opacity: 0.5;
+  height: 100%;
+  opacity: 0.58;
   transform: translate3d(0, 0, 0);
   animation: ecoDrift 30s ease-in-out infinite alternate;
 }
 .hero__eco-horizon {
-  filter: drop-shadow(0 0 5px rgba(255, 197, 211, 0.4));
+  filter: drop-shadow(0 0 6px rgba(255, 197, 211, 0.5));
   animation: ecoHorizon 7s ease-in-out infinite;
 }
 .hero__eco-lights circle { animation: ecoTwinkle 5s ease-in-out infinite; }
@@ -4822,43 +4886,42 @@ body.bottle-3d-open .nav {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 44%;
-  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 50%, #000 100%);
+  height: 40%;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.45) 50%, #000 100%);
   z-index: 1;
 }
 .hero__content { z-index: 3; }
 @keyframes ecoDrift {
-  from { transform: translate3d(-0.8%, 0.8%, 0) scale(1.01); }
-  to   { transform: translate3d(0.8%, 0%, 0) scale(1.03); }
+  from { transform: translate3d(-0.6%, 0.4%, 0) scale(1.01); }
+  to   { transform: translate3d(0.6%, 0%, 0) scale(1.02); }
 }
 @keyframes ecoPulse {
-  0%, 100% { opacity: 0.65; }
-  50%      { opacity: 0.95; }
+  0%, 100% { opacity: 0.75; }
+  50%      { opacity: 1; }
 }
 @keyframes ecoMoon {
-  0%, 100% { opacity: 0.48; filter: blur(0.4px); }
-  50%      { opacity: 0.62; filter: blur(0.2px); }
+  0%, 100% { opacity: 0.92; filter: drop-shadow(0 0 16px rgba(255, 197, 211, 0.7)) drop-shadow(0 0 44px rgba(255, 197, 211, 0.4)); }
+  50%      { opacity: 1; filter: drop-shadow(0 0 26px rgba(255, 197, 211, 0.9)) drop-shadow(0 0 70px rgba(255, 197, 211, 0.55)); }
 }
 @keyframes ecoHorizon {
-  0%, 100% { stroke-opacity: 0.18; }
-  50%      { stroke-opacity: 0.4; }
+  0%, 100% { stroke-opacity: 0.2; }
+  50%      { stroke-opacity: 0.45; }
 }
 @keyframes ecoTwinkle {
-  0%, 100% { opacity: 0.18; }
-  50%      { opacity: 0.65; }
+  0%, 100% { opacity: 0.2; }
+  50%      { opacity: 0.7; }
 }
 @media (max-width: 768px) {
   .hero {
-    padding-top: calc(5.25rem + env(safe-area-inset-top, 0px));
+    padding-top: calc(7.25rem + env(safe-area-inset-top, 0px));
   }
-  .hero__eco-svg { height: min(64vh, 560px); opacity: 0.4; }
+  .hero__eco-svg { opacity: 0.48; }
   .hero__eco-moon {
-    width: clamp(72px, 22vw, 120px);
-    height: clamp(72px, 22vw, 120px);
-    top: max(16%, 4.75rem);
-    opacity: 0.45;
+    width: clamp(88px, 24vw, 140px);
+    height: clamp(88px, 24vw, 140px);
+    top: max(4.75rem, 10%);
   }
-  .hero__eco-glow { opacity: 0.7; filter: blur(20px); }
+  .hero__eco-glow { opacity: 0.85; filter: blur(18px); }
 }
 @media (max-height: 700px) {
   .hero {
@@ -4878,35 +4941,5 @@ body.bottle-3d-open .nav {
   .hero__eco-flowers circle {
     animation: none !important;
   }
-}
-
-/* nav links vertical center */
-.nav__inner {
-  align-items: center;
-}
-.nav__links {
-  display: flex;
-  align-items: center;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.nav__links > li {
-  display: flex;
-  align-items: center;
-  margin: 0;
-  padding: 0;
-  line-height: 1;
-}
-.nav__link {
-  display: inline-flex;
-  align-items: center;
-  line-height: 1;
-  padding: 0.35rem 0;
-}
-.nav__logo {
-  display: inline-flex;
-  align-items: center;
-  line-height: 1;
 }
 
