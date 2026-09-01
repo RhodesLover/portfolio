@@ -161,7 +161,7 @@ ul { list-style: none; }
   left: 0;
   right: 0;
   z-index: 1000;
-  padding: 0.55rem 2rem;
+  padding: 1.5rem 2rem;
   transition: background 0.4s ease, padding 0.3s ease, backdrop-filter 0.4s, mix-blend-mode 0.3s;
   /* no difference-blend over hero: it cut the landscape into a dark band */
   mix-blend-mode: normal;
@@ -171,7 +171,7 @@ ul { list-style: none; }
 .nav--scrolled {
   background: rgba(0,0,0,0.85);
   backdrop-filter: blur(24px) saturate(1.2);
-  padding: 0.45rem 2rem;
+  padding: 0.9rem 2rem;
   mix-blend-mode: normal;
   border-bottom: 1px solid rgba(255,255,255,0.04);
 }
@@ -195,7 +195,7 @@ ul { list-style: none; }
   background: rgba(0,0,0,0.88);
   backdrop-filter: blur(20px) saturate(1.15);
   border-bottom: 1px solid rgba(255,255,255,0.06);
-  padding: 0.5rem clamp(1rem, 3vw, 2rem);
+  padding: 1.5rem clamp(1rem, 3vw, 2rem);
 }
 
 .page-projects .nav--scrolled .nav__logo,
@@ -311,7 +311,7 @@ ul { list-style: none; }
   position: relative;
   overflow: hidden;
   /* clear fixed nav so TOMÁS is not clipped under the header */
-  padding: calc(6.25rem + env(safe-area-inset-top, 0px)) 2rem 2.75rem;
+  padding: calc(7.5rem + env(safe-area-inset-top, 0px)) 2rem 2.75rem;
   box-sizing: border-box;
 }
 
@@ -4945,7 +4945,7 @@ body.bottle-3d-open .nav {
 }
 @media (max-width: 768px) {
   .hero {
-    padding-top: calc(5.5rem + env(safe-area-inset-top, 0px));
+    padding-top: calc(6.5rem + env(safe-area-inset-top, 0px));
   }
   .hero__eco-svg { opacity: 0.48; }
   .hero__eco-moon {
@@ -4975,19 +4975,20 @@ body.bottle-3d-open .nav {
   }
 }
 
-/* ---------- NAV compact height (less air above/below labels) ---------- */
+/* ---------- NAV height: original air, keep true-center layout ---------- */
 .nav,
 .nav--projects {
-  padding-top: 0.28rem !important;
-  padding-bottom: 0.28rem !important;
+  padding-top: 1.5rem !important;
+  padding-bottom: 1.5rem !important;
 }
 .nav--scrolled {
-  padding-top: 0.22rem !important;
-  padding-bottom: 0.22rem !important;
+  padding-top: 0.9rem !important;
+  padding-bottom: 0.9rem !important;
 }
+/* restore logo size (undo compact shrink) */
 .nav:not(.nav--projects) .nav__logo {
-  font-size: 1.15rem !important;
+  font-size: 1.5rem !important;
 }
 .lang-switch__btn {
-  padding: 0.22rem 0.55rem !important;
+  padding: 0.35rem 0.7rem !important;
 }
