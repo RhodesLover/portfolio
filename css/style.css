@@ -450,6 +450,8 @@ ul { list-style: none; }
   width: 100%;
   overflow: hidden;
   padding: 1.2rem 0;
+  /* Aire entre servicios (marquee) y Trabajo */
+  margin-bottom: clamp(2.75rem, 5.5vw, 4.5rem);
   border-top: 1px solid rgba(255,255,255,0.06);
   border-bottom: 1px solid rgba(255,255,255,0.06);
   user-select: none;
