@@ -9,8 +9,8 @@
   var STORAGE_KEY = 'tz-lang';
   var dict = {
     'meta.title': {
-      es: 'Tomi Zárate — Diseñador Gráfico',
-      en: 'Tomi Zárate — Graphic Designer'
+      es: 'Tomás Zárate — Diseñador Gráfico',
+      en: 'Tomás Zárate — Graphic Designer'
     },
     'meta.description': {
       es: 'Portfolio de Tomás Zárate, diseñador gráfico. Branding, social media, editorial e identidad visual. Escuela Da Vinci.',
@@ -21,8 +21,8 @@
       en: 'Branding, social media, editorial, and visual identity.'
     },
     'meta.galleryTitle': {
-      es: 'Todos los trabajos — Tomi Zárate',
-      en: 'All work — Tomi Zárate'
+      es: 'Todos los trabajos — Tomás Zárate',
+      en: 'All work — Tomás Zárate'
     },
     'meta.galleryDesc': {
       es: 'Selección completa de trabajos de Tomás Zárate: branding, social media, posters e ilustración.',
