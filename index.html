@@ -32,7 +32,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=80">
+  <link rel="stylesheet" href="css/style.css?v=81">
 </head>
 <body>
 
@@ -767,6 +767,11 @@
     <button class="pg-viewer__nav pg-viewer__nav--next" id="pgViewerNext" type="button" aria-label="Siguiente">›</button>
     <div class="pg-viewer__stage">
       <div class="pg-viewer__media-wrap" id="pgViewerMediaWrap">
+        <button type="button" class="pg-viewer__fs" id="pgViewerFs" aria-label="Ver en pantalla completa" aria-pressed="false" title="Pantalla completa">
+          <svg class="pg-viewer__fs-icon pg-viewer__fs-icon--enter" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg>
+          <svg class="pg-viewer__fs-icon pg-viewer__fs-icon--exit" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M9 3v5H4M15 3v5h5M9 21v-5H4M15 21v-5h5"/></svg>
+        </button>
+
         <div class="zoom-stage" id="pgZoomStage">
           <img class="pg-viewer__img zoom-target" id="pgViewerImg" alt="">
           <video class="pg-viewer__video" id="pgViewerVideo" controls playsinline loop></video>
@@ -941,6 +946,11 @@
           <span class="cd-case__title" id="cdCaseTitle">Desembarco — CD</span>
         </div>
         <div class="cd-case__tools">
+          <div class="mock3d-zoom" id="cdCaseZoom" role="group" aria-label="Zoom del mockup">
+            <button type="button" class="mock3d-zoom__btn" data-cam-zoom="in" aria-label="Acercar">+</button>
+            <span class="mock3d-zoom__level" id="cdCaseZoomLevel">100%</span>
+            <button type="button" class="mock3d-zoom__btn" data-cam-zoom="out" aria-label="Alejar">−</button>
+          </div>
           <span class="cd-case__status" id="cdCaseStatus">Caja cerrada</span>
         </div>
       </header>
@@ -949,7 +959,7 @@
               <button class="cd-case__toggle" id="cdCaseToggle" type="button" aria-pressed="false">Abrir caja</button>
             </div>
             <footer class="cd-case__bottom">
-              <p class="cd-case__hint" id="cdCaseHint">Gira sola · mantené el mouse para frenar y rotar · Abrir caja</p>
+              <p class="cd-case__hint" id="cdCaseHint">Girá · pellizcá o usá +/− para zoom · Abrir caja</p>
             </footer>
     </div>
   </div>
@@ -965,13 +975,20 @@
           <span class="bottle-3d__kicker">Mockup 3D</span>
           <span class="bottle-3d__title" id="bottle3dTitle">Fernet Cordobita</span>
         </div>
-        <span class="bottle-3d__status" id="bottle3dStatus">Rotando</span>
+                <div class="bottle-3d__tools">
+          <div class="mock3d-zoom" id="bottle3dZoom" role="group" aria-label="Zoom del mockup">
+            <button type="button" class="mock3d-zoom__btn" data-cam-zoom="in" aria-label="Acercar">+</button>
+            <span class="mock3d-zoom__level" id="bottle3dZoomLevel">100%</span>
+            <button type="button" class="mock3d-zoom__btn" data-cam-zoom="out" aria-label="Alejar">−</button>
+          </div>
+          <span class="bottle-3d__status" id="bottle3dStatus">Rotando</span>
+        </div>
       </header>
       <div class="bottle-3d__stage">
         <div class="bottle-3d__canvas" id="bottle3dCanvas"></div>
       </div>
       <footer class="bottle-3d__bottom">
-        <p class="bottle-3d__hint" id="bottle3dHint">Gira sola · mantené el mouse para frenar y rotar</p>
+        <p class="bottle-3d__hint" id="bottle3dHint">Girá · pellizcá o usá +/− para zoom</p>
       </footer>
     </div>
   </div>
@@ -981,9 +998,9 @@
   <script src="js/carta-revista.js?v=12"></script>
   <script src="js/brand-manual.js?v=3"></script>
   <script src="js/figma-proto.js?v=5"></script>
-  <script src="js/cd-case.js?v=3"></script>
-  <script src="js/bottle-3d.js?v=6"></script>
+  <script src="js/cd-case.js?v=4"></script>
+  <script src="js/bottle-3d.js?v=7"></script>
   <script src="js/i18n.js?v=4"></script>
-  <script src="js/main.js?v=55"></script>
+  <script src="js/main.js?v=56"></script>
 </body>
 </html>

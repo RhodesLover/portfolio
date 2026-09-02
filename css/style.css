@@ -2831,7 +2831,7 @@ body.pg-viewer-open #trailCanvas { display: none; }
   .nav--projects .nav__links::-webkit-scrollbar { display: none; }
 
   .nav--open .nav__links {
-    display: flex;
+    display: flex !important;
     flex-direction: column;
     position: absolute;
     top: 100%;
@@ -2842,6 +2842,7 @@ body.pg-viewer-open #trailCanvas { display: none; }
     gap: 1.5rem;
     align-items: center;
     border-bottom: 1px solid rgba(255,255,255,0.05);
+    z-index: 30;
   }
 
   .grid--social,
@@ -4847,8 +4848,50 @@ body.bottle-3d-open .nav {
   .nav:not(.nav--projects) .nav__links {
     display: none !important;
   }
+  /* Open state must beat display:none !important above */
+  .nav:not(.nav--projects).nav--open .nav__links {
+    display: flex !important;
+    flex-direction: column !important;
+    position: absolute !important;
+    top: calc(100% + 0.35rem) !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 1.35rem 1.25rem 1.6rem !important;
+    gap: 1.15rem !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(0,0,0,0.96) !important;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+    z-index: 30 !important;
+  }
+  .nav:not(.nav--projects).nav--open .nav__links > li {
+    width: 100%;
+    text-align: center;
+  }
+  .nav:not(.nav--projects).nav--open .nav__link {
+    font-size: 0.95rem !important;
+    letter-spacing: 0.18em !important;
+    color: #fff !important;
+    justify-content: center !important;
+    padding: 0.55rem 0.75rem !important;
+  }
+  .nav:not(.nav--projects).nav--open {
+    background: rgba(0,0,0,0.92);
+    backdrop-filter: blur(18px) saturate(1.1);
+  }
+  .nav:not(.nav--projects).nav--open.nav--scrolled .nav__logo {
+    display: inline-flex !important;
+  }
   .nav:not(.nav--projects) .nav__logo { grid-column: 1 !important; }
   .nav:not(.nav--projects) .nav__end { grid-column: 3 !important; }
+  .nav__toggle {
+    z-index: 40;
+  }
 }
 
 
@@ -5016,4 +5059,151 @@ body.bottle-3d-open .nav {
 }
 .lang-switch__btn {
   padding: 0.35rem 0.7rem !important;
+}
+
+
+/* ---------- VIEWER: mobile fullscreen media ---------- */
+.pg-viewer__fs {
+  display: none;
+  position: absolute;
+  top: 0.55rem;
+  left: 0.55rem;
+  z-index: 8;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  place-items: center;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+}
+.pg-viewer__fs svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  pointer-events: none;
+}
+.pg-viewer__fs .pg-viewer__fs-icon--exit[hidden],
+.pg-viewer__fs .pg-viewer__fs-icon--enter[hidden] {
+  display: none !important;
+}
+.pg-viewer__media-wrap {
+  position: relative;
+}
+@media (max-width: 1024px), (hover: none) and (pointer: coarse) {
+  .pg-viewer.is-open .pg-viewer__fs {
+    display: grid;
+  }
+}
+.pg-viewer--media-fs .pg-viewer__stage {
+  width: min(100vw, 1100px);
+  max-height: none;
+  grid-template-columns: 1fr;
+  align-items: center;
+}
+.pg-viewer--media-fs .pg-viewer__info {
+  display: none !important;
+}
+.pg-viewer--media-fs .pg-viewer__media-wrap {
+  max-height: none;
+  width: 100%;
+  min-height: min(88dvh, 88vh);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pg-viewer--media-fs .pg-viewer__media-wrap .zoom-stage,
+.pg-viewer--media-fs .pg-viewer__media-wrap .zoom-stage.is-fitted {
+  max-height: min(86dvh, 86vh);
+  width: min(100%, calc(min(86dvh, 86vh) * var(--media-ar, 1)));
+  height: auto;
+}
+.pg-viewer--media-fs .pg-viewer__img,
+.pg-viewer--media-fs .pg-viewer__video {
+  max-height: min(86dvh, 86vh);
+  max-width: 100%;
+}
+.pg-viewer--media-fs .pg-viewer__nav {
+  top: 50%;
+}
+.pg-viewer--media-fs .pg-viewer__fs {
+  top: 0.75rem;
+  left: 0.75rem;
+  border-color: rgba(255,197,211,0.45);
+  color: #FFC5D3;
+}
+
+/* ---------- 3D mockup zoom controls ---------- */
+.mock3d-zoom {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.mock3d-zoom__btn {
+  appearance: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+  font-size: 1.15rem;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  padding: 0;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+.mock3d-zoom__btn:hover,
+.mock3d-zoom__btn:active {
+  border-color: #FFC5D3;
+  color: #FFC5D3;
+  background: rgba(255,197,211,0.12);
+}
+.mock3d-zoom__level {
+  min-width: 2.7rem;
+  text-align: center;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: rgba(245,245,245,0.72);
+  font-variant-numeric: tabular-nums;
+}
+.cd-case__tools,
+.bottle-3d__top {
+  gap: 0.65rem;
+}
+.bottle-3d__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.bottle-3d__tools {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex: 0 0 auto;
+}
+@media (max-width: 720px) {
+  .mock3d-zoom__btn {
+    width: 42px;
+    height: 42px;
+  }
+  .cd-case__hint,
+  .bottle-3d__hint {
+    font-size: 0.78rem;
+  }
 }

@@ -57,11 +57,21 @@
   var targetRotY = rotY;
   var targetRotX = rotX;
   var autoOrbit = true;
+    setCameraZ(camZDefault);
   var autoOrbitSpeed = 0.4;
   var autoTiltAmp = 0.03;
   var autoTiltSpeed = 0.45;
   var autoT = 0;
   var pointerId = null;
+  var camZ = 3.85;
+  var camZMin = 2.6;
+  var camZMax = 5.6;
+  var camZDefault = 3.85;
+  var pinchPointers = new Map();
+  var pinchStartDist = 0;
+  var pinchStartZ = 3.85;
+  var zoomLevelEl = document.getElementById('bottle3dZoomLevel');
+  var zoomUi = document.getElementById('bottle3dZoom');
 
   // líquido fernet marrón bien oscuro (no el gris del sample anterior)
   var LIQUID = { r: 26, g: 12, b: 6 };
@@ -399,6 +409,38 @@
     rootGroup.rotation.x = rotX;
   }
 
+  
+  function clampCam(z) {
+    return Math.max(camZMin, Math.min(camZMax, z));
+  }
+  function updateZoomUi() {
+    if (!zoomLevelEl) return;
+    // nearer camera = higher %
+    var t = (camZDefault - camZ) / Math.max(0.0001, (camZDefault - camZMin));
+    var pct = Math.round(100 + t * 100);
+    pct = Math.max(50, Math.min(220, pct));
+    zoomLevelEl.textContent = pct + '%';
+  }
+  function setCameraZ(z) {
+    camZ = clampCam(z);
+    if (camera) camera.position.z = camZ;
+    updateZoomUi();
+  }
+  function zoomCameraBy(delta) {
+    // delta > 0 => zoom in (closer)
+    setCameraZ(camZ - delta);
+  }
+  function onZoomUiClick(e) {
+    var btn = e.target.closest && e.target.closest('[data-cam-zoom]');
+    if (!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    var dir = btn.getAttribute('data-cam-zoom');
+    if (dir === 'in') zoomCameraBy(0.28);
+    else if (dir === 'out') zoomCameraBy(-0.28);
+    else if (dir === 'reset') setCameraZ(camZDefault);
+  }
+
   function resize() {
     if (!renderer || !camera || !canvasHost) return;
     var w = canvasHost.clientWidth || 1;
@@ -421,12 +463,38 @@
     try {
       renderer.domElement.setPointerCapture(e.pointerId);
     } catch (err) {}
-    e.preventDefault();
+    
+    pinchPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pinchPointers.size === 2) {
+      dragging = false;
+      var pts = Array.from(pinchPointers.values());
+      var dx = pts[0].x - pts[1].x;
+      var dy = pts[0].y - pts[1].y;
+      pinchStartDist = Math.hypot(dx, dy) || 1;
+      pinchStartZ = camZ;
+      return;
+    }
+e.preventDefault();
   }
 
   function onPointerMove(e) {
     if (!dragging || !open) return;
     if (pointerId != null && e.pointerId !== pointerId) return;
+
+    if (pinchPointers.has(e.pointerId)) {
+      pinchPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    }
+    if (pinchPointers.size === 2) {
+      var pts2 = Array.from(pinchPointers.values());
+      var dx2 = pts2[0].x - pts2[1].x;
+      var dy2 = pts2[0].y - pts2[1].y;
+      var dist = Math.hypot(dx2, dy2) || 1;
+      // larger pinch => closer camera
+      var nextZ = pinchStartZ * (pinchStartDist / dist);
+      setCameraZ(nextZ);
+      e.preventDefault();
+      return;
+    }
     var dx = e.clientX - lastX;
     var dy = e.clientY - lastY;
     lastX = e.clientX;
@@ -441,6 +509,9 @@
 
   function onPointerUp(e) {
     if (pointerId != null && e.pointerId !== pointerId) return;
+
+    if (pinchPointers.has(e.pointerId)) pinchPointers.delete(e.pointerId);
+    if (pinchPointers.size < 2) pinchStartDist = 0;
     dragging = false;
     pointerId = null;
     autoOrbit = true;
@@ -452,8 +523,9 @@
   function onWheel(e) {
     if (!open || !ready) return;
     e.preventDefault();
-    var z = camera.position.z + e.deltaY * 0.0025;
-    camera.position.z = Math.max(2.6, Math.min(5.6, z));
+    var delta = e.deltaY * 0.0025;
+    // wheel down => zoom out (increase z)
+    setCameraZ(camZ + delta);
   }
 
   function animate() {
@@ -487,12 +559,15 @@
       window.addEventListener('pointerup', onPointerUp);
       window.addEventListener('pointercancel', onPointerUp);
       el.addEventListener('wheel', onWheel, { passive: false });
+      if (zoomUi) zoomUi.addEventListener('click', onZoomUiClick);
+      updateZoomUi();
     } else {
       el.removeEventListener('pointerdown', onPointerDown);
       window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('pointerup', onPointerUp);
       window.removeEventListener('pointercancel', onPointerUp);
       el.removeEventListener('wheel', onWheel);
+      if (zoomUi) zoomUi.removeEventListener('click', onZoomUiClick);
     }
   }
 
@@ -528,7 +603,8 @@
 
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(28, 1, 0.1, 40);
-      camera.position.set(0, 0.05, 3.85);
+      camera.position.set(0, 0.05, camZDefault);
+      camZ = camZDefault;
       camera.lookAt(0, 0.02, 0);
       clock = new THREE.Clock();
 

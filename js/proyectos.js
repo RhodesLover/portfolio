@@ -132,6 +132,38 @@
     controls: document.getElementById('pgZoomControls'),
     levelEl: document.getElementById('pgZoomLevel')
   }) : null;
+
+  const fsBtn = document.getElementById('pgViewerFs');
+  function setMediaFs(on) {
+    if (!viewer) return;
+    viewer.classList.toggle('pg-viewer--media-fs', !!on);
+    if (fsBtn) {
+      fsBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      fsBtn.setAttribute('aria-label', on ? 'Salir de pantalla completa' : 'Ver en pantalla completa');
+      var enterIc = fsBtn.querySelector('.pg-viewer__fs-icon--enter');
+      var exitIc = fsBtn.querySelector('.pg-viewer__fs-icon--exit');
+      if (enterIc) enterIc.hidden = !!on;
+      if (exitIc) exitIc.hidden = !on;
+    }
+    // reflow zoom stage after layout change
+    requestAnimationFrame(function () {
+      try {
+        if (vImg && vImg.getAttribute('src') && vImg.naturalWidth) fitStageToMedia(vImg);
+        else if (vVideo && vVideo.getAttribute('src') && vVideo.videoWidth) fitStageToMedia(vVideo);
+      } catch (err) {}
+      try { if (mediaZoom && mediaZoom.reset) mediaZoom.reset(); } catch (err2) {}
+      try { window.dispatchEvent(new Event('resize')); } catch (err3) {}
+    });
+  }
+  if (fsBtn && !fsBtn._fsBound) {
+    fsBtn._fsBound = true;
+    fsBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      setMediaFs(!viewer.classList.contains('pg-viewer--media-fs'));
+    });
+  }
+
   const zoomStage = document.getElementById('pgZoomStage');
 
   let activeFilter = 'all';
@@ -910,8 +942,11 @@
     }
     if (!viewer) return;
     viewer.classList.remove('is-open');
+    if (typeof setMediaFs === 'function') setMediaFs(false);
+    else viewer.classList.remove('pg-viewer--media-fs');
     viewer.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('pg-viewer-open');
+    if (viewer) viewer.classList.remove('pg-viewer--media-fs');
     document.body.style.overflow = '';
     document.documentElement.style.overflow = '';
     clearViewerMedia();

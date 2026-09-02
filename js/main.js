@@ -381,16 +381,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- MOBILE MENU ---------- */
   const toggle = document.getElementById('navToggle');
-  if (toggle) {
-    toggle.addEventListener('click', () => {
-      nav.classList.toggle('nav--open');
-      toggle.classList.toggle('active');
+  if (toggle && nav) {
+    function setNavOpen(on) {
+      nav.classList.toggle('nav--open', !!on);
+      toggle.classList.toggle('active', !!on);
+      toggle.setAttribute('aria-expanded', on ? 'true' : 'false');
+    }
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-controls', 'primaryNavLinks');
+    var linksUl = nav.querySelector('.nav__links');
+    if (linksUl && !linksUl.id) linksUl.id = 'primaryNavLinks';
+    toggle.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      setNavOpen(!nav.classList.contains('nav--open'));
     });
-    document.querySelectorAll('.nav__link').forEach(link => {
-      link.addEventListener('click', () => {
-        nav.classList.remove('nav--open');
-        toggle.classList.remove('active');
+    document.querySelectorAll('.nav__link').forEach(function (link) {
+      link.addEventListener('click', function () {
+        setNavOpen(false);
       });
+    });
+    document.addEventListener('click', function (e) {
+      if (!nav.classList.contains('nav--open')) return;
+      if (nav.contains(e.target)) return;
+      setNavOpen(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && nav.classList.contains('nav--open')) setNavOpen(false);
     });
   }
 
@@ -1012,6 +1029,37 @@ document.addEventListener('DOMContentLoaded', () => {
     levelEl: document.getElementById('pgZoomLevel')
   }) : null;
 
+  const fsBtn = document.getElementById('pgViewerFs');
+  function setMediaFs(on) {
+    if (!viewer) return;
+    viewer.classList.toggle('pg-viewer--media-fs', !!on);
+    if (fsBtn) {
+      fsBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      fsBtn.setAttribute('aria-label', on ? 'Salir de pantalla completa' : 'Ver en pantalla completa');
+      var enterIc = fsBtn.querySelector('.pg-viewer__fs-icon--enter');
+      var exitIc = fsBtn.querySelector('.pg-viewer__fs-icon--exit');
+      if (enterIc) enterIc.hidden = !!on;
+      if (exitIc) exitIc.hidden = !on;
+    }
+    // reflow zoom stage after layout change
+    requestAnimationFrame(function () {
+      try {
+        if (vImg && vImg.getAttribute('src') && vImg.naturalWidth) fitStageToMedia(vImg);
+        else if (vVideo && vVideo.getAttribute('src') && vVideo.videoWidth) fitStageToMedia(vVideo);
+      } catch (err) {}
+      try { if (mediaZoom && mediaZoom.reset) mediaZoom.reset(); } catch (err2) {}
+      try { window.dispatchEvent(new Event('resize')); } catch (err3) {}
+    });
+  }
+  if (fsBtn && !fsBtn._fsBound) {
+    fsBtn._fsBound = true;
+    fsBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      setMediaFs(!viewer.classList.contains('pg-viewer--media-fs'));
+    });
+  }
+
   // solo las cards que NO son lightbox (Redes / Branding / Proyectos)
   const viewerCards = Array.from(document.querySelectorAll('.project-card'))
     .filter((c) => c.dataset.modal !== 'lightbox');
@@ -1529,8 +1577,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (!viewer) return;
       viewer.classList.remove('is-open');
+    setMediaFs(false);
       viewer.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('pg-viewer-open');
+    if (viewer) viewer.classList.remove('pg-viewer--media-fs');
       document.body.style.overflow = '';
       document.documentElement.style.overflow = '';
       clearViewerMedia();
