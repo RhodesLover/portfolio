@@ -36,7 +36,7 @@
   const zoomControls = document.getElementById('cartaZoomControls');
   const zoomLevel = document.getElementById('cartaZoomLevel');
 
-  const FLIP_MS = 880;
+  const FLIP_MS = 720;
 
   let open = false;
     let busy = false;
@@ -48,6 +48,7 @@
     let kind = 'carta'; // 'carta' | 'revista'
     let pageRatio = 1.414; // h/w de una hoja
     let resizeTimer = null;
+    let flipGen = 0; // invalidate in-flight flips (rapid clicks / far jumps)
 
     const mediaZoom =
       typeof window.createMediaZoom === 'function' && zoomStage && book
@@ -223,6 +224,65 @@
       }
     }
 
+    function whenDecoded(el) {
+      if (!el) return Promise.resolve();
+      try {
+        if (typeof el.decode === 'function') {
+          return el.decode().catch(function () {});
+        }
+      } catch (e) {}
+      if (el.complete) return Promise.resolve();
+      return new Promise(function (resolve) {
+        var done = function () {
+          el.removeEventListener('load', done);
+          el.removeEventListener('error', done);
+          resolve();
+        };
+        el.addEventListener('load', done);
+        el.addEventListener('error', done);
+      });
+    }
+
+    function setSrcAndDecode(el, src) {
+      setSrc(el, src);
+      return whenDecoded(el);
+    }
+
+    function currentFlipGen() {
+      return flipGen;
+    }
+
+    function bumpFlipGen() {
+      flipGen += 1;
+      return flipGen;
+    }
+
+    /** Instant settle to a state (no animation) — used for far jumps / recovery */
+    function hardSetState(s) {
+      s = Math.max(0, Math.min(maxState, s | 0));
+      state = s;
+      if (book) {
+        book.classList.remove(
+          'is-flipping',
+          'is-flipping-forward',
+          'is-flipping-back',
+          'is-opening-cover',
+          'is-closing-cover'
+        );
+      }
+      resetFlipper();
+      hardResetCoverStyles();
+      paintSpread(s);
+      if (s === 0) {
+        setMode('closed');
+        stowCover(false);
+      } else {
+        setMode('open');
+        stowCover(true);
+      }
+      updateChrome();
+    }
+
     /** Lee ratio real de la tapa / primera página interior para matchear el mockup. */
     function learnRatioFrom(src, fallback) {
       return new Promise(function (resolve) {
@@ -348,10 +408,13 @@
 
   function resetFlipper() {
     if (!flipper) return;
-    book && book.classList.remove('is-flipping');
+    if (book) {
+      book.classList.remove('is-flipping', 'is-flipping-forward', 'is-flipping-back');
+    }
     flipper.style.transition = 'none';
     flipper.style.transform = 'rotateY(0deg)';
     flipper.style.opacity = '0';
+    flipper.style.visibility = 'hidden';
     flipper.setAttribute('aria-hidden', 'true');
     void flipper.offsetWidth;
     flipper.style.transition = '';
@@ -459,20 +522,30 @@
 
   async function openCover() {
     if (!book || !cover) return;
+    var gen = currentFlipGen();
 
-    paintSpread(1);
-    resetFlipper();
+    // Expand book width FIRST (no transition) so hinge geometry is stable
+    setMode('opening');
     book.classList.remove('is-cover-stowed');
     book.classList.add('is-opening-cover');
-    setMode('opening');
+    paintSpread(1);
+    resetFlipper();
+    await Promise.all([
+      setSrcAndDecode(imgCover, pageSrc(0)),
+      setSrcAndDecode(imgLeft, pageSrc(openLeafIndices(1).li)),
+      setSrcAndDecode(imgRight, pageSrc(openLeafIndices(1).ri))
+    ]);
+    if (gen !== currentFlipGen() || !open) return;
 
     pinCoverRightHalf(0);
+    void cover.offsetWidth;
 
     cover.style.transition =
-      'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
+      'transform ' + FLIP_MS + 'ms cubic-bezier(0.25, 0.1, 0.25, 1)';
     cover.style.transform = 'rotateY(-180deg)';
 
-    await wait(FLIP_MS + 40);
+    await wait(FLIP_MS + 30);
+    if (gen !== currentFlipGen() || !open) return;
 
     state = 1;
     paintSpread(1);
@@ -486,11 +559,14 @@
 
   async function closeCover() {
     if (!book || !cover) return;
+    var gen = currentFlipGen();
 
     book.classList.add('is-closing-cover');
     book.classList.remove('is-cover-stowed');
     setMode('closing');
     paintSpread(1);
+    await setSrcAndDecode(imgCover, pageSrc(0));
+    if (gen !== currentFlipGen() || !open) return;
 
     cover.style.transition = 'none';
     cover.style.left = 'auto';
@@ -507,10 +583,11 @@
     void cover.offsetWidth;
 
     cover.style.transition =
-      'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
+      'transform ' + FLIP_MS + 'ms cubic-bezier(0.25, 0.1, 0.25, 1)';
     cover.style.transform = 'rotateY(0deg)';
 
-    await wait(FLIP_MS + 40);
+    await wait(FLIP_MS + 30);
+    if (gen !== currentFlipGen() || !open) return;
 
     state = 0;
     paintSpread(0);
@@ -525,31 +602,45 @@
   /** s → s+1 con s >= 1 */
     async function flipForwardInterior() {
       if (!flipper || !book || state < 1 || state >= maxState) return;
+      var gen = currentFlipGen();
 
       var s = state;
       var cur = openLeafIndices(s);
       var nxt = openLeafIndices(s + 1);
 
-      book.classList.add('is-flipping');
-      flipper.setAttribute('aria-hidden', 'false');
-      flipper.style.opacity = '1';
-
-      // anverso del flip = hoja derecha actual (o blank); dorso = hoja izq del siguiente
+      // Paint stable under-layer: left stays current until mid-flip;
+      // right under-layer becomes NEXT right (revealed as flipper leaves).
+      setSrc(imgLeft, cur.li == null ? blank() : pageSrc(cur.li));
+      setSrc(imgRight, nxt.ri == null ? blank() : pageSrc(nxt.ri));
       setSrc(flipFront, cur.ri == null ? blank() : pageSrc(cur.ri));
       setSrc(flipBack, nxt.li == null ? blank() : pageSrc(nxt.li));
-      setSrc(imgRight, nxt.ri == null ? blank() : pageSrc(nxt.ri));
-      setSrc(imgLeft, cur.li == null ? blank() : pageSrc(cur.li));
+
+      await Promise.all([
+        whenDecoded(imgRight),
+        whenDecoded(flipFront),
+        whenDecoded(flipBack)
+      ]);
+      if (gen !== currentFlipGen() || !open) return;
+
+      book.classList.add('is-flipping', 'is-flipping-forward');
+      flipper.setAttribute('aria-hidden', 'false');
+      flipper.style.visibility = 'visible';
+      flipper.style.opacity = '1';
 
       flipper.style.transition = 'none';
       flipper.style.transform = 'rotateY(0deg)';
       void flipper.offsetWidth;
       flipper.style.transition =
-        'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
+        'transform ' + FLIP_MS + 'ms cubic-bezier(0.25, 0.1, 0.25, 1)';
       flipper.style.transform = 'rotateY(-180deg)';
 
-      await wait(FLIP_MS * 0.5);
+      // Mid-turn: swap left leaf to destination (hidden under flipper back)
+      await wait(Math.round(FLIP_MS * 0.48));
+      if (gen !== currentFlipGen() || !open) return;
       setSrc(imgLeft, nxt.li == null ? blank() : pageSrc(nxt.li));
-      await wait(FLIP_MS * 0.5 + 40);
+
+      await wait(Math.round(FLIP_MS * 0.52) + 24);
+      if (gen !== currentFlipGen() || !open) return;
 
       state = s + 1;
       paintSpread(state);
@@ -562,29 +653,41 @@
     /** s → s-1 con s >= 2 */
     async function flipBackInterior() {
       if (!flipper || !book || state < 2) return;
+      var gen = currentFlipGen();
 
       var s = state;
       var prev = s - 1;
       var cur = openLeafIndices(s);
       var prv = openLeafIndices(prev);
 
-      book.classList.add('is-flipping');
-      flipper.setAttribute('aria-hidden', 'false');
-      flipper.style.opacity = '1';
-
-      setSrc(flipFront, prv.ri == null ? blank() : pageSrc(prv.ri));
-      setSrc(flipBack, cur.li == null ? blank() : pageSrc(cur.li));
+      // Destination under-layer ready; flipper starts folded open (-180)
       setSrc(imgLeft, prv.li == null ? blank() : pageSrc(prv.li));
       setSrc(imgRight, prv.ri == null ? blank() : pageSrc(prv.ri));
+      setSrc(flipFront, prv.ri == null ? blank() : pageSrc(prv.ri));
+      setSrc(flipBack, cur.li == null ? blank() : pageSrc(cur.li));
+
+      await Promise.all([
+        whenDecoded(imgLeft),
+        whenDecoded(imgRight),
+        whenDecoded(flipFront),
+        whenDecoded(flipBack)
+      ]);
+      if (gen !== currentFlipGen() || !open) return;
+
+      book.classList.add('is-flipping', 'is-flipping-back');
+      flipper.setAttribute('aria-hidden', 'false');
+      flipper.style.visibility = 'visible';
+      flipper.style.opacity = '1';
 
       flipper.style.transition = 'none';
       flipper.style.transform = 'rotateY(-180deg)';
       void flipper.offsetWidth;
       flipper.style.transition =
-        'transform ' + FLIP_MS + 'ms cubic-bezier(0.33, 0.1, 0.25, 1)';
+        'transform ' + FLIP_MS + 'ms cubic-bezier(0.25, 0.1, 0.25, 1)';
       flipper.style.transform = 'rotateY(0deg)';
 
-      await wait(FLIP_MS + 40);
+      await wait(FLIP_MS + 24);
+      if (gen !== currentFlipGen() || !open) return;
 
       state = prev;
       paintSpread(state);
@@ -601,29 +704,53 @@
 
     if (isZoomed()) resetZoom();
 
+    var delta = target - state;
+    // Far jumps (dots / Home / End): hard settle — chaining many 3D flips
+    // is what "se rompe" on multi-page revistas (Gotham/Inrock). Animate only ±1.
+    if (Math.abs(delta) > 1) {
+      bumpFlipGen();
+      busy = true;
+      updateChrome();
+      try {
+        hardSetState(target);
+      } finally {
+        busy = false;
+        updateChrome();
+      }
+      return;
+    }
+
+    var gen = bumpFlipGen();
     busy = true;
     updateChrome();
     try {
-      while (state < target) {
+      if (delta === 1) {
         if (state === 0) await openCover();
         else await flipForwardInterior();
-      }
-      while (state > target) {
+      } else if (delta === -1) {
         if (state === 1) await closeCover();
         else await flipBackInterior();
       }
+      // If a newer navigation cancelled us mid-flight, hard recover
+      if (gen !== currentFlipGen()) return;
+    } catch (err) {
+      hardSetState(target);
     } finally {
-      busy = false;
-      paintSpread(state);
-      resetFlipper();
-      if (state === 0) {
-        setMode('closed');
-        stowCover(false);
+      if (gen === currentFlipGen()) {
+        busy = false;
+        paintSpread(state);
+        resetFlipper();
+        if (state === 0) {
+          setMode('closed');
+          stowCover(false);
+        } else {
+          setMode('open');
+          stowCover(true);
+        }
+        updateChrome();
       } else {
-        setMode('open');
-        stowCover(true);
+        busy = false;
       }
-      updateChrome();
     }
   }
 
@@ -695,13 +822,17 @@
             }, 600);
           }
 
+          bumpFlipGen();
           if (book) {
             book.classList.remove(
               'is-flipping',
+              'is-flipping-forward',
+              'is-flipping-back',
               'is-opening-cover',
               'is-closing-cover',
               'is-cover-stowed'
             );
+            book.style.transform = '';
           }
           hardResetCoverStyles();
           stowCover(false);
@@ -732,10 +863,13 @@
 
   function closeCartaRevista() {
     if (!open && !root.classList.contains('is-open')) return;
+    bumpFlipGen();
+    busy = false;
     root.classList.add('is-closing');
     root.classList.remove('is-open');
     setZoomEnabled(false);
     resetZoom();
+    if (book) book.style.transform = '';
     closeTimer = setTimeout(function () {
           setOpen(false);
           root.classList.remove('is-closing');
@@ -765,10 +899,13 @@
           if (book) {
             book.classList.remove(
               'is-flipping',
+              'is-flipping-forward',
+              'is-flipping-back',
               'is-opening-cover',
               'is-closing-cover',
               'is-cover-stowed'
             );
+            book.style.transform = '';
             setMode('closed');
           }
           var viewerOpen = document.body.classList.contains('pg-viewer-open');

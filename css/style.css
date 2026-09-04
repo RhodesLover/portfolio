@@ -3238,7 +3238,8 @@ body.figma-proto-open #trailCanvas {
 }
 .carta-revista__zoom-stage .carta-book.zoom-target {
   transform-origin: center center;
-  transition: transform 0.12s ease-out, width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  /* ONLY transform for zoom pan — never animate width during open/flip (breaks hinge). */
+  transition: transform 0.12s ease-out;
   will-change: transform;
   flex: 0 0 auto;
   margin-inline: auto;
@@ -3262,15 +3263,19 @@ body.figma-proto-open #trailCanvas {
   --page-w: 320px;
   --page-h: 452px;
   --page-ratio: 1.414;
-  --flip-ms: 880ms;
+  --flip-ms: 720ms;
   position: relative;
   width: calc(var(--page-w) * 2);
   height: var(--page-h);
   max-width: none;
   max-height: none;
   perspective: 2200px;
+  perspective-origin: 50% 50%;
+  transform-style: preserve-3d;
   user-select: none;
   margin-inline: auto;
+  /* width jumps are instant — animated width fights 3D hinge like a broken page */
+  transition: none;
 }
 .carta-book[data-mode="closed"] {
   width: var(--page-w);
@@ -3301,13 +3306,16 @@ body.figma-proto-open #trailCanvas {
   display: flex;
   align-items: stretch;
   justify-content: center;
+  transform-style: preserve-3d;
+  isolation: isolate;
 }
 .carta-book__shell {
   position: relative;
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
-  transition: width 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  /* no width transition — shell always 100% of book; book width is discrete */
+  transition: none;
 }
 
 /* spread base */
@@ -3524,6 +3532,13 @@ img.carta-book__img[src$=".svg"] {
   background: linear-gradient(270deg, rgba(0,0,0,0.35), rgba(255,255,255,0.05) 40%, transparent);
 }
 
+
+/* During forward interior turn, hide static RIGHT paper (flipper front owns it).
+   Prevents double-image / torn page look mid-flip. */
+.carta-book.is-flipping-forward .carta-book__leaf--right > .carta-book__paper {
+  visibility: hidden;
+}
+
 /* interior flipper (right half) — solo visible durante el flip */
 .carta-book__flipper {
   position: absolute;
@@ -3535,10 +3550,13 @@ img.carta-book__img[src$=".svg"] {
   transform-origin: left center;
   transform-style: preserve-3d;
   transform: rotateY(0deg);
-  transition: transform var(--flip-ms) cubic-bezier(0.33, 0.1, 0.25, 1);
+  transition: transform var(--flip-ms) cubic-bezier(0.25, 0.1, 0.25, 1);
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 .carta-book.is-flipping .carta-book__flipper {
   opacity: 1;

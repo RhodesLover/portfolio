@@ -77,8 +77,15 @@
 
     function render() {
       clampPan();
-      target.style.transform =
-        'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) scale(' + scale.toFixed(3) + ')';
+      // At 100%: clear inline transform so nested 3D (magazine flip) keeps
+      // working. A sticky translate/scale(1) on the zoom target breaks
+      // preserve-3d / page-turn geometry (Heyzine-style flip stability).
+      if (scale <= min + 0.001 && Math.abs(tx) < 0.01 && Math.abs(ty) < 0.01) {
+        target.style.transform = '';
+      } else {
+        target.style.transform =
+          'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) scale(' + scale.toFixed(3) + ')';
+      }
       if (levelEl) levelEl.textContent = Math.round(scale * 100) + '%';
       stage.classList.toggle('is-zoomable', enabled && scale <= min + 0.001);
       stage.classList.toggle('is-panning', enabled && scale > min + 0.001);
@@ -94,6 +101,7 @@
       ty = 0;
       dragging = false;
       pointers.clear();
+      target.style.transition = '';
       render();
     }
 
