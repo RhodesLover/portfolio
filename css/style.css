@@ -713,9 +713,9 @@ ul { list-style: none; }
   aspect-ratio: 4/5;
 }
 
-/* Posters: retícula estricta editorial (3 columnas iguales) */
+/* Posters: 4 en el primer renglón (selección home) */
 .grid--posters {
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(4, 1fr);
 }
 
 /* Ilustraciones: retícula libre (3 columnas, más aire) */
@@ -2756,14 +2756,15 @@ body.pg-viewer-open #trailCanvas { display: none; }
   .grid--social { grid-template-columns: 1fr 1fr; }
   .grid--social .project-card:first-child { grid-column: 1 / -1; }
   .grid--proyectos,
-  .grid--posters,
   .grid--ilustraciones { grid-template-columns: 1fr 1fr; }
+  /* Posters: 2x2 en tablet (no 1 solo abajo / no full-span) */
+  .grid--posters { grid-template-columns: 1fr 1fr; }
   .grid--proyectos .project-card--tall,
-  .grid--posters .project-card--tall,
   .grid--ilustraciones .project-card--tall { grid-column: 1 / -1; }
+  .grid--posters .project-card--tall { grid-column: auto; }
   .grid--proyectos .project-card--tall .project-card__media,
-  .grid--posters .project-card--tall .project-card__media,
   .grid--ilustraciones .project-card--tall .project-card__media { aspect-ratio: 16/9; }
+  .grid--posters .project-card--tall .project-card__media { aspect-ratio: 3/4; }
   .about__inner { grid-template-columns: 1fr; gap: 3rem; }
   .about__image { order: -1; max-width: 280px; width: min(100%, 280px); margin: 0 auto; justify-self: center; }
     .pg-grid--redes,
