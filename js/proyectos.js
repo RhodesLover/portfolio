@@ -316,17 +316,27 @@
     });
   });
 
-  /* video hover play inside cells */
+  /* video hover play inside cells (lazy src) */
+  function ensureVideoSrc(video) {
+    if (!video) return;
+    const ds = video.getAttribute('data-src');
+    if (ds && !video.getAttribute('src')) {
+      video.setAttribute('src', ds);
+      try { video.load(); } catch (e) {}
+    }
+  }
   document.querySelectorAll('.pg-cell video').forEach((video) => {
     const cell = video.closest('.pg-cell');
     if (!cell) return;
+    if (!video.getAttribute('preload')) video.setAttribute('preload', 'none');
     cell.addEventListener('mouseenter', () => {
-      video.currentTime = 0;
+      ensureVideoSrc(video);
+      try { video.currentTime = 0; } catch (e) {}
       video.play().catch(() => {});
     });
     cell.addEventListener('mouseleave', () => {
       video.pause();
-      video.currentTime = 0;
+      try { video.currentTime = 0; } catch (e) {}
     });
   });
 

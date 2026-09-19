@@ -7,6 +7,10 @@ assets/carta-mm/*.pdf
 *_preopt_bak.mp4
 *_opt_tmp.mp4
 *.preopt.bak
+assets/_opt_bak_images/
+assets/_opt_bak_videos/
+_opt_patch_js.py
+_tmp_noga/
 
 # OS / editor
 .DS_Store
@@ -16,3 +20,4 @@ Thumbs.db
 
 .tmp-drive/
 assets/manual-nh/*.pdf
+docs/

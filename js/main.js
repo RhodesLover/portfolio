@@ -458,17 +458,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  /* ---------- VIDEO HOVER PLAY ---------- */
+  /* ---------- VIDEO HOVER PLAY (lazy src) ---------- */
+  function ensureVideoSrc(video) {
+    if (!video) return;
+    const ds = video.getAttribute('data-src');
+    if (ds && !video.getAttribute('src')) {
+      video.setAttribute('src', ds);
+      try { video.load(); } catch (e) {}
+    }
+  }
   document.querySelectorAll('.project-card video').forEach(video => {
     const card = video.closest('.project-card');
     if (!card) return;
+    if (!video.getAttribute('preload')) video.setAttribute('preload', 'none');
     card.addEventListener('mouseenter', () => {
-      video.currentTime = 0;
+      ensureVideoSrc(video);
+      try { video.currentTime = 0; } catch (e) {}
       video.play().catch(() => {});
     });
     card.addEventListener('mouseleave', () => {
       video.pause();
-      video.currentTime = 0;
+      try { video.currentTime = 0; } catch (e) {}
     });
   });
 
@@ -573,10 +583,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.dataset.media) return { src: card.dataset.media, isVideo: (card.dataset.type === 'video') };
         return { src: '', isVideo: false };
       }
-      const src = imgEl.src || '';
+      const src = (imgEl.tagName === 'VIDEO')
+        ? (imgEl.getAttribute('src') || imgEl.getAttribute('data-src') || imgEl.currentSrc || '')
+        : (imgEl.getAttribute('src') || imgEl.currentSrc || '');
       if (imgEl.tagName === 'VIDEO') {
         // Para thumbnails siempre usar el poster (un <img> no renderiza un .mp4)
-        const thumb = forThumb ? (imgEl.poster || '') : (src || imgEl.poster || '');
+        const thumb = forThumb
+          ? (imgEl.getAttribute('poster') || imgEl.poster || '')
+          : (src || imgEl.getAttribute('poster') || imgEl.poster || '');
         return { src: thumb, isVideo: true };
       }
       return { src, isVideo: false };
@@ -1084,10 +1098,14 @@ document.addEventListener('DOMContentLoaded', () => {
   function getCardMedia(card) {
     const vid = card.querySelector('.project-card__video');
     if (vid) {
-      return { type: 'video', media: vid.getAttribute('src') || vid.currentSrc || '', poster: vid.getAttribute('poster') || '' };
+      return {
+        type: 'video',
+        media: vid.getAttribute('src') || vid.getAttribute('data-src') || vid.currentSrc || '',
+        poster: vid.getAttribute('poster') || ''
+      };
     }
     const img = card.querySelector('.project-card__img');
-    return { type: 'image', media: img ? (img.getAttribute('src') || '') : '', poster: '' };
+    return { type: 'image', media: img ? (img.getAttribute('src') || img.currentSrc || '') : '', poster: '' };
   }
 
   function setVideoFill(on) {

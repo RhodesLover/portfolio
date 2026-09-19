@@ -66,14 +66,29 @@
     if (mediaZoom) mediaZoom.setEnabled(!!on);
   }
 
+  function withJpgFallback(img) {
+    if (!img || img._jpgFb) return;
+    img._jpgFb = true;
+    img.addEventListener('error', function () {
+      var s = img.getAttribute('src') || '';
+      if (/\.webp(\?|$)/i.test(s)) {
+        img.src = s.replace(/\.webp(\?|$)/i, '.jpg$1');
+      }
+    });
+  }
+
   function normalizePages(input, pageCount) {
     var n = parseInt(pageCount, 10) || 0;
     var dir = String(input || '').replace(/\/+$/, '');
     if (!dir || n < 1) return [];
+    // Prefer the smaller on-disk format per page (optimize pass).
+    // Pages where webp lost to jpg stay on jpg; others use webp.
+    var preferJpg = { '18': 1 };
     var list = [];
     for (var i = 1; i <= n; i++) {
       var num = i < 10 ? '0' + i : String(i);
-      list.push(dir + '/page-' + num + '.jpg');
+      var ext = preferJpg[num] ? '.jpg' : '.webp';
+      list.push(dir + '/page-' + num + ext);
     }
     return list;
   }
@@ -221,12 +236,16 @@
     if (!imgLeft) return;
 
     function apply() {
+      withJpgFallback(imgLeft);
+
       imgLeft.src = pair.left;
       imgLeft.alt = 'Página ' + pair.leftNum + ' del manual';
       if (imgRight) {
         if (pair.hasRight) {
           imgRight.hidden = false;
           imgRight.removeAttribute('hidden');
+          withJpgFallback(imgRight);
+
           imgRight.src = pair.right;
           imgRight.alt = 'Página ' + pair.rightNum + ' del manual';
         } else {
