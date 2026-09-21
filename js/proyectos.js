@@ -765,6 +765,19 @@
                                     window.openBottle3d({ dir: bottleDir, title: title || 'Fernet Cordobita' });
                                   });
                                   vActions.appendChild(b);
+                                  // Cordobita: bottle + brand manual can coexist
+                                  if (manualDir && typeof window.openBrandManual === 'function') {
+                                    const mb = document.createElement('button');
+                                    mb.type = 'button';
+                                    mb.className = 'pg-viewer__link';
+                                    mb.textContent = (window.TZI18n?window.TZI18n.t('js.manual'):'Ver manual de marca →');
+                                    mb.addEventListener('click', (e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      window.openBrandManual(manualDir, title || 'Manual de marca', manualPages);
+                                    });
+                                    vActions.appendChild(mb);
+                                  }
                 } else if (manualDir && typeof window.openBrandManual === 'function') {
           const b = document.createElement('button');
           b.type = 'button';

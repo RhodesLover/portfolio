@@ -857,6 +857,19 @@ document.addEventListener('DOMContentLoaded', () => {
                                       window.openBottle3d({ dir: bottleDir, title: title || 'Fernet Cordobita' });
                                     });
                                     projActions.appendChild(btn);
+                                    // Cordobita: bottle + brand manual can coexist
+                                    if (manualDir && typeof window.openBrandManual === 'function') {
+                                      const mbtn = document.createElement('button');
+                                      mbtn.type = 'button';
+                                      mbtn.className = 'modal__behance-btn';
+                                      mbtn.textContent = (window.TZI18n?window.TZI18n.t('js.manual'):'Ver manual de marca →');
+                                      mbtn.addEventListener('click', (e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        window.openBrandManual(manualDir, title || 'Manual de marca', manualPages);
+                                      });
+                                      projActions.appendChild(mbtn);
+                                    }
                                   } else if (manualDir && typeof window.openBrandManual === 'function') {
                                     const btn = document.createElement('button');
                                     btn.type = 'button';
@@ -1453,6 +1466,19 @@ document.addEventListener('DOMContentLoaded', () => {
                             window.openBottle3d({ dir: bottleDir, title: title || 'Fernet Cordobita' });
                           });
                           vActions.appendChild(b);
+                          // Cordobita: bottle + brand manual can coexist
+                          if (manualDir && typeof window.openBrandManual === 'function') {
+                            const mb = document.createElement('button');
+                            mb.type = 'button';
+                            mb.className = 'pg-viewer__link';
+                            mb.textContent = (window.TZI18n?window.TZI18n.t('js.manual'):'Ver manual de marca →');
+                            mb.addEventListener('click', (e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              window.openBrandManual(manualDir, title || 'Manual de marca', manualPages);
+                            });
+                            vActions.appendChild(mb);
+                          }
             } else if (manualDir && typeof window.openBrandManual === 'function') {
               const b = document.createElement('button');
               b.type = 'button';
