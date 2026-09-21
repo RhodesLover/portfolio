@@ -769,7 +769,8 @@
                                   if (manualDir && typeof window.openBrandManual === 'function') {
                                     const mb = document.createElement('button');
                                     mb.type = 'button';
-                                    mb.className = 'pg-viewer__link';
+                                    // Solo el manual de Cordobita usa naranja pack (NH y resto quedan default)
+                                    mb.className = 'pg-viewer__link pg-viewer__link--pack';
                                     mb.textContent = (window.TZI18n?window.TZI18n.t('js.manual'):'Ver manual de marca →');
                                     mb.addEventListener('click', (e) => {
                                       e.preventDefault();

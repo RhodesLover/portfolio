@@ -1857,9 +1857,21 @@ body.modal-open .nav {
   color: #000;
   transform: translateY(-2px);
 }
+/* Pack Cordobita: naranja solo en CTAs pack (manual Cordobita en home modal) */
+.modal__behance-btn--pack {
+  border-color: #fb650e;
+  color: #fb650e;
+}
 .modal__behance-btn:hover {
   background: #1769FF;
   color: #fff;
+  transform: translateY(-2px);
+}
+/* pack hover after generic so it wins over behance blue */
+.modal__behance-btn--pack:hover {
+  background: rgba(251,101,14,0.12);
+  color: #fb650e;
+  border-color: #fb650e;
   transform: translateY(-2px);
 }
 

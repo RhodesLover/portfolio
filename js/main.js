@@ -861,7 +861,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                     if (manualDir && typeof window.openBrandManual === 'function') {
                                       const mbtn = document.createElement('button');
                                       mbtn.type = 'button';
-                                      mbtn.className = 'modal__behance-btn';
+                                      // Solo el manual de Cordobita usa naranja pack (NH y resto quedan default)
+                                      mbtn.className = 'modal__behance-btn modal__behance-btn--pack';
                                       mbtn.textContent = (window.TZI18n?window.TZI18n.t('js.manual'):'Ver manual de marca →');
                                       mbtn.addEventListener('click', (e) => {
                                         e.preventDefault();
@@ -1470,7 +1471,8 @@ document.addEventListener('DOMContentLoaded', () => {
                           if (manualDir && typeof window.openBrandManual === 'function') {
                             const mb = document.createElement('button');
                             mb.type = 'button';
-                            mb.className = 'pg-viewer__link';
+                            // Solo el manual de Cordobita usa naranja pack (NH y resto quedan default)
+                            mb.className = 'pg-viewer__link pg-viewer__link--pack';
                             mb.textContent = (window.TZI18n?window.TZI18n.t('js.manual'):'Ver manual de marca →');
                             mb.addEventListener('click', (e) => {
                               e.preventDefault();
