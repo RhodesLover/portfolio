@@ -2170,6 +2170,10 @@ body.modal-open .nav {
   transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94);
   filter: none; /* color original siempre */
 }
+/* Solo Grand — Mac Miller: crop anclado a la derecha (caja intacta) */
+.pg-cell__media--pos-right {
+  object-position: right center;
+}
 .pg-cell:hover .pg-cell__media {
   transform: scale(1.045);
   filter: none; /* no desaturar al hover */
